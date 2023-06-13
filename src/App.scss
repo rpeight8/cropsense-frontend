@@ -1,0 +1,19 @@
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.layout {
+  display: flex;
+  height: 100%;
+}
+
+.sideBar {
+  flex: 0 0 300px;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
