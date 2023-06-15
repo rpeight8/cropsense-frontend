@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-console.log(import.meta.env.VITE_YANDEX_API_KEY);
+
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
