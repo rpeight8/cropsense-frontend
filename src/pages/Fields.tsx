@@ -1,21 +1,9 @@
 import SubSideBar from "@/components/SubSideBar";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-// import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import { useEffect } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 
 export const Fields = () => {
-  useEffect(() => {
-    // 🤡
-    try {
-      const map = L.map("mapContainer").setView([51.505, -0.09], 13);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "Map data &copy; OpenStreetMap contributors",
-      }).addTo(map);
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+  const position: [number, number] = [51.505, -0.09];
   return (
     <>
       <SubSideBar className="bg-slate-700 border border-purple-400">
@@ -26,7 +14,17 @@ export const Fields = () => {
           <li key="Field 4">Field 4</li>
         </ul>
       </SubSideBar>
-      <div id="mapContainer" className="flex-1 h-full" />
+      {/* <div id="map" className="w-[600px] h-[400px]"></div> */}
+      <div className="flex-1">
+        <MapContainer
+          className="h-full"
+          center={position}
+          zoom={13}
+          scrollWheelZoom={true}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        </MapContainer>
+      </div>
     </>
   );
 };
