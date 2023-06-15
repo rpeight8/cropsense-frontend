@@ -2,11 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import CreateServer from "./mock";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Fields } from "./pages/Fields.tsx";
 import { Welcome } from "./pages/Welcome.tsx";
 import { Sensors } from "./pages/Sensors.tsx";
+CreateServer();
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,8 +26,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
