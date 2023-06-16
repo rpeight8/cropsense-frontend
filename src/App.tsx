@@ -4,22 +4,17 @@ import { cn } from "./lib/utils";
 
 function App() {
   return (
-    <div className={cn("flex bg-slate-800 h-full gap-1")}>
+    <div className={cn("flex bg-primary h-full gap-1")}>
       <aside
         className={cn(
-          "text-white basis-[200px] border border-amber-400 font-medium text-lg bg-slate-900"
+          "text-white basis-[200px] font-medium text-lg bg-primary"
         )}
       >
         <nav className="h-full">
           <NavigationList />
         </nav>
       </aside>
-      <main
-        className={cn(
-          "flex w-full h-full text-white border border-cyan-300",
-          {}
-        )}
-      >
+      <main className={cn("flex w-full h-full text-white", {})}>
         <Outlet />
       </main>
     </div>

@@ -9,9 +9,7 @@ const DetailedInfoSideBar = ({
 }: ComponentPropsWithoutRef<"aside"> & PropsWithChildren) => {
   return (
     <aside className={cn("w-[250px]", className)} {...props}>
-      <nav className="h-full">
-        <ScrollArea className="h-full">{children}</ScrollArea>
-      </nav>
+      <nav className="h-full w-full flex flex-col">{children}</nav>
     </aside>
   );
 };

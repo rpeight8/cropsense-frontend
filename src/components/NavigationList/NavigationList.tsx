@@ -2,6 +2,7 @@ import { ComponentPropsWithoutRef, Fragment } from "react";
 import { NavigationListItem } from "./NavigationListItem";
 import { Separator } from "@/components/ui/Separator";
 import List from "@/components/ui/List";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 type ListItemDeclaration = {
   text: string;
@@ -29,7 +30,11 @@ const NavigationSideBar = () => {
     );
   });
 
-  return <List>{listItems}</List>;
+  return (
+    <ScrollArea className="h-full">
+      <List>{listItems}</List>
+    </ScrollArea>
+  );
 };
 
 export default NavigationSideBar;

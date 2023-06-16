@@ -5,12 +5,12 @@ import { useEffect } from "react";
 import { set, selectFields } from "@/features/fields/fieldsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import FieldsList from "@/components/FieldsList/FieldsList";
+import AddFieldButton from "@/components/AddFieldButton";
 
 export const Fields = () => {
   const { id } = useParams();
   console.log(id);
   const dispatch = useAppDispatch();
-  const fields = useAppSelector(selectFields);
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
       res.json().then((data) => {
@@ -21,8 +21,9 @@ export const Fields = () => {
   }, []);
   return (
     <>
-      <SubSideBar className="bg-slate-700 border border-purple-400">
-        <FieldsList />
+      <SubSideBar className="bg-ternary flex">
+        <FieldsList className="p-0" />
+        <AddFieldButton className="m-2" />
       </SubSideBar>
       <Map className="flex-1" />
     </>
