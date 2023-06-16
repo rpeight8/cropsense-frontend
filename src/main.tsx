@@ -4,6 +4,9 @@ import App from "./App.tsx";
 import "./index.css";
 import { startMirage } from "./mock/config.ts";
 
+import { Provider } from "react-redux";
+import store from "./store.ts";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Fields } from "./pages/Fields.tsx";
 import { Welcome } from "./pages/Welcome.tsx";
@@ -27,14 +30,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
-  res.json().then((data) => {
-    console.log(data);
-  });
-});
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
+    </Provider>
   </React.StrictMode>
 );

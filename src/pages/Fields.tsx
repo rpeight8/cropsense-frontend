@@ -1,15 +1,29 @@
 import SubSideBar from "@/components/SubSideBar";
 import Map from "@/components/Map";
+import { useEffect } from "react";
+import { set, selectFields } from "@/features/fields/fieldsSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
 
 export const Fields = () => {
+  const dispatch = useAppDispatch();
+  const fields = useAppSelector(selectFields);
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
+      res.json().then((data) => {
+        dispatch(set(data.fields));
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <SubSideBar className="bg-slate-700 border border-purple-400">
         <ul>
-          <li key="Field 1">Field 1</li>
-          <li key="Field 2">Field 2</li>
-          <li key="Field 3">Field 3</li>
-          <li key="Field 4">Field 4</li>
+          {fields.map((field) => (
+            <li key={field.id}>
+              <a href="#">{field.text}</a>
+            </li>
+          ))}
         </ul>
       </SubSideBar>
       <Map className="flex-1" />

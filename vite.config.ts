@@ -22,6 +22,7 @@ export default defineConfig({
       "@components/ui": path.resolve(__dirname, "./src/components/ui"),
       "@lib": path.resolve(__dirname, "./src/lib"),
       "@mirage": path.resolve(__dirname, ".src/mirage"),
+      "@features": path.resolve(__dirname, "./src/features"),
     },
   },
 });
