@@ -1,5 +1,4 @@
 import { ComponentPropsWithoutRef, PropsWithChildren } from "react";
-import { ScrollArea } from "@/components/ui/ScrollArea";
 import { cn } from "@/lib/utils";
 
 const DetailedInfoSideBar = ({

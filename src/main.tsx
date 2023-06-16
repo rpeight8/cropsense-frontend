@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       {
         path: "fields/",
         element: <Fields />,
-        children: [{ path: ":id" }],
+        children: [{ path: ":action", children: [{ path: ":id" }] }],
       },
       {
         path: "sensors",

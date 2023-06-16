@@ -9,7 +9,7 @@ export function startMirage() {
     models,
     factories,
     seeds(server) {
-      server.createList("field", faker.number.int({ min: 30, max: 45 }));
+      server.createList("field", faker.number.int({ min: 35, max: 45 }));
     },
   });
   // logging

@@ -15,7 +15,7 @@ const FieldListItem = ({ id, text }: FieldlistItemProps) => {
             "bg-slate-700": isPending,
           });
         }}
-        to={id}
+        to={`display/${id}`}
       >
         {text}
       </NavLink>
