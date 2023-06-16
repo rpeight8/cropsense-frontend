@@ -9,7 +9,7 @@ export function startMirage() {
     models,
     factories,
     seeds(server) {
-      server.createList("field", faker.number.int({ min: 2, max: 25 }));
+      server.createList("field", faker.number.int({ min: 30, max: 45 }));
     },
   });
   // logging
@@ -18,11 +18,12 @@ export function startMirage() {
   // external URLs
   server.post(
     `${import.meta.env.VITE_SOME_KEY}/:any`,
-    () => new Promise((_res: any) => {})
+    () =>
+      new Promise((_res: any) => {
+        console.log("external call handler");
+      })
   );
 
-  // internal URLs
-  debugger;
   server.urlPrefix = import.meta.env.VITE_API_URL ?? "";
   for (const namespace of Object.keys(endpoints)) {
     //@ts-ignore
