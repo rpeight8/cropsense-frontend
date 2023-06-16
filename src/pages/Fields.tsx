@@ -1,10 +1,14 @@
 import SubSideBar from "@/components/SubSideBar";
+import { Link, useParams } from "react-router-dom";
 import Map from "@/components/Map";
 import { useEffect } from "react";
 import { set, selectFields } from "@/features/fields/fieldsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
+import FieldsList from "@/components/FieldsList/FieldsList";
 
 export const Fields = () => {
+  const { id } = useParams();
+  console.log(id);
   const dispatch = useAppDispatch();
   const fields = useAppSelector(selectFields);
   useEffect(() => {
@@ -18,13 +22,7 @@ export const Fields = () => {
   return (
     <>
       <SubSideBar className="bg-slate-700 border border-purple-400">
-        <ul>
-          {fields.map((field) => (
-            <li key={field.id}>
-              <a href="#">{field.text}</a>
-            </li>
-          ))}
-        </ul>
+        <FieldsList />
       </SubSideBar>
       <Map className="flex-1" />
     </>

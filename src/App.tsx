@@ -7,7 +7,7 @@ function App() {
     <div className={cn("flex bg-slate-800 h-full gap-1")}>
       <aside
         className={cn(
-          "text-white basis-[300px] border border-amber-400 p-2 font-medium text-lg bg-slate-900"
+          "text-white basis-[200px] border border-amber-400 font-medium text-lg bg-slate-900"
         )}
       >
         <nav className="h-full">

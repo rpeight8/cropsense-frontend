@@ -11,7 +11,7 @@ type NavigationListItemProps = {
 export const NavigationListItem = ({ link, text }: NavigationListItemProps) => {
   return (
     <ListItem className={cn("text-white flex hover:bg-slate-800")}>
-      <Link to={link} className="w-full p-3">
+      <Link to={link} className="w-full p-2">
         {text}
       </Link>
     </ListItem>

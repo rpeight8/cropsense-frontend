@@ -8,7 +8,7 @@ const DetailedInfoSideBar = ({
   ...props
 }: ComponentPropsWithoutRef<"aside"> & PropsWithChildren) => {
   return (
-    <aside className={cn("w-[200px]", className)} {...props}>
+    <aside className={cn("w-[250px]", className)} {...props}>
       <nav className="h-full">
         <ScrollArea className="h-full">{children}</ScrollArea>
       </nav>

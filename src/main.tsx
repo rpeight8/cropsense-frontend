@@ -19,11 +19,12 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Welcome /> },
       {
-        path: "/fields",
+        path: "fields/",
         element: <Fields />,
+        children: [{ path: ":id" }],
       },
       {
-        path: "/sensors",
+        path: "sensors",
         element: <Sensors />,
       },
     ],
