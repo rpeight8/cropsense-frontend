@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import CreateServer from "./mock";
+import { startMirage } from "./mock/config.ts";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Fields } from "./pages/Fields.tsx";
 import { Welcome } from "./pages/Welcome.tsx";
 import { Sensors } from "./pages/Sensors.tsx";
-CreateServer();
+startMirage();
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +26,12 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
+fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
+  res.json().then((data) => {
+    console.log(data);
+  });
+});
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -25,7 +25,8 @@
       "@components/*": ["src/components/*"],
       "@components/ui/*": ["src/components/ui/*"],
       "@lib/*": ["src/lib/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@mirage/*": ["src/mirage/*"]
     }
   },
   "include": ["src"],
