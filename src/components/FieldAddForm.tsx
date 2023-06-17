@@ -47,23 +47,25 @@ const FieldAddForm = ({ className, ...props }: FormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn("w-full space-y-6 flex flex-col", className)}
+        className={cn("w-full h-full flex flex-col", className)}
         {...props}
       >
-        <FormField
-          control={form.control}
-          name="fieldname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Field Name</FormLabel>
-              <FormControl>
-                <Input placeholder="field name" {...field} />
-              </FormControl>
-              <FormDescription>Field information</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="mb-auto">
+          <FormField
+            control={form.control}
+            name="fieldname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Field Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="field name" {...field} />
+                </FormControl>
+                <FormDescription>Field information</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex">
           <Button
             className="mr-auto bg-ternary/"
