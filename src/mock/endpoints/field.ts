@@ -1,8 +1,9 @@
 import { Response, Server } from "miragejs";
+
 import { AppSchema } from "../types";
 
 export function routesForFields(server: Server) {
-  server.get(`/fields`, (schema: AppSchema, request) => {
+  server.get(`/fields`, (schema: AppSchema) => {
     const fields = schema.all("field");
     return new Response(200, {}, fields);
     // return seconds % 17 === 0

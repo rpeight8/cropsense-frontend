@@ -1,8 +1,8 @@
 import { Fragment, useCallback } from "react";
 
-import { NavigationListItem } from "@/components/NavigationList/NavigationListItem";
 import { Separator } from "@/components/ui/Separator";
-import List from "@/components/ui/List";
+import List from "@/components/ui/List/List";
+import NavigationListItem from "@/components/NavigationList/NavigationListItem";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 
 type ListItemDeclaration = {

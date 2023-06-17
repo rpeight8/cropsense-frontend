@@ -1,9 +1,11 @@
-import SubSideBar from "@/components/SubSideBar";
-import { useParams } from "react-router-dom";
-import Map from "@/components/Map";
 import { useEffect } from "react";
-import { set } from "@/features/fields/fieldsSlice";
+import { useParams } from "react-router-dom";
+
 import { useAppDispatch } from "@/store";
+import { set } from "@/features/fields/fieldsSlice";
+
+import SubSideBar from "@/components/SubSideBar";
+import Map from "@/components/Map";
 import FieldsList from "@/components/FieldsList/FieldsList";
 import FieldAddForm from "@/components/FieldAddForm";
 import FieldAddButton from "@/components/FieldAddButton";

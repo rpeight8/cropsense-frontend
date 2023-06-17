@@ -1,16 +1,16 @@
 import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { startMirage } from "./mock/config.ts";
-
 import { Provider } from "react-redux";
+
 import store from "./store.ts";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "./App.tsx";
+import "./index.css";
 import { Fields } from "./pages/Fields.tsx";
 import { Welcome } from "./pages/Welcome.tsx";
 import { Sensors } from "./pages/Sensors.tsx";
+import { startMirage } from "./mock/config.ts";
 
 startMirage();
 

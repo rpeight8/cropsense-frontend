@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "@/store";
 import type { PayloadAction } from "@reduxjs/toolkit";
+
+import type { RootState } from "@/store";
 import { Field, FieldId } from "@/types";
 
 type FieldsState = Field[];

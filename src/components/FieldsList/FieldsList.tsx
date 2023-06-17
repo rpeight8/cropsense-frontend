@@ -3,7 +3,7 @@ import { ComponentPropsWithoutRef, useCallback } from "react";
 import { selectFields } from "@/features/fields/fieldsSlice";
 import { useAppSelector } from "@/store";
 
-import List from "@/components/ui/List";
+import List from "@/components/ui/List/List";
 import FieldListItem from "@/components/FieldsList/FieldListItem";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul">;
@@ -23,7 +23,7 @@ const FieldsList = ({ className, ...props }: FieldListProps) => {
       {...props}
     >
       {fields.map((field) => (
-        <FieldListItem id={field.id} text={field.text} />
+        <FieldListItem key={field.id} id={field.id} text={field.text} />
       ))}
     </List>
   );

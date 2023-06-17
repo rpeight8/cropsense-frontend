@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Field } from "@/types";
 import { cn } from "@/lib/utils";
 
-import ListItem from "@/components/ui/ListItem";
+import ListItem from "@/components/ui/List/ListItem";
 
 type FieldlistItemProps = Field;
 

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import fieldsReducer from "@/features/fields/fieldsSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+
+import fieldsReducer from "@/features/fields/fieldsSlice";
 
 const store = configureStore({
   reducer: {

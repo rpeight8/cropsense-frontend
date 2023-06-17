@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
-import NavigationList from "./components/NavigationList/NavigationList";
+
 import { cn } from "./lib/utils";
+
+import NavigationList from "@/components/NavigationList/NavigationList";
 
 function App() {
   return (

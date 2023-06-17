@@ -1,4 +1,5 @@
-import { ComponentPropsWithoutRef, PropsWithChildren, ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
+
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { cn } from "@/lib/utils";
 
