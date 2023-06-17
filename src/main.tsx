@@ -11,7 +11,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Fields } from "./pages/Fields.tsx";
 import { Welcome } from "./pages/Welcome.tsx";
 import { Sensors } from "./pages/Sensors.tsx";
+
 startMirage();
+
 const router = createBrowserRouter([
   {
     path: "/",

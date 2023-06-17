@@ -1,16 +1,17 @@
-import { ComponentPropsWithoutRef, PropsWithChildren } from "react";
+import { ComponentPropsWithoutRef, PropsWithChildren, ReactNode } from "react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { cn } from "@/lib/utils";
 
-const List = ({
-  children,
-  className,
-  ...props
-}: PropsWithChildren & ComponentPropsWithoutRef<"ul">) => {
+type ListProps<T> = {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
+} & ComponentPropsWithoutRef<"ul">;
+
+const List = <T,>({ items, renderItem, className, ...props }: ListProps<T>) => {
   return (
     <ScrollArea className="h-full">
       <ul className={cn("p-2", className)} {...props}>
-        {children}
+        {items.map(renderItem)}
       </ul>
     </ScrollArea>
   );

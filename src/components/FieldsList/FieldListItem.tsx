@@ -1,7 +1,9 @@
-import ListItem from "@/components/ui/ListItem";
-import { cn } from "@/lib/utils";
+import { NavLink } from "react-router-dom";
+
 import { Field } from "@/types";
-import { Link, NavLink } from "react-router-dom";
+import { cn } from "@/lib/utils";
+
+import ListItem from "@/components/ui/ListItem";
 
 type FieldlistItemProps = Field;
 

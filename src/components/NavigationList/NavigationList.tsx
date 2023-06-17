@@ -1,5 +1,6 @@
-import { ComponentPropsWithoutRef, Fragment } from "react";
-import { NavigationListItem } from "./NavigationListItem";
+import { Fragment, useCallback } from "react";
+
+import { NavigationListItem } from "@/components/NavigationList/NavigationListItem";
 import { Separator } from "@/components/ui/Separator";
 import List from "@/components/ui/List";
 import { ScrollArea } from "@/components/ui/ScrollArea";
@@ -21,18 +22,17 @@ const listItemsDeclaration: ListItemDeclaration[] = [
 ];
 
 const NavigationSideBar = () => {
-  const listItems = listItemsDeclaration.map((item) => {
+  const renderItem = useCallback((item: ListItemDeclaration) => {
     return (
       <Fragment key={item.text}>
         <NavigationListItem {...item} />
         <Separator className="bg-slate-400" />
       </Fragment>
     );
-  });
-
+  }, []);
   return (
     <ScrollArea className="h-full">
-      <List>{listItems}</List>
+      <List items={listItemsDeclaration} renderItem={renderItem}></List>
     </ScrollArea>
   );
 };
