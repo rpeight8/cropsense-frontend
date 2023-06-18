@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { FieldPolygon } from "../../types";
 
-export const randomFloat = (min: numebr, max: number) => {
+export const randomFloat = (min: number, max: number) => {
   return faker.number.float({ min: min, max: max });
 };
 

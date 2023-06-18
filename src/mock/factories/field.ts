@@ -5,10 +5,6 @@ import { generatePolygon } from "../utils/generators";
 
 import { Field, FieldPolygon } from "../../types";
 
-
-
-
-
 export const fieldFactory = Factory.extend<Field>({
   id() {
     return faker.string.uuid();
@@ -29,5 +25,8 @@ export const fieldFactory = Factory.extend<Field>({
       polygons: [generatePolygon(minLat, maxLat, minLng, maxLng)],
       holes: [],
     };
+  },
+  color() {
+    return faker.color.human();
   },
 });

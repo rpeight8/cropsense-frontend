@@ -5,6 +5,7 @@ export type Field = {
     polygons: FieldPolygon[];
     holes: FieldHole[];
   };
+  color?: string;
 };
 
 export type FieldWithoutCoords = Omit<Field, "coords">;
