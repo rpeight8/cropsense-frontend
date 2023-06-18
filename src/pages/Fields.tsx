@@ -57,7 +57,7 @@ export const Fields = () => {
   return (
     <>
       <SubSideBar className="bg-ternary flex">{subSideBarContent}</SubSideBar>
-      <Map className="w-full h-full" state={action} />
+      <Map className="flex-1" state={action} />
     </>
   );
 };

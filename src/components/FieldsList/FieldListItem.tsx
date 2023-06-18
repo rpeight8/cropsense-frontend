@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 
-import { Field } from "@/types";
+import { Field, FieldWithoutCoords } from "@/types";
 import { cn } from "@/lib/utils";
 
 import ListItem from "@/components/ui/List/ListItem";
 
-type FieldlistItemProps = Field;
+type FieldlistItemProps = FieldWithoutCoords;
 
 const FieldListItem = ({ id, text }: FieldlistItemProps) => {
   return (

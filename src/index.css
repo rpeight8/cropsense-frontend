@@ -11,7 +11,3 @@
 *::after {
   box-sizing: border-box;
 }
-
-.leaflet-control-container {
-  display: none;
-}
