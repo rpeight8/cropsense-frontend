@@ -7,7 +7,7 @@ import ListItem from "@/components/ui/List/ListItem";
 
 type FieldlistItemProps = FieldWithoutCoords;
 
-const FieldListItem = ({ id, text }: FieldlistItemProps) => {
+const FieldListItem = ({ id, name }: FieldlistItemProps) => {
   return (
     <ListItem className={cn("text-white flex hover:bg-slate-600")}>
       <NavLink
@@ -19,7 +19,7 @@ const FieldListItem = ({ id, text }: FieldlistItemProps) => {
         }}
         to={`display/${id}`}
       >
-        {text}
+        {name}
       </NavLink>
     </ListItem>
   );

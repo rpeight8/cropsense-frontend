@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAppDispatch } from "@/store";
@@ -9,10 +9,15 @@ import Map from "@/components/Map";
 import FieldsList from "@/components/FieldsList/FieldsList";
 import FieldAddForm from "@/components/FieldAddForm";
 import FieldAddButton from "@/components/FieldAddButton";
-import { FieldAction } from "@/types";
+import { FieldAction, FieldCoordinates } from "@/types";
 
 export const Fields = () => {
-  const { action = "none", id } = useParams();
+  const { action = "none", id } = useParams() as {
+    action: FieldAction;
+    id?: string;
+  };
+  const [newFieldCoordinates, setNewFieldCoordinates] =
+    useState<FieldCoordinates | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -57,7 +62,11 @@ export const Fields = () => {
   return (
     <>
       <SubSideBar className="bg-ternary flex">{subSideBarContent}</SubSideBar>
-      <Map className="flex-1" state={action} />
+      <Map
+        className="flex-1"
+        action={action}
+        setNewFieldCoordinates={setNewFieldCoordinates}
+      />
     </>
   );
 };

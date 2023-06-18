@@ -1,15 +1,13 @@
 export type Field = {
   id: string;
-  text: string;
-  coords: {
-    polygons: FieldPolygon[];
-    holes: FieldHole[];
-  };
+  name: string;
+  coordinates: FieldCoordinates;
   color?: string;
 };
 
-export type FieldWithoutCoords = Omit<Field, "coords">;
+export type FieldWithoutCoords = Omit<Field, "coordinates">;
 
+export type FieldCoordinates = [FieldPolygon, FieldHole];
 export type FieldPolygon = [number, number][];
 export type FieldHole = [number, number][];
 

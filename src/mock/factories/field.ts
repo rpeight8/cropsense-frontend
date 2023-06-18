@@ -3,16 +3,16 @@ import { faker } from "@faker-js/faker";
 
 import { generatePolygon } from "../utils/generators";
 
-import { Field, FieldPolygon } from "../../types";
+import { Field } from "../../types";
 
 export const fieldFactory = Factory.extend<Field>({
   id() {
     return faker.string.uuid();
   },
-  text() {
+  name() {
     return `${faker.company.buzzAdjective()} Field`;
   },
-  coords() {
+  coordinates() {
     const multiplier = 0.2;
     const lat = 52.434;
     const minLat = lat - multiplier;
@@ -21,10 +21,7 @@ export const fieldFactory = Factory.extend<Field>({
     const lng = 30.9754;
     const minLng = lng - multiplier;
     const maxLng = lng + multiplier;
-    return {
-      polygons: [generatePolygon(minLat, maxLat, minLng, maxLng)],
-      holes: [],
-    };
+    return [generatePolygon(minLat, maxLat, minLng, maxLng), []];
   },
   color() {
     return faker.color.human();

@@ -12,7 +12,7 @@ const FieldsList = ({ className, ...props }: FieldListProps) => {
   const fields = useAppSelector(selectFields);
 
   const renderField = useCallback((field: (typeof fields)[number]) => {
-    return <FieldListItem key={field.id} id={field.id} text={field.text} />;
+    return <FieldListItem key={field.id} id={field.id} name={field.name} />;
   }, []);
   return (
     <List

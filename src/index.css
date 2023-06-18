@@ -11,3 +11,7 @@
 *::after {
   box-sizing: border-box;
 }
+
+.leaflet-draw {
+  display: none;
+}
