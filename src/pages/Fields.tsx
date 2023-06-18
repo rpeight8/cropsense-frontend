@@ -9,12 +9,13 @@ import Map from "@/components/Map";
 import FieldsList from "@/components/FieldsList/FieldsList";
 import FieldAddForm from "@/components/FieldAddForm";
 import FieldAddButton from "@/components/FieldAddButton";
+import { FieldAction } from "@/types";
 
 export const Fields = () => {
-  const { action, id } = useParams();
-  console.log(action);
-  console.log(id);
+  const { action = "none", id } = useParams();
+
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
       res.json().then((data) => {
@@ -41,7 +42,7 @@ export const Fields = () => {
         </>
       );
       break;
-    default:
+    case "none":
       subSideBarContent = (
         <>
           <FieldsList className="p-0" />
@@ -49,12 +50,14 @@ export const Fields = () => {
         </>
       );
       break;
+    default:
+      throw new Error(`Unknown action: ${action}`);
   }
 
   return (
     <>
       <SubSideBar className="bg-ternary flex">{subSideBarContent}</SubSideBar>
-      <Map className="flex-1" />
+      <Map className="w-full h-full" state={action} />
     </>
   );
 };

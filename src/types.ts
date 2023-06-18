@@ -3,6 +3,6 @@ export type Field = {
   text: string;
 };
 
-export type FieldAction = "add" | "edit";
+export type FieldAction = "add" | "edit" | "display" | "none";
 
 export type FieldId = Field["id"];

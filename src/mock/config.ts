@@ -31,7 +31,6 @@ export function startMirage() {
     endpoints[namespace](server);
   }
 
-  // Reset for everything else
   server.namespace = "";
   server.passthrough();
   // console.log({server})
