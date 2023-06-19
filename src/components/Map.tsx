@@ -44,7 +44,6 @@ const Map = memo(
     }, [action]);
 
     const fields = useAppSelector(selectFields);
-    console.log("rerender");
     return (
       <MapContainer
         className={cn("", className)}

@@ -10,4 +10,10 @@ export function routesForFields(server: Server) {
     //   ? new Response(401, {}, { error: true })
     //   : new Response(200, {}, fields);
   });
+
+  server.post(`/fields`, (schema: AppSchema, request) => {
+    const attrs = JSON.parse(request.requestBody);
+    const field = schema.create("field", attrs);
+    return new Response(200, {}, field);
+  });
 }

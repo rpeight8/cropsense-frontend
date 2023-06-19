@@ -31,7 +31,10 @@ const useFieldAddForm = () => {
     }
   };
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+    fetch(`${import.meta.env.VITE_API_URL}/fields`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   };
   return {
     fieldAddForm: useForm<z.infer<typeof FormSchema>>({

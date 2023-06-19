@@ -29,7 +29,7 @@ export const Fields = () => {
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [action]);
 
   let subSideBarContent: JSX.Element = <> </>;
   switch (action) {
