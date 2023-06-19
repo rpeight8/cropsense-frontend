@@ -7,6 +7,7 @@ import { factories } from "./factories";
 
 export function startMirage() {
   const server = createServer({
+    timing: 2000,
     models,
     factories,
     seeds(server) {
@@ -27,7 +28,6 @@ export function startMirage() {
 
   server.urlPrefix = import.meta.env.VITE_API_URL ?? "";
   for (const namespace of Object.keys(endpoints)) {
-    //@ts-ignore
     endpoints[namespace](server);
   }
 

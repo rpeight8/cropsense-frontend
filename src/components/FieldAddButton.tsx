@@ -9,7 +9,6 @@ const AddFieldButton = ({
   className,
 }: AddFieldButtonProps) => {
   const navigate = useNavigate();
-  console.log(className);
   return (
     <Button
       variant={variant}

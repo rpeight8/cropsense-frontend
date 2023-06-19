@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-import { useAppDispatch } from "@/store";
-import { set } from "@/features/fields/fieldsSlice";
+import { useParams, useNavigate } from "react-router-dom";
 
 import SubSideBar from "@/components/SubSideBar";
 import Map from "@/components/Map";
@@ -11,6 +7,8 @@ import FieldAddForm from "@/components/FieldAddForm";
 import FieldAddButton from "@/components/FieldAddButton";
 import { FieldAction, FieldCoordinates } from "@/types";
 import { useFieldAddForm } from "@/hooks/useFieldAddForm";
+import { useFields } from "@/services/fields";
+import { useEffect } from "react";
 
 export const Fields = () => {
   const { action = "none", id } = useParams() as {
@@ -18,18 +16,26 @@ export const Fields = () => {
     id?: string;
   };
 
-  const { fieldAddForm, FormProvider, onSubmit, onErrors } = useFieldAddForm();
+  const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
+  const { isLoading, isError, data, error } = useFields();
+  const {
+    fieldAddForm,
+    FormProvider,
+    onSubmit,
+    onErrors,
+    newField,
+    isLoading: isFieldCreating,
+    isSuccess: isFieldCreated,
+  } = useFieldAddForm();
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/fields`).then((res) => {
-      res.json().then((data) => {
-        dispatch(set(data.fields));
-      });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [action]);
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+
+  if (isFieldCreating) {
+    console.log("creating field...");
+  }
 
   let subSideBarContent: JSX.Element = <> </>;
   switch (action) {

@@ -2,6 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { z } from "zod";
+import { useMutateNewField } from "@/services/fields";
+import { useCallback } from "react";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -21,21 +23,38 @@ export const FormSchema = z.object({
 
 const useFieldAddForm = () => {
   const { toast } = useToast();
-  const onErrors = (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
-    if ("coordinates" in errors) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Field should be created with at least 3 coordinates.",
-      });
-    }
-  };
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    fetch(`${import.meta.env.VITE_API_URL}/fields`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  };
+  const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
+    useMutateNewField();
+
+  if (isError || isSuccess) {
+    newFieldMutation.reset();
+  }
+
+  const onFormValidationErrors = useCallback(
+    (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
+      if ("coordinates" in errors) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Field should be created with at least 3 coordinates.",
+        });
+      }
+    },
+    [toast]
+  );
+
+  const onFormSubmit = useCallback(
+    (data: z.infer<typeof FormSchema>) => {
+      const newField = {
+        ...data,
+        color: "pink",
+      };
+
+      newFieldMutation.mutate(newField);
+    },
+    [newFieldMutation]
+  );
+
   return {
     fieldAddForm: useForm<z.infer<typeof FormSchema>>({
       defaultValues: {
@@ -44,9 +63,14 @@ const useFieldAddForm = () => {
       },
       resolver: zodResolver(FormSchema),
     }),
-    onSubmit,
-    onErrors,
+    onSubmit: onFormSubmit,
+    onErrors: onFormValidationErrors,
+    newField: data,
+    error: error,
     FormProvider,
+    isLoading,
+    isSuccess,
+    isError,
   };
 };
 
