@@ -1,13 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormContext } from "react-hook-form";
 import * as z from "zod";
 
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { toast } from "@/components/ui/Toast/use-toast";
 import {
   Form,
   FormControl,
@@ -17,43 +15,33 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
+import { FormSchema } from "@/hooks/useFieldAddForm";
 
-const FormSchema = z.object({
-  fieldname: z.string().min(1, {
-    message: "Field name must be at least 1 characters.",
-  }),
-});
+type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
+  onSubmit: (data: z.infer<typeof FormSchema>) => void;
+  onErrors: (errors: any) => void;
+};
 
-type FormProps = React.FormHTMLAttributes<HTMLFormElement>;
-
-const FieldAddForm = ({ className, ...props }: FormProps) => {
+const FieldAddForm = ({
+  className,
+  onSubmit,
+  onErrors,
+  ...props
+}: FormProps) => {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const form = useFormContext<z.infer<typeof FormSchema>>();
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onErrors)}
         className={cn("w-full h-full flex flex-col", className)}
         {...props}
       >
         <div className="mb-auto">
           <FormField
             control={form.control}
-            name="fieldname"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Field Name</FormLabel>

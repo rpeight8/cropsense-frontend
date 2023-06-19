@@ -27,7 +27,8 @@
       "@lib/*": ["src/lib/*"],
       "@pages/*": ["src/pages/*"],
       "@mirage/*": ["src/mirage/*"],
-      "@features/*": ["src/features/*"]
+      "@features/*": ["src/features/*"],
+      "@hooks/*": ["src/hooks/*"]
     }
   },
   "include": ["src"],

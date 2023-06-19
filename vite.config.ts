@@ -23,6 +23,7 @@ export default defineConfig({
       "@lib": path.resolve(__dirname, "./src/lib"),
       "@mirage": path.resolve(__dirname, ".src/mirage"),
       "@features": path.resolve(__dirname, "./src/features"),
+      "@hooks": path.resolve(__dirname, "./src/hooks"),
     },
   },
 });

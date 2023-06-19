@@ -1,6 +1,6 @@
 import { Fragment, useCallback } from "react";
 
-import { Separator } from "@/components/ui/Separator";
+import { Separator } from "@/components/ui/separator";
 import List from "@/components/ui/List/List";
 import NavigationListItem from "@/components/NavigationList/NavigationListItem";
 import { ScrollArea } from "@/components/ui/ScrollArea";

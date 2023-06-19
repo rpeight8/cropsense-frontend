@@ -10,14 +10,15 @@ import FieldsList from "@/components/FieldsList/FieldsList";
 import FieldAddForm from "@/components/FieldAddForm";
 import FieldAddButton from "@/components/FieldAddButton";
 import { FieldAction, FieldCoordinates } from "@/types";
+import { useFieldAddForm } from "@/hooks/useFieldAddForm";
 
 export const Fields = () => {
   const { action = "none", id } = useParams() as {
     action: FieldAction;
     id?: string;
   };
-  const [newFieldCoordinates, setNewFieldCoordinates] =
-    useState<FieldCoordinates | null>(null);
+
+  const { fieldAddForm, FormProvider, onSubmit, onErrors } = useFieldAddForm();
 
   const dispatch = useAppDispatch();
 
@@ -33,9 +34,14 @@ export const Fields = () => {
   let subSideBarContent: JSX.Element = <> </>;
   switch (action) {
     case "add":
+      fieldAddForm.register("coordinates", { value: [[], []] });
       subSideBarContent = (
         <>
-          <FieldAddForm className="p-2" />
+          <FieldAddForm
+            className="p-2"
+            onSubmit={onSubmit}
+            onErrors={onErrors}
+          />
         </>
       );
       break;
@@ -61,12 +67,18 @@ export const Fields = () => {
 
   return (
     <>
-      <SubSideBar className="bg-ternary flex">{subSideBarContent}</SubSideBar>
-      <Map
-        className="flex-1"
-        action={action}
-        setNewFieldCoordinates={setNewFieldCoordinates}
-      />
+      <FormProvider {...fieldAddForm}>
+        <SubSideBar className="bg-ternary flex">{subSideBarContent}</SubSideBar>
+        <Map
+          className="flex-1"
+          action={action}
+          handleNewField={(coordinates: FieldCoordinates) => {
+            fieldAddForm.setValue("coordinates", coordinates, {
+              shouldValidate: true,
+            });
+          }}
+        />
+      </FormProvider>
     </>
   );
 };

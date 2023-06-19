@@ -15,3 +15,7 @@
 .leaflet-draw {
   display: none;
 }
+
+.leaflet-bottom.leaflet-right .leaflet-control-attribution {
+  display: none;
+}

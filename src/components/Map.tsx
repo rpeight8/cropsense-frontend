@@ -12,7 +12,7 @@ import { selectFields } from "@/features/fields/fieldsSlice";
 type MapProps = ComponentPropsWithoutRef<"div"> & {
   initialPosition?: [number, number];
   action: FieldAction;
-  setNewFieldCoordinates: (coordinates: FieldCoordinates) => void;
+  handleNewField: (coordinates: FieldCoordinates) => void;
 };
 
 const triggerPolygonDraw = () => {
@@ -29,7 +29,7 @@ const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const Map = memo(
   ({
     initialPosition = [52.434, 30.9754] as [number, number],
-    setNewFieldCoordinates,
+    handleNewField,
     className,
     action,
     ...props
@@ -89,7 +89,11 @@ const Map = memo(
               }}
               onCreated={(e) => {
                 const coordinates = e.layer.toGeoJSON().geometry.coordinates;
-                setNewFieldCoordinates(coordinates);
+                // Add holes
+                if (coordinates.length === 1) {
+                  coordinates.push([]);
+                }
+                handleNewField(coordinates);
               }}
             />
           </FeatureGroup>
