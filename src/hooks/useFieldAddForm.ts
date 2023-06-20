@@ -3,7 +3,8 @@ import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { z } from "zod";
 import { useMutateNewField } from "@/services/fields";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -23,12 +24,28 @@ export const FormSchema = z.object({
 
 const useFieldAddForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
     useMutateNewField();
 
-  if (isError || isSuccess) {
-    newFieldMutation.reset();
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Field was successfully created.",
+      });
+      navigate(-1);
+    }
+
+    if (isError) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create field.",
+      });
+    }
+  }, [isSuccess, navigate, toast, isError]);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -49,7 +66,7 @@ const useFieldAddForm = () => {
         ...data,
         color: "pink",
       };
-
+      console.log("mutate");
       newFieldMutation.mutate(newField);
     },
     [newFieldMutation]

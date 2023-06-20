@@ -16,7 +16,7 @@ import { useAppSelector } from "@/store";
 import { selectFields } from "@/features/fields/fieldsSlice";
 
 type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
-  initialPosition: [number, number];
+  initialPosition?: [number, number];
   action?: FieldAction;
   handleNewField?: (coordinates: FieldCoordinates) => void;
   initialZoom: number;
@@ -61,10 +61,10 @@ const FieldsMap = memo(
           console.log(e);
         },
         dragend: (e) => {
-          onDragEnd(map);
+          onDragEnd?.(map);
         },
         zoomend: (e) => {
-          onZoomEnd(map);
+          onZoomEnd?.(map);
         },
       });
       return null;
@@ -78,7 +78,7 @@ const FieldsMap = memo(
         center={initialPosition}
         {...props}
       >
-        {/* <MyComponent /> */}
+        <MyComponent />
         <ReactLeafletGoogleLayer
           eventHandlers={{
             click: (e) => {
@@ -137,7 +137,7 @@ const FieldsMap = memo(
                 if (coordinates.length === 1) {
                   coordinates.push([]);
                 }
-                handleNewField(coordinates);
+                handleNewField?.(coordinates);
               }}
             />
           </FeatureGroup>
@@ -156,4 +156,5 @@ const FieldsMap = memo(
   }
 );
 
+export type MapFromEvents = ReturnType<typeof useMapEvents>;
 export default FieldsMap;

@@ -9,19 +9,29 @@ import { set } from "@/features/fields/fieldsSlice";
 export const useFields = () => {
   const dispatch = useAppDispatch();
 
-  return useQuery<Field[], Error>(["fields"], async (): Promise<Field[]> => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/fields`);
-      if (!res.ok) throw new Error("Network response was not ok.");
-      const { fields: data } = await res.json();
-      FieldsSchema.parse(data);
-      dispatch(set(data));
-      return data;
-    } catch (error: unknown) {
-      console.log(error);
-      throw new Error("Error fetching fields.");
+  return useQuery<Field[], Error>(
+    ["fields"],
+    async (): Promise<Field[]> => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/fields`);
+        if (!res.ok) throw new Error("Network response was not ok.");
+        const { fields: data } = await res.json();
+        FieldsSchema.parse(data);
+        dispatch(set(data));
+        return data;
+      } catch (error: unknown) {
+        console.log(error);
+        throw new Error("Error fetching fields.");
+      }
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchInterval: 60000,
+      refetchIntervalInBackground: false,
     }
-  });
+  );
 };
 
 export const useMutateNewField = () => {
