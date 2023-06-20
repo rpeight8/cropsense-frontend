@@ -1,5 +1,11 @@
 import { ComponentPropsWithoutRef, useEffect, memo } from "react";
-import { MapContainer, Polygon, LayerGroup, FeatureGroup } from "react-leaflet";
+import {
+  MapContainer,
+  Polygon,
+  LayerGroup,
+  FeatureGroup,
+  useMapEvents,
+} from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
 import { cn } from "@/lib/utils";
@@ -9,10 +15,13 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import { useAppSelector } from "@/store";
 import { selectFields } from "@/features/fields/fieldsSlice";
 
-type MapProps = ComponentPropsWithoutRef<"div"> & {
-  initialPosition?: [number, number];
-  action: FieldAction;
-  handleNewField: (coordinates: FieldCoordinates) => void;
+type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
+  initialPosition: [number, number];
+  action?: FieldAction;
+  handleNewField?: (coordinates: FieldCoordinates) => void;
+  initialZoom: number;
+  onDragEnd?: (map: any) => void;
+  onZoomEnd?: (map: any) => void;
 };
 
 const triggerPolygonDraw = () => {
@@ -26,12 +35,15 @@ const triggerPolygonDraw = () => {
 
 const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
-const Map = memo(
+const FieldsMap = memo(
   ({
     initialPosition = [52.434, 30.9754] as [number, number],
     handleNewField,
+    initialZoom,
     className,
     action,
+    onZoomEnd,
+    onDragEnd,
     ...props
   }: MapProps) => {
     useEffect(() => {
@@ -43,19 +55,52 @@ const Map = memo(
       return () => clearTimeout(timer);
     }, [action]);
 
+    const MyComponent = () => {
+      const map = useMapEvents({
+        click: (e) => {
+          console.log(e);
+        },
+        dragend: (e) => {
+          onDragEnd(map);
+        },
+        zoomend: (e) => {
+          onZoomEnd(map);
+        },
+      });
+      return null;
+    };
+
     const fields = useAppSelector(selectFields);
     return (
       <MapContainer
         className={cn("", className)}
-        zoom={15}
+        zoom={initialZoom}
         center={initialPosition}
         {...props}
       >
+        {/* <MyComponent /> */}
         <ReactLeafletGoogleLayer
+          eventHandlers={{
+            click: (e) => {
+              console.log(e);
+            },
+            dragend: (e) => {
+              console.log(e);
+            },
+          }}
           apiKey={GOOGLE_API_KEY}
           type="hybrid"
         ></ReactLeafletGoogleLayer>
-        <LayerGroup>
+        <LayerGroup
+          eventHandlers={{
+            click: (e) => {
+              console.log(e);
+            },
+            dragend: (e) => {
+              console.log(e);
+            },
+          }}
+        >
           {fields.map((field: Field) => {
             return (
               <Polygon
@@ -111,4 +156,4 @@ const Map = memo(
   }
 );
 
-export default Map;
+export default FieldsMap;

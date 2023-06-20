@@ -1,30 +1,15 @@
-import { Outlet } from "react-router-dom";
-
-import { cn } from "./lib/utils";
-
-import { Toaster } from "@/components/ui/Toast/Toaster";
-import NavigationList from "@/components/NavigationList/NavigationList";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 
 function App() {
-  return (
-    <>
-      <div className={cn("flex bg-primary h-full gap-1")}>
-        <aside
-          className={cn(
-            "text-white basis-[200px] font-medium text-lg bg-primary"
-          )}
-        >
-          <nav className="h-full">
-            <NavigationList />
-          </nav>
-        </aside>
-        <main className={cn("flex w-full h-full text-white", {})}>
-          <Outlet />
-          <Toaster />
-        </main>
-      </div>
-    </>
-  );
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname.split("/").length <= 1) {
+      navigate(`/20,11,15/fields`);
+    }
+  }, []);
+  return <Outlet />;
 }
 
 export default App;

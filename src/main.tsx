@@ -1,5 +1,9 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,10 +12,10 @@ import store from "./store.ts";
 
 import App from "./App.tsx";
 import "./index.css";
-import { Fields } from "./pages/Fields.tsx";
-import { Welcome } from "./pages/Welcome.tsx";
-import { Sensors } from "./pages/Sensors.tsx";
+import Coordinates from "@/pages/coordinates";
+import Fields from "@/pages/coordinates/fields/";
 import { startMirage } from "./mock/config.ts";
+import { Sensors } from "@/pages/coordinates/sensors";
 
 startMirage();
 
@@ -20,15 +24,29 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Welcome /> },
       {
-        path: "fields/",
-        element: <Fields />,
-        children: [{ path: ":action", children: [{ path: ":id" }] }],
-      },
-      {
-        path: "sensors",
-        element: <Sensors />,
+        path: ":coordinates",
+        element: <Coordinates />,
+        children: [
+          {
+            path: "fields/",
+            element: <Fields />,
+            children: [
+              {
+                path: ":param1",
+                children: [
+                  {
+                    path: ":param2",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: "sensors/",
+            element: <Sensors />,
+          },
+        ],
       },
     ],
   },

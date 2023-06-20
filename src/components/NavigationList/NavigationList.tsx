@@ -4,24 +4,18 @@ import { Separator } from "@/components/ui/separator";
 import List from "@/components/ui/List/List";
 import NavigationListItem from "@/components/NavigationList/NavigationListItem";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { useParams } from "react-router-dom";
 
 type ListItemDeclaration = {
   text: string;
   link: string;
 };
 
-const listItemsDeclaration: ListItemDeclaration[] = [
-  {
-    text: "Fields",
-    link: "/fields",
-  },
-  {
-    text: "Sensors",
-    link: "/sensors",
-  },
-];
+type NavigationListProps = {
+  items: ListItemDeclaration[];
+};
 
-const NavigationSideBar = () => {
+const NavigationSideBar = ({ items }: NavigationListProps) => {
   const renderItem = useCallback((item: ListItemDeclaration) => {
     return (
       <Fragment key={item.text}>
@@ -32,7 +26,7 @@ const NavigationSideBar = () => {
   }, []);
   return (
     <ScrollArea className="h-full">
-      <List items={listItemsDeclaration} renderItem={renderItem}></List>
+      <List items={items} renderItem={renderItem}></List>
     </ScrollArea>
   );
 };

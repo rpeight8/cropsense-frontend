@@ -24,6 +24,8 @@ export default defineConfig({
       "@mirage": path.resolve(__dirname, ".src/mirage"),
       "@features": path.resolve(__dirname, "./src/features"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
+      "@pages": path.resolve(__dirname, "./src/pages"),
+      "@layouts": path.resolve(__dirname, "./src/layouts"),
     },
   },
 });

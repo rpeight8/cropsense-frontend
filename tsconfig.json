@@ -28,7 +28,8 @@
       "@pages/*": ["src/pages/*"],
       "@mirage/*": ["src/mirage/*"],
       "@features/*": ["src/features/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@layouts/*": ["src/layouts/*"]
     }
   },
   "include": ["src"],
