@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/Toast/Toaster";
 
 const Coordinates = () => {
-  const { coordinates = "52, 32", action = "none" } = useParams() as {
+  const { coordinates } = useParams() as {
     coordinates: string;
     action: FieldAction;
   };
@@ -21,9 +21,6 @@ const Coordinates = () => {
       link: `/${coordinates}/sensors`,
     },
   ];
-
-  const params = useParams();
-  console.log("Coordinates:params", params);
 
   return (
     <>

@@ -5,7 +5,7 @@ import FieldsMap from "./components/FieldsMap";
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  // console.log("A");
+  
   useEffect(() => {
     console.log(location.pathname);
     if (location.pathname.split("/").length <= 1 || location.pathname === "/") {
@@ -13,13 +13,6 @@ function App() {
     }
   }, [location.pathname, navigate]);
   return <Outlet />;
-  // return (
-  //   <FieldsMap
-  //     className="h-full w-full"
-  //     initialPosition={[50, 32]}
-  //     initialZoom={15}
-  //   />
-  // );
 }
 
 export default App;

@@ -8,7 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/NavigationMenu";
+} from "@/components/NavigationMenu";
 
 export const UserItem = ({ ...props }: ComponentPropsWithoutRef<"div">) => {
   return (
