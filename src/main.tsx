@@ -33,9 +33,11 @@ const router = createBrowserRouter([
             element: <Fields />,
             children: [
               {
+                // add / fiedlId
                 path: ":param1",
                 children: [
                   {
+                    // edit / delete / display
                     path: ":param2",
                   },
                 ],
