@@ -25,27 +25,40 @@ export const FormSchema = z.object({
 const useFieldAddForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
-    useMutateNewField();
 
-  useEffect(() => {
-    if (isSuccess) {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    defaultValues: {
+      name: "",
+      coordinates: [],
+    },
+    resolver: zodResolver(FormSchema),
+  });
+
+  const onMutateSuccess = useCallback(
+    (respData: typeof data) => {
       toast({
         variant: "default",
         title: "Success",
         description: "Field was successfully created.",
       });
-      navigate(-1);
-    }
 
-    if (isError) {
+      navigate(respData ? `${respData.id}/display` : "/fields");
+    },
+    [navigate, toast]
+  );
+  const onMutateError = useCallback(
+    (respError: typeof error) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create field.",
+        description: respError?.message,
       });
-    }
-  }, [isSuccess, navigate, toast, isError]);
+    },
+    [toast]
+  );
+
+  const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
+    useMutateNewField(onMutateSuccess, onMutateError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -73,13 +86,7 @@ const useFieldAddForm = () => {
   );
 
   return {
-    fieldAddForm: useForm<z.infer<typeof FormSchema>>({
-      defaultValues: {
-        name: "",
-        coordinates: [],
-      },
-      resolver: zodResolver(FormSchema),
-    }),
+    fieldAddForm: form,
     onSubmit: onFormSubmit,
     onErrors: onFormValidationErrors,
     newField: data,

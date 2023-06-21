@@ -34,11 +34,18 @@ export const useFields = () => {
   );
 };
 
-export const useMutateNewField = () => {
+export const useMutateNewField = (
+  onSuccess?: (data: Field) => void,
+  onError?: (error: Error) => void
+) => {
   const queryClient = useQueryClient();
   const mutation = useMutation<Field, Error, FieldForCreation>({
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(["fields"]);
+      onSuccess?.(data);
+    },
+    onError: (error) => {
+      onError?.(error);
     },
     mutationFn: async (field: FieldForCreation) => {
       try {
