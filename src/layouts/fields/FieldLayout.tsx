@@ -110,20 +110,24 @@ const FieldLayout = () => {
         <SubSideBar className="bg-ternary flex">
           {getSideBarContent()}
         </SubSideBar>
-        <FieldMap
-          key="1"
-          className="flex-1"
-          action={action}
-          selectedFieldId={fieldId || newField?.id}
-          initialPosition={initialCoordinates}
-          initialZoom={initialZoom}
-          onZoomEnd={onMapCoordinatesChange}
-          onDragEnd={onMapCoordinatesChange}
-          onFieldClick={onFieldClick}
-          onFieldMouseOver={(fieldId: FieldId) => setHoveredFieldId(fieldId)}
-          onFieldMouseOut={() => setHoveredFieldId(undefined)}
-          handleNewField={onFieldCreated}
-        />
+        <div className="flex-1 flex flex-col">
+          <FieldMap
+            className="flex-1"
+            action={action}
+            selectedFieldId={fieldId || newField?.id}
+            initialPosition={initialCoordinates}
+            initialZoom={initialZoom}
+            onZoomEnd={onMapCoordinatesChange}
+            onDragEnd={onMapCoordinatesChange}
+            onFieldClick={onFieldClick}
+            onFieldMouseOver={(fieldId: FieldId) => setHoveredFieldId(fieldId)}
+            onFieldMouseOut={() => setHoveredFieldId(undefined)}
+            handleNewField={onFieldCreated}
+          />
+          {action === "display" && (
+            <div className="h-[300px] w-[full]">Display {fieldId}</div>
+          )}
+        </div>
       </FormProvider>
     </>
   );
