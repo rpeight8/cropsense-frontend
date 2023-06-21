@@ -1,6 +1,6 @@
 import FieldAddForm from "@/components/FieldAddForm";
 import SubSideBar from "@/components/SubSideBar";
-import FieldMap, { MapFromEvents } from "@/components/FieldsMap";
+import FieldMap, { Map } from "@/components/FieldsMap";
 import { useFieldAddForm } from "@/hooks/useFieldAddForm";
 import { Coordinates, FieldCoordinates, FieldId } from "@/types";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,9 @@ import FieldsList from "@/components/FieldsList/FieldsList";
 import FieldAddButton from "@/components/FieldAddButton";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
 import { useCallback, useMemo, useState } from "react";
+import { useFields } from "@/services/fields";
+import { selectFields } from "@/features/fields/fieldsSlice";
+import { useAppSelector } from "@/store";
 
 const FieldLayout = () => {
   const [hoveredFieldId, setHoveredFieldId] = useState<FieldId | undefined>(
@@ -16,6 +19,8 @@ const FieldLayout = () => {
   const navigate = useNavigate();
   const { action, fieldId, initialCoordinates, initialZoom } =
     useURLParametersParser();
+
+  const fields = useAppSelector(selectFields);
 
   const {
     fieldAddForm,
@@ -27,12 +32,8 @@ const FieldLayout = () => {
     isSuccess: isFieldCreated,
   } = useFieldAddForm();
 
-  console.log("newField", newField);
-  console.log("isFieldCreating", isFieldCreating);
-  console.log("isFieldCreated", isFieldCreated);
-
   const onMapCoordinatesChange = useCallback(
-    (map: MapFromEvents) => {
+    (map: Map) => {
       const center = map.getCenter();
       const lat = Number(center.lat.toFixed(5));
       const lng = Number(center.lng.toFixed(5));
@@ -114,6 +115,7 @@ const FieldLayout = () => {
           <FieldMap
             className="flex-1"
             action={action}
+            fields={fields}
             selectedFieldId={fieldId || newField?.id}
             initialPosition={initialCoordinates}
             initialZoom={initialZoom}

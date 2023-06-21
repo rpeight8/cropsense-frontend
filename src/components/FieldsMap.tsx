@@ -1,4 +1,11 @@
-import { ComponentPropsWithoutRef, useEffect, memo, useRef } from "react";
+import {
+  ComponentPropsWithoutRef,
+  useEffect,
+  memo,
+  useRef,
+  useCallback,
+  ComponentProps,
+} from "react";
 import {
   MapContainer,
   Polygon,
@@ -6,14 +13,18 @@ import {
   FeatureGroup,
   useMapEvents,
 } from "react-leaflet";
+import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
-import { cn } from "@/lib/utils";
 import { FieldAction, Field, FieldCoordinates, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import { useAppSelector } from "@/store";
-import { selectFields } from "@/features/fields/fieldsSlice";
+
+type EditControlProps = ComponentProps<typeof EditControl>;
+
+export type { Map, LeafletPolygon as Polygon };
+export type OnEditVertexHandler = NonNullable<EditControlProps["onEdited"]>;
+export type OnCreatedHandler = NonNullable<EditControlProps["onCreated"]>;
 
 type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   initialPosition?: [number, number];
@@ -22,22 +33,25 @@ type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   handleNewField?: (coordinates: FieldCoordinates) => void;
   initialZoom: number;
   onFieldClick?: (fieldId: FieldId) => void;
-  onDragEnd?: (map: any) => void;
-  onZoomEnd?: (map: any) => void;
+  onDragEnd?: (map: Map) => void;
+  onZoomEnd?: (map: Map) => void;
   onFieldMouseOver?: (fieldId: FieldId) => void;
   onFieldMouseOut?: () => void;
+  fields: Field[];
 };
+
+const LEAFLET_DRAW_POLYGON_BUTTON_CLASS_SELECTOR = ".leaflet-draw-draw-polygon";
+const LEAFLET_EDIT_POLYGON_BUTTON_CLASS_SELECTOR = ".leaflet-draw-edit-edit";
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const triggerPolygonDraw = () => {
   const drawPolygonButton = document.querySelector(
-    ".leaflet-draw-draw-polygon"
+    LEAFLET_DRAW_POLYGON_BUTTON_CLASS_SELECTOR
   );
   if (drawPolygonButton) {
     (drawPolygonButton as HTMLAnchorElement).click();
   }
 };
-
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const FieldsMap = memo(
   ({
@@ -52,10 +66,11 @@ const FieldsMap = memo(
     onDragEnd,
     onFieldMouseOver,
     onFieldMouseOut,
+    fields,
     ...props
   }: MapProps) => {
-    const MapRef = useRef<MapFromEvents>(null);
-    const TargetPolygonRef = useRef<any>(null);
+    const MapRef = useRef<Map>(null);
+    const TargetPolygonRef = useRef<LeafletPolygon>(null);
 
     // Zooms to selected field
     useEffect(() => {
@@ -76,8 +91,32 @@ const FieldsMap = memo(
       return () => clearTimeout(timer);
     }, [action]);
 
+    const onModifyFinish: OnCreatedHandler | OnEditVertexHandler = useCallback(
+      (e) => {
+        const lLatLng = e.poly.getLatLngs()[0] as {
+          lat: number;
+          lng: number;
+        }[];
+        // Holes is not supported yet
+        const coordinates = [
+          lLatLng.map((latLng) => {
+            return [latLng.lat, latLng.lng] as [number, number];
+          }),
+          [],
+        ] as FieldCoordinates;
+
+        // Add first point to the end of coordinates
+        // to close the polygon
+        coordinates[0].push([...coordinates[0][0]]);
+
+        handleNewField?.(coordinates);
+      },
+      [handleNewField]
+    );
+
     // Handles map events
-    const MyComponent = () => {
+    // TODO: Remove map exposing to the handlers
+    const EventHandler = () => {
       const map = useMapEvents({
         dragend: () => {
           onDragEnd?.(map);
@@ -89,31 +128,20 @@ const FieldsMap = memo(
       return null;
     };
 
-    const fields = useAppSelector(selectFields);
-
     return (
       <MapContainer
-        className={cn("", className)}
+        className={className}
         zoom={initialZoom}
         center={initialPosition}
         ref={MapRef}
         {...props}
       >
-        <MyComponent />
+        <EventHandler />
         <ReactLeafletGoogleLayer
           apiKey={GOOGLE_API_KEY}
           type="hybrid"
         ></ReactLeafletGoogleLayer>
-        <LayerGroup
-          eventHandlers={{
-            click: (e) => {
-              console.log(e);
-            },
-            dragend: (e) => {
-              console.log(e);
-            },
-          }}
-        >
+        <LayerGroup>
           {fields.map((field: Field) => {
             const isSelectedField = selectedFieldId === field.id;
             return (
@@ -121,7 +149,6 @@ const FieldsMap = memo(
                 key={field.id}
                 positions={[field.coordinates[0]]}
                 ref={isSelectedField ? TargetPolygonRef : null}
-                attribution="&copy; Google Maps"
                 pathOptions={{
                   color: isSelectedField ? "white" : field.color,
                   weight: isSelectedField ? 3 : 1,
@@ -132,8 +159,7 @@ const FieldsMap = memo(
                   click: () => {
                     onFieldClick?.(field.id);
                   },
-                  mouseover: (e) => {
-                    console.log(e);
+                  mouseover: () => {
                     onFieldMouseOver?.(field.id);
                   },
                   mouseout: () => {
@@ -159,24 +185,15 @@ const FieldsMap = memo(
                   showLength: true,
                 },
               }}
+              onEditVertex={(e) => {
+                onModifyFinish(e);
+              }}
               onCreated={(e) => {
-                const lLatLng = e.layer.getLatLngs()[0] as {
-                  lat: number;
-                  lng: number;
-                }[];
-                // Holes is not supported yet
-                const coordinates = [
-                  lLatLng.map((latLng) => {
-                    return [latLng.lat, latLng.lng] as [number, number];
-                  }),
-                  [],
-                ] as FieldCoordinates;
-
-                // Add first point to the end of coordinates
-                // to close the polygon
-                coordinates[0].push([...coordinates[0][0]]);
-
-                handleNewField?.(coordinates);
+                onModifyFinish(e);
+                const editButton = document?.querySelector(
+                  LEAFLET_EDIT_POLYGON_BUTTON_CLASS_SELECTOR
+                ) as HTMLAnchorElement;
+                editButton?.click();
               }}
             />
           </FeatureGroup>
@@ -186,5 +203,4 @@ const FieldsMap = memo(
   }
 );
 
-export type MapFromEvents = ReturnType<typeof useMapEvents>;
 export default FieldsMap;

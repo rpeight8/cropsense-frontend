@@ -41,7 +41,7 @@ const useFieldAddForm = () => {
         title: "Success",
         description: "Field was successfully created.",
       });
-
+      form.reset();
       navigate(respData ? `${respData.id}/display` : "/fields");
     },
     [navigate, toast]
