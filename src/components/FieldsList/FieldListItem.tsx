@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 
 import ListItem from "@/components/ui/List/ListItem";
 
-type FieldlistItemProps = FieldForDisplay;
+type FieldlistItemProps = FieldForDisplay & {
+  className?: string;
+};
 
-const FieldListItem = ({ id, name }: FieldlistItemProps) => {
+const FieldListItem = ({ id, name, className = "" }: FieldlistItemProps) => {
   return (
-    <ListItem className={cn("text-white flex hover:bg-slate-600")}>
+    <ListItem className={cn("text-white flex hover:bg-slate-600", className)}>
       <NavLink
         className={({ isActive, isPending }) => {
           return cn("w-full p-2", {
@@ -17,7 +19,7 @@ const FieldListItem = ({ id, name }: FieldlistItemProps) => {
             "bg-slate-700": isPending,
           });
         }}
-        to={`display/${id}`}
+        to={`${id}/display`}
       >
         {name}
       </NavLink>

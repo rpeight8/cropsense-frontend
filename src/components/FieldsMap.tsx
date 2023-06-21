@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useEffect, memo } from "react";
+import { ComponentPropsWithoutRef, useEffect, memo, useRef } from "react";
 import {
   MapContainer,
   Polygon,
@@ -9,7 +9,7 @@ import {
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
 import { cn } from "@/lib/utils";
-import { FieldAction, Field, FieldCoordinates } from "@/types";
+import { FieldAction, Field, FieldCoordinates, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { useAppSelector } from "@/store";
@@ -18,10 +18,14 @@ import { selectFields } from "@/features/fields/fieldsSlice";
 type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   initialPosition?: [number, number];
   action?: FieldAction;
+  selectedFieldId?: FieldId;
   handleNewField?: (coordinates: FieldCoordinates) => void;
   initialZoom: number;
+  onFieldClick?: (fieldId: FieldId) => void;
   onDragEnd?: (map: any) => void;
   onZoomEnd?: (map: any) => void;
+  onFieldMouseOver?: (fieldId: FieldId) => void;
+  onFieldMouseOut?: () => void;
 };
 
 const triggerPolygonDraw = () => {
@@ -42,10 +46,27 @@ const FieldsMap = memo(
     initialZoom,
     className,
     action,
+    selectedFieldId,
+    onFieldClick,
     onZoomEnd,
     onDragEnd,
+    onFieldMouseOver,
+    onFieldMouseOut,
     ...props
   }: MapProps) => {
+    const MapRef = useRef<MapFromEvents>(null);
+    const TargetPolygonRef = useRef<any>(null);
+
+    // Zooms to selected field
+    useEffect(() => {
+      const Map = MapRef.current;
+      const Polygon = TargetPolygonRef.current;
+      if (Map && Polygon && selectedFieldId) {
+        Map.flyToBounds(Polygon.getBounds(), { duration: 1, maxZoom: 14 });
+      }
+    }, [selectedFieldId]);
+
+    // Triggers polygon drawing on "add" action
     useEffect(() => {
       const timer = setTimeout(() => {
         if (action === "add") {
@@ -55,15 +76,13 @@ const FieldsMap = memo(
       return () => clearTimeout(timer);
     }, [action]);
 
+    // Handles map events
     const MyComponent = () => {
       const map = useMapEvents({
-        click: (e) => {
-          console.log(e);
-        },
-        dragend: (e) => {
+        dragend: () => {
           onDragEnd?.(map);
         },
-        zoomend: (e) => {
+        zoomend: () => {
           onZoomEnd?.(map);
         },
       });
@@ -71,23 +90,17 @@ const FieldsMap = memo(
     };
 
     const fields = useAppSelector(selectFields);
+
     return (
       <MapContainer
         className={cn("", className)}
         zoom={initialZoom}
         center={initialPosition}
+        ref={MapRef}
         {...props}
       >
         <MyComponent />
         <ReactLeafletGoogleLayer
-          eventHandlers={{
-            click: (e) => {
-              console.log(e);
-            },
-            dragend: (e) => {
-              console.log(e);
-            },
-          }}
           apiKey={GOOGLE_API_KEY}
           type="hybrid"
         ></ReactLeafletGoogleLayer>
@@ -102,14 +115,29 @@ const FieldsMap = memo(
           }}
         >
           {fields.map((field: Field) => {
+            const isSelectedField = selectedFieldId === field.id;
             return (
               <Polygon
                 key={field.id}
                 positions={[field.coordinates[0]]}
-                pathOptions={{ color: field.color }}
+                ref={isSelectedField ? TargetPolygonRef : null}
+                attribution="&copy; Google Maps"
+                pathOptions={{
+                  color: isSelectedField ? "white" : field.color,
+                  weight: isSelectedField ? 3 : 1,
+                  fillColor: field.color,
+                  fillOpacity: 0.6,
+                }}
                 eventHandlers={{
                   click: () => {
-                    console.log(field);
+                    onFieldClick?.(field.id);
+                  },
+                  mouseover: (e) => {
+                    console.log(e);
+                    onFieldMouseOver?.(field.id);
+                  },
+                  mouseout: () => {
+                    onFieldMouseOut?.();
                   },
                 }}
               />
@@ -132,25 +160,27 @@ const FieldsMap = memo(
                 },
               }}
               onCreated={(e) => {
-                const coordinates = e.layer.toGeoJSON().geometry.coordinates;
-                // Add holes
-                if (coordinates.length === 1) {
-                  coordinates.push([]);
-                }
+                const lLatLng = e.layer.getLatLngs()[0] as {
+                  lat: number;
+                  lng: number;
+                }[];
+                // Holes is not supported yet
+                const coordinates = [
+                  lLatLng.map((latLng) => {
+                    return [latLng.lat, latLng.lng] as [number, number];
+                  }),
+                  [],
+                ] as FieldCoordinates;
+
+                // Add first point to the end of coordinates
+                // to close the polygon
+                coordinates[0].push([...coordinates[0][0]]);
+
                 handleNewField?.(coordinates);
               }}
             />
           </FeatureGroup>
         )}
-        {/* <Polygon
-        positions={[
-          initialPosition,
-          [initialPosition[0], initialPosition[1] + 0.1],
-          [initialPosition[0] + 0.1, initialPosition[1] + 0.1],
-          [initialPosition[0] + 0.1, initialPosition[1]],
-        ]}
-        pathOptions={{ color: "red" }}
-      /> */}
       </MapContainer>
     );
   }
