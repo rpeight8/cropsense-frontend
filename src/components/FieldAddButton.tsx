@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type AddFieldButtonProps = $ElementProps<typeof Button>;
+type AddFieldButtonProps = ElementProps<typeof Button>;
 
 const AddFieldButton = ({
   variant = "secondary",

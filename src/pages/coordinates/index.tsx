@@ -34,7 +34,9 @@ const Coordinates = () => {
             <NavigationList items={navigationItems} />
           </nav>
         </aside>
-        <main className={cn("flex w-full h-full text-white", {})}>
+        <main
+          className={cn("flex w-full h-full text-white overflow-hidden", {})}
+        >
           <Outlet />
           <Toaster />
         </main>

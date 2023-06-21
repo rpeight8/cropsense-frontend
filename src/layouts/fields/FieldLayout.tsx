@@ -11,6 +11,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useFields } from "@/services/fields";
 import { selectFields } from "@/features/fields/fieldsSlice";
 import { useAppSelector } from "@/store";
+import EditFieldButton from "@/components/FieldEditButton";
+import FieldEditForm from "@/components/FieldEditForm";
+import { cn } from "@/lib/utils";
 
 const FieldLayout = () => {
   const [hoveredFieldId, setHoveredFieldId] = useState<FieldId | undefined>(
@@ -72,17 +75,8 @@ const FieldLayout = () => {
       if (action === "display") {
         return (
           <>
-            <FieldsList highlightedFieldId={hoveredFieldId} />;
+            <FieldsList highlightedFieldId={hoveredFieldId} />
             <FieldAddButton />
-          </>
-        );
-      }
-
-      if (action === "edit") {
-        return (
-          <>
-            <div>Edit</div>
-            <FieldAddForm onSubmit={onSubmit} onErrors={onErrors} />;
           </>
         );
       }
@@ -91,7 +85,6 @@ const FieldLayout = () => {
         return (
           <>
             <div>Delete</div>
-            <FieldsList highlightedFieldId={hoveredFieldId} />;
           </>
         );
       }
@@ -99,7 +92,7 @@ const FieldLayout = () => {
 
     return (
       <>
-        <FieldsList highlightedFieldId={hoveredFieldId} />;
+        <FieldsList highlightedFieldId={hoveredFieldId} />
         <FieldAddButton />
       </>
     );
@@ -107,30 +100,59 @@ const FieldLayout = () => {
 
   return (
     <>
-      <FormProvider {...fieldAddForm}>
-        <SubSideBar className="bg-ternary flex">
-          {getSideBarContent()}
-        </SubSideBar>
-        <div className="flex-1 flex flex-col">
-          <FieldMap
-            className="flex-1"
-            action={action}
-            fields={fields}
-            selectedFieldId={fieldId || newField?.id}
-            initialPosition={initialCoordinates}
-            initialZoom={initialZoom}
-            onZoomEnd={onMapCoordinatesChange}
-            onDragEnd={onMapCoordinatesChange}
-            onFieldClick={onFieldClick}
-            onFieldMouseOver={(fieldId: FieldId) => setHoveredFieldId(fieldId)}
-            onFieldMouseOut={() => setHoveredFieldId(undefined)}
-            handleNewField={onFieldCreated}
-          />
-          {action === "display" && (
-            <div className="h-[300px] w-[full]">Display {fieldId}</div>
-          )}
+      {action === "edit" && (
+        <div className={cn("h-[300px] w-[full]")}>
+          <FormProvider {...fieldAddForm}>
+            <FieldEditForm onSubmit={onSubmit} onErrors={onErrors} />
+          </FormProvider>
         </div>
-      </FormProvider>
+      )}
+      {action !== "edit" && (
+        <div className="h-full w-full flex">
+          <FormProvider {...fieldAddForm}>
+            <SubSideBar className="bg-ternary">
+              {getSideBarContent()}
+            </SubSideBar>
+            <div className="flex-1 flex flex-col">
+              <FieldMap
+                className="flex-1"
+                action={action}
+                fields={fields}
+                selectedFieldId={fieldId || newField?.id}
+                initialPosition={initialCoordinates}
+                initialZoom={initialZoom}
+                onZoomEnd={onMapCoordinatesChange}
+                onDragEnd={onMapCoordinatesChange}
+                onFieldClick={onFieldClick}
+                onFieldMouseOver={(fieldId: FieldId) =>
+                  setHoveredFieldId(fieldId)
+                }
+                onFieldMouseOut={() => setHoveredFieldId(undefined)}
+                handleNewField={onFieldCreated}
+              />
+              {/* {action === "display" && ( */}
+              <div
+                className={cn(
+                  "h-[300px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards",
+                  {
+                    "h-0 overflow-hidden": action !== "display",
+                  }
+                )}
+              >
+                <div className={cn("")}>
+                  Display {fieldId} <EditFieldButton />
+                </div>
+              </div>
+              {/* )} */}
+              {/* {action === "edit" && (
+            <div className="h-[300px] w-[full] flex">
+              <FieldEditForm onSubmit={onSubmit} onErrors={onErrors} />;
+            </div>
+          )} */}
+            </div>
+          </FormProvider>
+        </div>
+      )}
     </>
   );
 };

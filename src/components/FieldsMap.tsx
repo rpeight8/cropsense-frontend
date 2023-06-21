@@ -4,7 +4,6 @@ import {
   memo,
   useRef,
   useCallback,
-  ComponentProps,
 } from "react";
 import {
   MapContainer,
@@ -20,7 +19,7 @@ import { FieldAction, Field, FieldCoordinates, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 
-type EditControlProps = ComponentProps<typeof EditControl>;
+type EditControlProps = ElementProps<typeof EditControl>;
 
 export type { Map, LeafletPolygon as Polygon };
 export type OnEditVertexHandler = NonNullable<EditControlProps["onEdited"]>;
@@ -93,7 +92,8 @@ const FieldsMap = memo(
 
     const onModifyFinish: OnCreatedHandler | OnEditVertexHandler = useCallback(
       (e) => {
-        const lLatLng = e.poly.getLatLngs()[0] as {
+        const polygon = "poly" in e ? e.poly : e.layer;
+        const lLatLng = polygon.getLatLngs()[0] as {
           lat: number;
           lng: number;
         }[];
