@@ -2,8 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { z } from "zod";
-import { useMutateNewField } from "@/services/fields";
-import { useCallback, useEffect } from "react";
+import { useMutateField } from "@/services/fields";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const FormSchema = z.object({
@@ -20,17 +20,23 @@ export const FormSchema = z.object({
       z.tuple([z.number().min(-90).max(90), z.number().min(-180).max(180)])
     ),
   ]),
+  color: z.string(),
+  id: z.string(),
 });
 
-const useFieldAddForm = () => {
+const useFieldEditForm = (
+  field: z.infer<typeof FormSchema> = {
+    name: "",
+    coordinates: [[], []],
+    color: "",
+    id: "",
+  }
+) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    defaultValues: {
-      name: "",
-      coordinates: [],
-    },
+    defaultValues: field,
     resolver: zodResolver(FormSchema),
   });
 
@@ -39,7 +45,7 @@ const useFieldAddForm = () => {
       toast({
         variant: "default",
         title: "Success",
-        description: "Field was successfully created.",
+        description: "Field was updated created.",
       });
       form.reset();
       navigate(respData ? `${respData.id}/display` : "/fields");
@@ -57,8 +63,8 @@ const useFieldAddForm = () => {
     [toast]
   );
 
-  const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
-    useMutateNewField(onMutateSuccess, onMutateError);
+  const { isLoading, isSuccess, isError, error, data, ...fieldMutation } =
+    useMutateField(field.id, onMutateSuccess, onMutateError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -80,9 +86,9 @@ const useFieldAddForm = () => {
         color: "pink",
       };
       console.log("mutate");
-      newFieldMutation.mutate(newField);
+      fieldMutation.mutate(newField);
     },
-    [newFieldMutation]
+    [fieldMutation]
   );
 
   return {
@@ -97,4 +103,4 @@ const useFieldAddForm = () => {
   };
 };
 
-export { useFieldAddForm };
+export { useFieldEditForm };

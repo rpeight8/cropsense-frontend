@@ -3,6 +3,7 @@ import * as Schemas from "@/schemas";
 
 export type Field = z.infer<typeof Schemas.FieldSchema>;
 export type FieldForCreation = z.infer<typeof Schemas.FieldForCreationSchema>;
+export type FieldForUpdate = z.infer<typeof Schemas.FieldForUpdateSchema>;
 export type FieldWithoutCoords = Omit<Field, "coordinates">;
 export type FieldForDisplay = Omit<Field, "coordinates" | "color">;
 

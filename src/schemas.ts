@@ -23,6 +23,10 @@ export const FieldForCreationSchema = FieldSchema.omit({
   id: true,
 });
 
+export const FieldForUpdateSchema = FieldSchema.omit({
+  id: true,
+});
+
 export const fieldAddAction = "add" as const;
 export const fieldActions = [
   fieldAddAction,

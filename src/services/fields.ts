@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Field, FieldForCreation } from "@/types";
+import { Field, FieldForCreation, FieldForUpdate, FieldId } from "@/types";
 import { FieldSchema, FieldsSchema } from "@/schemas";
 
 import { useAppDispatch } from "@/store";
@@ -57,12 +57,50 @@ export const useMutateNewField = (
           body: JSON.stringify(field),
         });
         if (!res.ok) throw new Error("Network response was not ok.");
-        const { field: data } = await res.json();
-        FieldSchema.parse(data);
-        return data;
+        const newField = FieldSchema.parse((await res.json()).field);
+        return newField;
       } catch (error: unknown) {
         console.log(error);
         throw new Error("Error creating field.");
+      }
+    },
+  });
+
+  return mutation;
+};
+
+export const useMutateField = (
+  fieldId: FieldId,
+  onSuccess?: (data: Field) => void,
+  onError?: (error: Error) => void
+) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<Field, Error, FieldForUpdate>({
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["fields"]);
+      onSuccess?.(data);
+    },
+    onError: (error) => {
+      onError?.(error);
+    },
+    mutationFn: async (field: FieldForUpdate) => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(field),
+          }
+        );
+        if (!res.ok) throw new Error("Network response was not ok.");
+        const updatedField = FieldSchema.parse((await res.json()).field);
+        return updatedField;
+      } catch (error: unknown) {
+        console.log(error);
+        throw new Error("Error updating field.");
       }
     },
   });

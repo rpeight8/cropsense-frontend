@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { FormSchema } from "@/hooks/useFieldAddForm";
+import { FormSchema } from "@/hooks/useFieldEditForm";
 
 type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
   onSubmit: (data: z.infer<typeof FormSchema>) => void;
