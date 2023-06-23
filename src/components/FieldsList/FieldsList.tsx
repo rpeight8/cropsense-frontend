@@ -1,23 +1,26 @@
 import { ComponentPropsWithoutRef, useCallback } from "react";
 
-import { selectFields } from "@/features/fields/fieldsSlice";
+import {
+  selectFields,
+  selectHoveredFieldId,
+  setHoveredFieldId,
+} from "@/features/fields/fieldsSlice";
 import { useAppSelector } from "@/store";
 
 import List from "@/components/ui/List/List";
 import FieldListItem from "@/components/FieldsList/FieldListItem";
 import { FieldId } from "@/types";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
   highlightedFieldId?: FieldId;
 };
 
-const FieldsList = ({
-  className,
-  highlightedFieldId,
-  ...props
-}: FieldListProps) => {
+const FieldsList = ({ className, ...props }: FieldListProps) => {
   const fields = useAppSelector(selectFields);
+  const hoveredFieldId = useAppSelector(selectHoveredFieldId);
+  const dispatch = useDispatch();
 
   const renderField = useCallback(
     (field: (typeof fields)[number]) => {
@@ -26,13 +29,19 @@ const FieldsList = ({
           key={field.id}
           id={field.id}
           name={field.name}
+          onMouseLeave={() => {
+            dispatch(setHoveredFieldId(undefined));
+          }}
+          onMouseOver={() => {
+            dispatch(setHoveredFieldId(field.id));
+          }}
           className={cn("", {
-            "bg-slate-600": field.id === highlightedFieldId,
+            "bg-slate-600": field.id === hoveredFieldId,
           })}
         />
       );
     },
-    [highlightedFieldId]
+    [hoveredFieldId]
   );
   return (
     <List

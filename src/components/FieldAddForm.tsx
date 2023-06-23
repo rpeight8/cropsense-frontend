@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useFormContext } from "react-hook-form";
-import * as z from "zod";
 
 import { cn } from "@/lib/utils";
 
@@ -15,27 +13,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { FormSchema } from "@/hooks/useFieldAddForm";
+import { useFieldAddForm } from "@/hooks/useFieldAddForm";
+import { ComponentPropsWithoutRef, useEffect } from "react";
 
-type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
-  onSubmit: (data: z.infer<typeof FormSchema>) => void;
-  onErrors: (errors: any) => void;
-};
+type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;
 
-const FieldAddForm = ({
-  className,
-  onSubmit,
-  onErrors,
-  ...props
-}: FormProps) => {
+const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
   const navigate = useNavigate();
-  const form = useFormContext<z.infer<typeof FormSchema>>();
+  const {
+    form,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+    onSubmit,
+    onCancel,
+    newField,
+    onErrors,
+  } = useFieldAddForm();
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit, onErrors)}
         className={cn("w-full h-full flex flex-col", className)}
+        onSubmit={form.handleSubmit(onSubmit, onErrors)}
         {...props}
       >
         <div className="mb-auto">
@@ -60,8 +61,7 @@ const FieldAddForm = ({
             type="button"
             variant="default"
             onClick={() => {
-              form.reset();
-              navigate(-1);
+              onCancel();
             }}
           >
             Cancel

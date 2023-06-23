@@ -12,11 +12,19 @@ export const FieldCoordinatesSchema = z.tuple([
   FieldHoleSchema,
 ]);
 
+export const FieldGeometrySchema = z.object({
+  type: z.string(),
+  coordinates: FieldCoordinatesSchema,
+});
+
+export const FieldCropsSchema = z.array(z.string());
+
 export const FieldSchema = z.object({
   id: z.string(),
   name: z.string(),
-  coordinates: FieldCoordinatesSchema,
+  geometry: FieldGeometrySchema,
   color: z.string(),
+  crops: FieldCropsSchema.optional(),
 });
 
 export const FieldForCreationSchema = FieldSchema.omit({

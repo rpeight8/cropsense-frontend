@@ -15,9 +15,26 @@ import {
 import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
-import { FieldAction, Field, FieldCoordinates, FieldId } from "@/types";
+import { Field, FieldCoordinates, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
+import {
+  selectFields,
+  selectHoveredFieldId,
+  selectSelectedFieldId,
+  setHoveredFieldId,
+  setNewLocalFieldGeometry,
+} from "@/features/fields/fieldsSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  selectCenter,
+  selectZoom,
+  setCenter,
+  setZoom,
+} from "@/features/map/mapSlice";
+import { set } from "zod";
+import { useNavigate } from "react-router-dom";
+import useURLParametersParser from "@/hooks/useURLParametersParser";
 
 type EditControlProps = ElementProps<typeof EditControl>;
 
@@ -27,8 +44,6 @@ export type OnCreatedHandler = NonNullable<EditControlProps["onCreated"]>;
 
 type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   initialPosition?: [number, number];
-  action?: FieldAction;
-  selectedFieldId?: FieldId;
   handleNewField?: (coordinates: FieldCoordinates) => void;
   initialZoom: number;
   onFieldClick?: (fieldId: FieldId) => void;
@@ -36,7 +51,6 @@ type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   onZoomEnd?: (map: Map) => void;
   onFieldMouseOver?: (fieldId: FieldId) => void;
   onFieldMouseOut?: () => void;
-  fields: Field[];
 };
 
 const LEAFLET_DRAW_POLYGON_BUTTON_CLASS_SELECTOR = ".leaflet-draw-draw-polygon";
@@ -54,22 +68,41 @@ const triggerPolygonDraw = () => {
 
 const FieldsMap = memo(
   ({
-    initialPosition = [52.434, 30.9754] as [number, number],
-    handleNewField,
-    initialZoom,
     className,
-    action,
-    selectedFieldId,
     onFieldClick,
-    onZoomEnd,
-    onDragEnd,
     onFieldMouseOver,
     onFieldMouseOut,
-    fields,
     ...props
   }: MapProps) => {
     const MapRef = useRef<Map>(null);
     const TargetPolygonRef = useRef<LeafletPolygon>(null);
+    const { action } = useURLParametersParser();
+
+    const mapCenter = useAppSelector(selectCenter);
+    const mapZoom = useAppSelector(selectZoom);
+
+    const dispatch = useAppDispatch();
+
+    const fields = useAppSelector(selectFields);
+    const selectedFieldId = useAppSelector(selectSelectedFieldId);
+    const hoveredFieldId = useAppSelector(selectHoveredFieldId);
+
+    const navigate = useNavigate();
+
+    const onMapCoordinatesChange = useCallback(
+      (map: Map) => {
+        const center = map.getCenter();
+        const lat = Number(center.lat.toFixed(5));
+        const lng = Number(center.lng.toFixed(5));
+        const url = [`/${lat},${lng},${map.getZoom()}/fields`];
+        if (selectedFieldId) url.push(`${selectedFieldId}`);
+        if (action) url.push(`${action}`);
+        navigate(url.join("/"), {
+          replace: true,
+        });
+      },
+      [action, navigate, selectedFieldId]
+    );
 
     // Zooms to selected field
     useEffect(() => {
@@ -109,9 +142,14 @@ const FieldsMap = memo(
         // to close the polygon
         coordinates[0].push([...coordinates[0][0]]);
 
-        handleNewField?.(coordinates);
+        dispatch(
+          setNewLocalFieldGeometry({
+            type: "Polygon",
+            coordinates,
+          })
+        );
       },
-      [handleNewField]
+      [dispatch]
     );
 
     // Handles map events
@@ -119,10 +157,10 @@ const FieldsMap = memo(
     const EventHandler = () => {
       const map = useMapEvents({
         dragend: () => {
-          onDragEnd?.(map);
+          onMapCoordinatesChange(map);
         },
         zoomend: () => {
-          onZoomEnd?.(map);
+          onMapCoordinatesChange(map);
         },
       });
       return null;
@@ -131,8 +169,8 @@ const FieldsMap = memo(
     return (
       <MapContainer
         className={className}
-        zoom={initialZoom}
-        center={initialPosition}
+        zoom={mapZoom}
+        center={mapCenter}
         ref={MapRef}
         {...props}
       >
@@ -143,27 +181,28 @@ const FieldsMap = memo(
         ></ReactLeafletGoogleLayer>
         <LayerGroup>
           {fields.map((field: Field) => {
-            const isSelectedField = selectedFieldId === field.id;
+            const isSelectedOrHoveredField =
+              selectedFieldId === field.id || hoveredFieldId === field.id;
             return (
               <Polygon
                 key={field.id}
-                positions={[field.coordinates[0]]}
-                ref={isSelectedField ? TargetPolygonRef : null}
+                positions={[field.geometry.coordinates[0]]}
+                ref={isSelectedOrHoveredField ? TargetPolygonRef : null}
                 pathOptions={{
-                  color: isSelectedField ? "white" : field.color,
-                  weight: isSelectedField ? 3 : 1,
+                  color: isSelectedOrHoveredField ? "white" : field.color,
+                  weight: isSelectedOrHoveredField ? 3 : 1,
                   fillColor: field.color,
                   fillOpacity: 0.6,
                 }}
                 eventHandlers={{
                   click: () => {
-                    onFieldClick?.(field.id);
+                    navigate(`${field.id}/display`);
                   },
                   mouseover: () => {
-                    onFieldMouseOver?.(field.id);
+                    dispatch(setHoveredFieldId(field.id));
                   },
                   mouseout: () => {
-                    onFieldMouseOut?.();
+                    dispatch(setHoveredFieldId(undefined));
                   },
                 }}
               />

@@ -15,21 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { FormSchema } from "@/hooks/useFieldEditForm";
+import { FormSchema, useFieldEditForm } from "@/hooks/useFieldEditForm";
+import { ComponentPropsWithoutRef } from "react";
 
-type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
-  onSubmit: (data: z.infer<typeof FormSchema>) => void;
-  onErrors: (errors: any) => void;
-};
+type FieldEditFormProps = ComponentPropsWithoutRef<"form">;
 
-const FieldEditForm = ({
-  className,
-  onSubmit,
-  onErrors,
-  ...props
-}: FormProps) => {
+const FieldEditForm = ({ className, ...props }: FieldEditFormProps) => {
   const navigate = useNavigate();
-  const form = useFormContext<z.infer<typeof FormSchema>>();
+  const { form, onErrors, onSubmit } = useFieldEditForm();
 
   return (
     <Form {...form}>

@@ -2,18 +2,20 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { Field, FieldId } from "@/types";
+import { Field, FieldGeometry, FieldId } from "@/types";
 
 type FieldsState = {
-  highlightedFieldId: FieldId | undefined;
+  hoveredFieldId: FieldId | undefined;
   selectedFieldId: FieldId | undefined;
+  newLocalFieldGeometry: FieldGeometry | undefined;
   fields: Field[];
 };
 
 const initialState: FieldsState = {
   fields: [],
+  newLocalFieldGeometry: undefined,
   selectedFieldId: undefined,
-  highlightedFieldId: undefined,
+  hoveredFieldId: undefined,
 };
 
 export const fieldsSlice = createSlice({
@@ -29,22 +31,40 @@ export const fieldsSlice = createSlice({
     set: (state, { payload }: PayloadAction<Field[]>) => {
       state.fields = payload;
     },
-    hightlightField: (state, { payload }: PayloadAction<FieldId>) => {
-      state.highlightedFieldId = payload;
+    setHoveredFieldId: (
+      state,
+      { payload }: PayloadAction<FieldId | undefined>
+    ) => {
+      state.hoveredFieldId = payload;
     },
-    selectField: (state, { payload }: PayloadAction<FieldId>) => {
+    selectFieldId: (state, { payload }: PayloadAction<FieldId | undefined>) => {
       state.selectedFieldId = payload;
+    },
+    setNewLocalFieldGeometry: (
+      state,
+      { payload }: PayloadAction<FieldGeometry | undefined>
+    ) => {
+      state.newLocalFieldGeometry = payload;
     },
   },
 });
 
-export const { remove, add, set, hightlightField, selectField } =
-  fieldsSlice.actions;
+export const {
+  remove,
+  add,
+  set,
+  setHoveredFieldId,
+  selectFieldId,
+  setNewLocalFieldGeometry,
+} = fieldsSlice.actions;
 
 export const selectFields = (state: RootState) => state.fields.fields;
-export const selectHighlightedFieldId = (state: RootState) =>
-  state.fields.highlightedFieldId;
+export const selectHoveredFieldId = (state: RootState) =>
+  state.fields.hoveredFieldId;
 export const selectSelectedFieldId = (state: RootState) =>
   state.fields.selectedFieldId;
+
+export const selectNewLocalFieldGeometry = (state: RootState) =>
+  state.fields.newLocalFieldGeometry;
 
 export default fieldsSlice.reducer;

@@ -2,10 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import fieldsReducer from "@/features/fields/fieldsSlice";
+import mapReducer from "@/features/map/mapSlice";
 
 const store = configureStore({
   reducer: {
     fields: fieldsReducer,
+    map: mapReducer,
   },
 });
 

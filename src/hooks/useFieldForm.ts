@@ -6,6 +6,9 @@ import {
 } from "@hooks/useFieldEditForm";
 import { useFieldAddForm } from "@hooks/useFieldAddForm";
 
+// https://github.com/microsoft/TypeScript/issues/44392
+// https://github.com/microsoft/TypeScript/issues/1805
+// It supposed to be replace for useFieldAddForm() and useFieldEditForm()
 function useFieldForm(): undefined;
 function useFieldForm(
   action: "edit",
