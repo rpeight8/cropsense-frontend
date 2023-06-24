@@ -47,7 +47,6 @@ const Fields = () => {
 
   // Validate url params
   useEffect(() => {
-    console.log("Fields: useEffect: isCoordinatesValid, isFieldsParamsValid");
     if (!isCoordinatesValid || !isFieldsParamsValid) {
       navigate(`/52.4,31,10/fields`);
       return;
@@ -83,7 +82,6 @@ const Fields = () => {
   ]);
 
   useEffect(() => {
-    console.log("Fields: useEffect: initialCoordinates, initialZoom");
     if (
       initialCoordinates[0] !== mapCenter[0] ||
       initialCoordinates[1] !== mapCenter[1] ||

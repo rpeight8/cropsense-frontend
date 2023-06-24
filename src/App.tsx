@@ -7,7 +7,6 @@ function App() {
   const location = useLocation();
   
   useEffect(() => {
-    console.log(location.pathname);
     if (location.pathname.split("/").length <= 1 || location.pathname === "/") {
       navigate(`/52.4,31,15/fields`);
     }

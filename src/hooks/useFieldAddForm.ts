@@ -103,7 +103,6 @@ const useFieldAddForm = () => {
         ...data,
         color: "pink",
       };
-      console.log("mutate");
       newFieldMutation.mutate(newField);
     },
     [newFieldMutation]

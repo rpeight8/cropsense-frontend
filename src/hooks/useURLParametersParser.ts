@@ -48,7 +48,6 @@ const getParsedURLFieldParameters = (
   }
 
   if (param2 === "add") {
-    console.log("Add can't be applied to particular field");
     return {
       valid: false,
     };

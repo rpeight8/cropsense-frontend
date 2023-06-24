@@ -33,6 +33,5 @@ export function startMirage() {
 
   server.namespace = "";
   server.passthrough();
-  // console.log({server})
   console.log({ dump: server.db.dump() });
 }

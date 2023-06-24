@@ -23,7 +23,9 @@ const FieldsDetailBottom = () => {
         }
       )}
     >
-      {(action === "edit" && <FieldEditForm />) ||
+      {(action === "edit" && selectedField && (
+        <FieldEditForm field={selectedField} />
+      )) ||
         (action === "display" && (
           <>
             <p>Field name: {selectedField?.name} </p>

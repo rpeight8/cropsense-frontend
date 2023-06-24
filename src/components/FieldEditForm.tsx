@@ -17,13 +17,20 @@ import {
 } from "@/components/ui/Form";
 import { FormSchema, useFieldEditForm } from "@/hooks/useFieldEditForm";
 import { ComponentPropsWithoutRef } from "react";
+import {
+  selectFields,
+  selectSelectedFieldId,
+} from "@/features/fields/fieldsSlice";
+import { useAppSelector } from "@/store";
 
-type FieldEditFormProps = ComponentPropsWithoutRef<"form">;
+type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
+  field: z.infer<typeof FormSchema>;
+};
 
-const FieldEditForm = ({ className, ...props }: FieldEditFormProps) => {
+const FieldEditForm = ({ field, className, ...props }: FieldEditFormProps) => {
   const navigate = useNavigate();
-  const { form, onErrors, onSubmit } = useFieldEditForm();
-
+  const { form, onErrors, onSubmit } = useFieldEditForm(field);
+  
   return (
     <Form {...form}>
       <form

@@ -8,12 +8,14 @@ type FieldsState = {
   hoveredFieldId: FieldId | undefined;
   selectedFieldId: FieldId | undefined;
   newLocalFieldGeometry: FieldGeometry | undefined;
+  editLocalFieldGeometry: FieldGeometry | undefined;
   fields: Field[];
 };
 
 const initialState: FieldsState = {
   fields: [],
   newLocalFieldGeometry: undefined,
+  editLocalFieldGeometry: undefined,
   selectedFieldId: undefined,
   hoveredFieldId: undefined,
 };
@@ -46,6 +48,12 @@ export const fieldsSlice = createSlice({
     ) => {
       state.newLocalFieldGeometry = payload;
     },
+    setEditLocalFieldGeometry: (
+      state,
+      { payload }: PayloadAction<FieldGeometry | undefined>
+    ) => {
+      state.editLocalFieldGeometry = payload;
+    },
   },
 });
 
@@ -56,6 +64,7 @@ export const {
   setHoveredFieldId,
   selectFieldId,
   setNewLocalFieldGeometry,
+  setEditLocalFieldGeometry,
 } = fieldsSlice.actions;
 
 export const selectFields = (state: RootState) => state.fields.fields;
@@ -66,5 +75,8 @@ export const selectSelectedFieldId = (state: RootState) =>
 
 export const selectNewLocalFieldGeometry = (state: RootState) =>
   state.fields.newLocalFieldGeometry;
+
+export const selectEditLocalFieldGeometry = (state: RootState) =>
+  state.fields.editLocalFieldGeometry;
 
 export default fieldsSlice.reducer;
