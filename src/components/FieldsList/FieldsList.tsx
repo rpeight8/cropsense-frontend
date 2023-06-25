@@ -19,30 +19,10 @@ type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
 
 const FieldsList = ({ className, ...props }: FieldListProps) => {
   const fields = useAppSelector(selectFields);
-  const hoveredFieldId = useAppSelector(selectHoveredFieldId);
-  const dispatch = useDispatch();
 
-  const renderField = useCallback(
-    (field: (typeof fields)[number]) => {
-      return (
-        <FieldListItem
-          key={field.id}
-          id={field.id}
-          name={field.name}
-          onMouseLeave={() => {
-            dispatch(setHoveredFieldId(undefined));
-          }}
-          onMouseOver={() => {
-            dispatch(setHoveredFieldId(field.id));
-          }}
-          className={cn("", {
-            "bg-slate-600": field.id === hoveredFieldId,
-          })}
-        />
-      );
-    },
-    [hoveredFieldId]
-  );
+  const renderField = useCallback((field: (typeof fields)[number]) => {
+    return <FieldListItem key={field.id} id={field.id} name={field.name} />;
+  }, []);
   return (
     <List
       items={fields}

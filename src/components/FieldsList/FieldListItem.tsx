@@ -4,9 +4,14 @@ import { Field, FieldForDisplay } from "@/types";
 import { cn } from "@/lib/utils";
 
 import ListItem from "@/components/ui/List/ListItem";
-import { ComponentPropsWithoutRef } from "react";
-import { selectSelectedFieldId } from "@/features/fields/fieldsSlice";
+import { ComponentPropsWithoutRef, useCallback } from "react";
+import {
+  selectHoveredFieldId,
+  selectSelectedFieldId,
+  setHoveredFieldId,
+} from "@/features/fields/fieldsSlice";
 import { useAppSelector } from "@/store";
+import { useDispatch } from "react-redux";
 
 type FieldlistItemProps = FieldForDisplay &
   ComponentPropsWithoutRef<"li"> & {
@@ -20,9 +25,24 @@ const FieldListItem = ({
   ...props
 }: FieldlistItemProps) => {
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
+  const hoveredFieldId = useAppSelector(selectHoveredFieldId);
+  const dispatch = useDispatch();
+
+  const onMouseOver = useCallback(() => {
+    dispatch(setHoveredFieldId(id));
+  }, [dispatch, id]);
+
+  const onMouseLeave = useCallback(() => {
+    dispatch(setHoveredFieldId(undefined));
+  }, [dispatch]);
+
   return (
     <ListItem
-      className={cn("text-white flex hover:bg-slate-600", className)}
+      onMouseLeave={onMouseLeave}
+      onMouseOver={onMouseOver}
+      className={cn("text-white flex hover:bg-slate-600", {
+        "bg-slate-600": id === hoveredFieldId,
+      })}
       {...props}
     >
       <Link

@@ -16,7 +16,7 @@ import {
 import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
-import { Field, FieldCoordinates, FieldId } from "@/types";
+import { Field, FieldCoordinates, FieldGeometry, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {
@@ -111,12 +111,7 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
   const fields = useAppSelector(selectFields);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const hoveredFieldId = useAppSelector(selectHoveredFieldId);
-  const editFieldGeometry = useAppSelector(selectEditLocalFieldGeometry);
-
   const selectedField = fields.find((field) => field.id === selectedFieldId);
-  const [editingField, setEditingField] = useState<Field | undefined>(
-    selectedField
-  );
 
   const navigate = useNavigate();
 
@@ -266,27 +261,16 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
                 showLength: true,
               },
             }}
-            onEdited={(e) => {
-              console.log("edited", e);
-            }}
-            onEditMove={(e) => {
-              console.log("editmove", e);
-            }}
-            onEditStart={(e) => {
-              console.log("editstart", e);
-            }}
-            onEditStop={(e) => {
-              console.log("editstop", e);
-            }}
             // onEditVertex={onFieldEdit}
             onEditVertex={(e) => {
               if (action === "edit") {
                 const polygon = "poly" in e ? e.poly : e.layer;
                 const coordinates = getCoodinatesFromPolygon(polygon);
                 dispatch(
+                  // Nothing else except Polygon is supported
                   setEditLocalFieldGeometry({
-                    type: editFieldGeometry?.type || "Polygon",
-                    coordinates,
+                    type: "Polygon",
+                    coordinates: [...coordinates],
                   })
                 );
               } else {
@@ -303,19 +287,14 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
               }
             }}
           />
-          {action === "edit" && editFieldGeometry && (
+          {action === "edit" && selectedField && (
             <Polygon
-              positions={editFieldGeometry.coordinates[0]}
+              positions={selectedField.geometry.coordinates[0]}
               pathOptions={{
                 color: "blue",
                 weight: 3,
                 opacity: 0.6,
                 fillOpacity: 0,
-              }}
-              eventHandlers={{
-                click: () => {},
-                mouseover: () => {},
-                mouseout: () => {},
               }}
             />
           )}

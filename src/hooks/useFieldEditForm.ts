@@ -94,7 +94,7 @@ const useFieldEditForm = (field: z.infer<typeof FormSchema>) => {
       }
       const newField = {
         ...data,
-        color: "pink",
+        color: data.color || "",
       };
       fieldMutation.mutate(newField);
     },
