@@ -16,6 +16,7 @@ import {
 import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
+import { ImageOverlay } from "react-leaflet/ImageOverlay";
 import { Field, FieldCoordinates, FieldGeometry, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
@@ -100,7 +101,8 @@ const getCoodinatesFromPolygon = (
 
 const FieldsMap = memo(({ className, ...props }: MapProps) => {
   const MapRef = useRef<Map>(null);
-  const TargetPolygonRef = useRef<LeafletPolygon>(null);
+  const HoveredPolygonRef = useRef<LeafletPolygon>(null);
+  const SelectedPolygonRef = useRef<LeafletPolygon>(null);
   const { action } = useURLParametersParser();
 
   const mapCenter = useAppSelector(selectCenter);
@@ -149,11 +151,21 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
   // Zooms to selected field
   useEffect(() => {
     const Map = MapRef.current;
-    const Polygon = TargetPolygonRef.current;
+    const Polygon = HoveredPolygonRef.current;
     if (Map && Polygon && selectedFieldId) {
-      Map.flyToBounds(Polygon.getBounds(), { duration: 1, maxZoom: 14 });
+      Map.invalidateSize();
+      Map.flyToBounds(Polygon.getBounds(), { duration: 0.5, maxZoom: 14 });
     }
   }, [selectedFieldId]);
+
+  useEffect(() => {
+    const Map = MapRef.current;
+    SelectedPolygonRef.current?.getBounds();
+    // console.log(Map);
+
+    // var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+    // imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
+  }, [SelectedPolygonRef.current]);
 
   // Triggers polygon drawing on "add" action
   useEffect(() => {
@@ -216,13 +228,20 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
       <LayerGroup>
         {fields.map((field: Field) => {
           const isSelected = selectedFieldId === field.id;
+          const isHovered = hoveredFieldId === field.id;
           const isSelectedOrHoveredField =
             isSelected || hoveredFieldId === field.id;
           return (
             <Polygon
               key={field.id}
               positions={[field.geometry.coordinates[0]]}
-              ref={isSelectedOrHoveredField ? TargetPolygonRef : null}
+              ref={
+                isHovered
+                  ? HoveredPolygonRef
+                  : isSelected
+                  ? SelectedPolygonRef
+                  : undefined
+              }
               pathOptions={{
                 color: isSelectedOrHoveredField ? "white" : field.color,
                 weight: isSelectedOrHoveredField ? 3 : 1,
@@ -245,6 +264,15 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
             />
           );
         })}
+      </LayerGroup>
+      <LayerGroup>
+        {selectedField?.id === "1" &&
+          selectedField?.geometry.coordinates[0] && (
+            <ImageOverlay
+              bounds={selectedField?.geometry.coordinates[0]}
+              url="https://platform-api.onesoil.ai/en/v2/fields-users-seasons-ndvi/64b88415-c2f5-4f24-95f3-650b4e7e4f4d/rgb.png"
+            />
+          )}
       </LayerGroup>
       {(action === "add" || action === "edit") && (
         <FeatureGroup>

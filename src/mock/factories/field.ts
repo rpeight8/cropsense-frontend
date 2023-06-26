@@ -5,17 +5,9 @@ import { generatePolygon } from "../utils/generators";
 
 import { Field } from "../../types";
 
-const unique = "KEKID";
-let taken = false;
-
 export const fieldFactory = Factory.extend<Field>({
   id() {
-    if (taken) {
-      return faker.string.uuid();
-    } else {
-      taken = true;
-      return unique;
-    }
+    return faker.string.uuid();
   },
   name() {
     return `${faker.company.buzzAdjective()} Field`;

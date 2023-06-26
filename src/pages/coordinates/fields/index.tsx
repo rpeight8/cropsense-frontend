@@ -26,6 +26,7 @@ import {
   setMapCoordinates,
   setZoom,
 } from "@/features/map/mapSlice";
+import NDVISelector from "@/components/NDVISelector";
 
 const Fields = () => {
   const navigate = useNavigate();
@@ -111,7 +112,8 @@ const Fields = () => {
   return (
     <>
       <FieldsSideBar className="w-[200px]" />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
+        <NDVISelector className="absolute z-[450] w-full" />
         <FieldsMap
           className="flex-1"
           initialZoom={initialZoom}

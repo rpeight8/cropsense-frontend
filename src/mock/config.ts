@@ -4,6 +4,8 @@ import { faker } from "@faker-js/faker";
 import { endpoints } from "./endpoints";
 import { models } from "./models";
 import { factories } from "./factories";
+import getFields from "./data/fields";
+import { getNDVI } from "./data/ndvi";
 
 export function startMirage() {
   const server = createServer({
@@ -11,7 +13,13 @@ export function startMirage() {
     models,
     factories,
     seeds(server) {
-      server.createList("field", faker.number.int({ min: 5, max: 8 }));
+      getFields().forEach((field) => {
+        server.create("field", field);
+      });
+      getNDVI().forEach((ndvi) => {
+        server.create("ndvi", ndvi);
+      });
+      // server.createList("field", faker.number.int({ min: 5, max: 8 }));
     },
   });
   // logging

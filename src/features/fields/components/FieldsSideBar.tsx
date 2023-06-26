@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 type FieldsSideBarProps = ComponentPropsWithoutRef<"aside">;
 
 const FieldsSideBar = ({ className }: FieldsSideBarProps) => {
-  const fields = useAppSelector(selectFields);
   const { action } = useURLParametersParser();
 
   return (

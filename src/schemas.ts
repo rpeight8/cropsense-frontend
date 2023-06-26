@@ -50,7 +50,6 @@ export const CoordinatesSchema = z.tuple([
 
 export const ZoomSchema = z.number().min(3).max(20);
 
-type FieldAction = (typeof fieldActions)[number];
 export const FieldActionsSchema = z
   .union([
     z.literal(fieldActions[0]),
@@ -58,8 +57,24 @@ export const FieldActionsSchema = z
     z.literal(fieldActions[2]),
     z.literal(fieldActions[3]),
   ])
-  .refine((value: FieldAction) => fieldActions.includes(value), {
-    message: "Invalid field action value",
-  });
+  .refine(
+    (value: (typeof fieldActions)[number]) => fieldActions.includes(value),
+    {
+      message: "Invalid field action value",
+    }
+  );
+
+export const NDVISchema = z.object({
+  id: z.string(),
+  fieldId: z.string(),
+  date: z.string(),
+  pictureURL: z.string(),
+});
+
+export const NDVIDateSchema = z.object({
+  date: z.string(),
+  NDVIId: z.string(),
+  type: z.string(),
+});
 
 export const FieldsSchema = z.array(FieldSchema);

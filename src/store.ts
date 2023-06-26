@@ -3,11 +3,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import fieldsReducer from "@/features/fields/fieldsSlice";
 import mapReducer from "@/features/map/mapSlice";
+import ndviReducer from "@/features/ndvi/ndviSlice";
 
 const store = configureStore({
   reducer: {
     fields: fieldsReducer,
     map: mapReducer,
+    ndvi: ndviReducer,
   },
 });
 

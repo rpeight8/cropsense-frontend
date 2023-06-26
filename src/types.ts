@@ -16,3 +16,6 @@ export type Zoom = z.infer<typeof Schemas.ZoomSchema>;
 export type FieldAction = (typeof Schemas.fieldActions)[number];
 
 export type FieldId = Field["id"];
+
+export type NDVI = z.infer<typeof Schemas.NDVISchema>;
+export type NDVIDate = z.infer<typeof Schemas.NDVIDateSchema>;
