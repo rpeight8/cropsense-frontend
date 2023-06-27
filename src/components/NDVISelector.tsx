@@ -1,22 +1,39 @@
-import { cn } from "@/lib/utils";
+import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
 import { ComponentPropsWithoutRef } from "react";
 import List from "@/components//ui/List/List";
+import { useAppSelector } from "@/store";
+import { selectNDVIByFieldId } from "@/features/ndvi/ndviSlice";
+import { FieldId } from "@/types";
 
 type NDVISelectorProps = ElementProps<typeof ScrollArea> &
-  ComponentPropsWithoutRef<"div">;
+  ComponentPropsWithoutRef<"div"> & {
+    fieldId: FieldId;
+  };
 
-const NDVISelector = ({ className }: NDVISelectorProps) => {
+const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
+  const NDVIs = useAppSelector((state) => selectNDVIByFieldId(state, fieldId));
+
+  const dateItems =
+    NDVIs &&
+    NDVIs.length &&
+    NDVIs.map((NDVI) => ({
+      id: NDVI.id,
+      title: japaneseDateToShortDate(NDVI.date),
+    }));
+
   return (
-    <div
-      className={cn(
-        "flex justify-center border border-indigo-500",
-        {},
-        className
-      )}
-    >
-      <ScrollArea className="w-full h-full rounded-md border">
-        {/* <List items /> */}
+    <div className={cn("flex justify-center h-[40px]", {}, className)}>
+      <ScrollArea className="w-3/4 rounded-md bg-primary">
+        {dateItems && dateItems.length && (
+          <List
+            className="flex gap-x-7 justify-center"
+            items={dateItems}
+            renderItem={(item) => {
+              return <div key={item.id}>{item.title}</div>;
+            }}
+          />
+        )}
         <ScrollBar
           forceMount={true}
           orientation="horizontal"

@@ -5,6 +5,7 @@ import {
   useRef,
   useCallback,
   useState,
+  useMemo,
 } from "react";
 import {
   MapContainer,
@@ -38,6 +39,7 @@ import {
 } from "@/features/map/mapSlice";
 import { useNavigate } from "react-router-dom";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
+import { selectNDVIByFieldId } from "@/features/ndvi/ndviSlice";
 
 type EditControlProps = ElementProps<typeof EditControl>;
 
@@ -115,6 +117,12 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
   const hoveredFieldId = useAppSelector(selectHoveredFieldId);
   const selectedField = fields.find((field) => field.id === selectedFieldId);
 
+  const NDVIs = useAppSelector((state) =>
+    selectNDVIByFieldId(state, selectedFieldId || "")
+  );
+
+  const selectedNDVIDate = "20230417";
+
   const navigate = useNavigate();
 
   const onMapCoordinatesChange = useCallback(
@@ -147,6 +155,12 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
     },
     [dispatch]
   );
+
+  const selectedNDVI = useMemo(() => {
+    if (NDVIs && NDVIs.length > 0 && selectedNDVIDate) {
+      return NDVIs.find((ndvi) => ndvi.date === selectedNDVIDate);
+    }
+  }, [NDVIs, selectedNDVIDate]);
 
   // Zooms to selected field
   useEffect(() => {
@@ -245,8 +259,8 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
               pathOptions={{
                 color: isSelectedOrHoveredField ? "white" : field.color,
                 weight: isSelectedOrHoveredField ? 3 : 1,
-                fillColor: field.color,
-                opacity: isSelected && action === "edit" ? 0.3 : 0.6,
+                fillColor: selectedNDVI && isSelected ? "none" : field.color,
+                opacity: isSelected && action === "edit" ? 0.5 : 1,
                 fillOpacity: isSelected && action === "edit" ? 0.3 : 0.6,
               }}
               eventHandlers={{
@@ -266,11 +280,13 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
         })}
       </LayerGroup>
       <LayerGroup>
-        {selectedField?.id === "1" &&
+        {action !== "edit" &&
+          action !== "add" &&
+          selectedNDVI &&
           selectedField?.geometry.coordinates[0] && (
             <ImageOverlay
               bounds={selectedField?.geometry.coordinates[0]}
-              url="https://platform-api.onesoil.ai/en/v2/fields-users-seasons-ndvi/64b88415-c2f5-4f24-95f3-650b4e7e4f4d/rgb.png"
+              url={selectedNDVI.pictureURL}
             />
           )}
       </LayerGroup>

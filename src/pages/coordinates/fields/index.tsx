@@ -27,6 +27,7 @@ import {
   setZoom,
 } from "@/features/map/mapSlice";
 import NDVISelector from "@/components/NDVISelector";
+import { useNDVI } from "@/services/ndvi";
 
 const Fields = () => {
   const navigate = useNavigate();
@@ -45,6 +46,8 @@ const Fields = () => {
   const mapZoom = useAppSelector(selectZoom);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const dispatch = useAppDispatch();
+
+  const { isLoading } = useNDVI(selectedFieldId);
 
   // Validate url params
   useEffect(() => {
@@ -113,7 +116,12 @@ const Fields = () => {
     <>
       <FieldsSideBar className="w-[200px]" />
       <div className="flex-1 flex flex-col relative">
-        <NDVISelector className="absolute z-[450] w-full" />
+        {fieldId && (
+          <NDVISelector
+            className="absolute z-[450] w-full flex-shrink"
+            fieldId={fieldId}
+          />
+        )}
         <FieldsMap
           className="flex-1"
           initialZoom={initialZoom}

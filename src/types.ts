@@ -18,4 +18,8 @@ export type FieldAction = (typeof Schemas.fieldActions)[number];
 export type FieldId = Field["id"];
 
 export type NDVI = z.infer<typeof Schemas.NDVISchema>;
+export type NDVIs = z.infer<typeof Schemas.NDVIsSchema>;
 export type NDVIDate = z.infer<typeof Schemas.NDVIDateSchema>;
+export type NDVIByFieldId = {
+  [key: FieldId]: NDVIs;
+};

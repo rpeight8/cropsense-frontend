@@ -1,16 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { FieldId, NDVI } from "@/types";
+import { FieldId, NDVI, NDVIByFieldId, NDVIs } from "@/types";
 
-type NDVIByFieldId = {
-  [key: FieldId]: NDVI;
-};
 type NDVIState = {
-  ndvi: {
-    [key: string]: NDVI;
-  };
+  ndvi: NDVIByFieldId;
 };
 
 const initialState: NDVIState = {
@@ -30,7 +25,8 @@ export const ndviSlice = createSlice({
 export const { set } = ndviSlice.actions;
 
 export const selectNDVI = (state: RootState) => state.ndvi;
-export const selectNDVIByFieldId = (state: RootState, fieldId: FieldId) =>
-  state.ndvi.ndvi[fieldId];
-
+export const selectNDVIByFieldId = createSelector(
+  [(state) => state.ndvi.ndvi, (_: RootState, fieldId: FieldId) => fieldId],
+  (ndvi, fieldId): NDVIs => ndvi[fieldId]
+);
 export default ndviSlice.reducer;

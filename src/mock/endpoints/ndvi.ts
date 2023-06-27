@@ -9,7 +9,8 @@ export function routesForNDVI(server: Server) {
   });
 
   server.get(`/ndvi/:fieldId`, (schema: AppSchema, request) => {
-    const NDVI = schema.findBy("ndvi", { fieldId: request.params.id }) || [];
+    const NDVI =
+      schema.where("ndvi", { fieldId: request.params.fieldId }) || [];
     return new Response(200, {}, NDVI);
   });
 }
