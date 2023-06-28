@@ -1,6 +1,6 @@
-import { CoordinatesSchema, FieldActionsSchema, ZoomSchema } from "@/schemas";
+import { CoordinatesSchema, ZoomSchema } from "@/schemas/map";
+import { FieldActionsSchema } from "@/schemas/field";
 import { Coordinates, FieldAction, Zoom } from "@/types";
-import { de } from "@faker-js/faker";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 

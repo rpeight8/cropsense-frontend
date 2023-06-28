@@ -260,9 +260,10 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
                   : undefined
               }
               pathOptions={{
-                color: isSelectedOrHoveredField ? "white" : field.color,
+                color: isSelectedOrHoveredField ? "white" : field?.crop?.color,
                 weight: isSelectedOrHoveredField ? 3 : 1,
-                fillColor: selectedNDVI && isSelected ? "none" : field.color,
+                fillColor:
+                  selectedNDVI && isSelected ? "none" : field?.crop?.color,
                 opacity: isSelected && action === "edit" ? 0.5 : 1,
                 fillOpacity: isSelected && action === "edit" ? 0.3 : 0.6,
               }}

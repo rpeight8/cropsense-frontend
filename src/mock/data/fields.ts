@@ -5,7 +5,11 @@ const getFields = (): Field[] => {
     {
       id: "1",
       name: "Сойки 1",
-      color: "skyblue",
+      crop: {
+        id: "1",
+        name: "Пшеница",
+        color: "green",
+      },
       geometry: {
         type: "Polygon",
         coordinates: [
@@ -44,7 +48,11 @@ const getFields = (): Field[] => {
     {
       id: "2",
       name: "Сойки 2",
-      color: "lightyellow",
+      crop: {
+        id: "2",
+        name: "Ячмень",
+        color: "yellow",
+      },
       geometry: {
         type: "Polygon",
         coordinates: [
@@ -82,7 +90,6 @@ const getFields = (): Field[] => {
     {
       id: "3",
       name: "Науховичи 1",
-      color: "lightgreen",
       geometry: {
         type: "Polygon",
         coordinates: [

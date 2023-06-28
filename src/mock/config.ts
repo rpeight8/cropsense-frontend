@@ -6,6 +6,7 @@ import { models } from "./models";
 import { factories } from "./factories";
 import getFields from "./data/fields";
 import { getNDVI } from "./data/ndvi";
+import { getCrops } from "./data/crops";
 
 export function startMirage() {
   const server = createServer({
@@ -18,6 +19,9 @@ export function startMirage() {
       });
       getNDVI().forEach((ndvi) => {
         server.create("ndvi", ndvi);
+      });
+      getCrops().forEach((crop) => {
+        server.create("crop", crop);
       });
       // server.createList("field", faker.number.int({ min: 5, max: 8 }));
     },

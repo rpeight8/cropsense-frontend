@@ -5,7 +5,8 @@ import { z } from "zod";
 import { useMutateField } from "@/services/fields";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FieldGeometrySchema } from "@/schemas";
+import { CropSchema } from "@/schemas/crop";
+import { FieldGeometrySchema } from "@/schemas/field";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectEditLocalFieldGeometry,
@@ -17,7 +18,7 @@ export const FormSchema = z.object({
     message: "Field name must be at least 1 characters.",
   }),
   geometry: FieldGeometrySchema,
-  crops: z.array(z.string()).optional(),
+  crop: CropSchema.optional(),
   color: z.string().optional(),
   id: z.string(),
 });

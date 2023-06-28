@@ -26,7 +26,11 @@ export const fieldFactory = Factory.extend<Field>({
       coordinates: [generatePolygon(minLat, maxLat, minLng, maxLng), []],
     };
   },
-  color() {
-    return faker.color.human();
+  crop() {
+    return {
+      id: faker.string.uuid(),
+      name: faker.commerce.productName(),
+      color: faker.internet.color(),
+    };
   },
 });

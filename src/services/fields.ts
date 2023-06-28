@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Field, FieldForCreation, FieldForUpdate, FieldId } from "@/types";
-import { FieldSchema, FieldsSchema } from "@/schemas";
+import { FieldSchema, FieldsSchema } from "@/schemas/field";
 
 import { useAppDispatch } from "@/store";
 import { set } from "@/features/fields/fieldsSlice";
