@@ -28,6 +28,10 @@ import {
 } from "@/features/map/mapSlice";
 import NDVISelector from "@/components/NDVISelector";
 import { useNDVI } from "@/services/ndvi";
+import {
+  selectSelectedNDVIId,
+  setSelectedNDVIId,
+} from "@/features/ndvi/ndviSlice";
 
 const Fields = () => {
   const navigate = useNavigate();
@@ -46,8 +50,6 @@ const Fields = () => {
   const mapZoom = useAppSelector(selectZoom);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const dispatch = useAppDispatch();
-
-  const { isLoading } = useNDVI(selectedFieldId);
 
   // Validate url params
   useEffect(() => {

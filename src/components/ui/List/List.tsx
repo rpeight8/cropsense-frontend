@@ -11,9 +11,13 @@ type ListProps<T> = {
 const List = <T,>({ items, renderItem, className, ...props }: ListProps<T>) => {
   return (
     <ScrollArea className="h-full">
-      <ul className={cn("p-2", className)} {...props}>
-        {items.map(renderItem)}
-      </ul>
+      {(items && items.length && (
+        <ul className={cn("p-2", className)} {...props}>
+          {items.map(renderItem)}
+        </ul>
+      )) || (
+        <div className="flex justify-center items-center h-full">No data</div>
+      )}
     </ScrollArea>
   );
 };

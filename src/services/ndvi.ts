@@ -3,9 +3,11 @@ import { useAppDispatch } from "@/store";
 import { FieldId, NDVI, NDVIByFieldId } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { set } from "@/features/ndvi/ndviSlice";
+import { useToast } from "@/components/ui/Toast/useToast";
 
 export const useNDVI = (fieldId: FieldId = "") => {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
   return useQuery<NDVI[], Error>(
     ["ndvi", fieldId],
@@ -33,6 +35,11 @@ export const useNDVI = (fieldId: FieldId = "") => {
         return ndvis;
       } catch (error: unknown) {
         console.log(error);
+        toast({
+          title: "Error fetching ndvi.",
+          description: "Please try again later.",
+          variant: "destructive",
+        });
         throw new Error("Error fetching ndvi.");
       }
     },

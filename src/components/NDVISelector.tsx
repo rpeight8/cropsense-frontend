@@ -1,6 +1,6 @@
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useEffect } from "react";
 import List from "@/components//ui/List/List";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -10,6 +10,8 @@ import {
 } from "@/features/ndvi/ndviSlice";
 import { FieldId } from "@/types";
 import NDVIDateButton from "@/components/NDVIDateButton";
+import { useNDVI } from "@/services/ndvi";
+import NDVIDatesList from "./NDVIDatesList/NDVIDatesList";
 
 type NDVISelectorProps = ElementProps<typeof ScrollArea> &
   ComponentPropsWithoutRef<"div"> & {
@@ -17,50 +19,17 @@ type NDVISelectorProps = ElementProps<typeof ScrollArea> &
   };
 
 const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
-  const NDVIs = useAppSelector((state) => selectNDVIByFieldId(state, fieldId));
-  const dispatch = useAppDispatch();
-  const selectedNDVIId = useAppSelector(selectSelectedNDVIId);
-
-  const dateItems =
-    NDVIs &&
-    NDVIs.length &&
-    NDVIs.map((NDVI) => ({
-      id: NDVI.id,
-      title: japaneseDateToShortDate(NDVI.date),
-    }));
-
-  if (!selectedNDVIId) {
-    if (dateItems && dateItems.length)
-      dispatch(setSelectedNDVIId(dateItems[dateItems.length - 1].id));
-  } else {
-    if (dateItems && dateItems.length) {
-      const selectedNDVI = dateItems.find((item) => item.id === selectedNDVIId);
-      if (!selectedNDVI)
-        dispatch(setSelectedNDVIId(dateItems[dateItems.length - 1].id));
-    } else {
-      dispatch(setSelectedNDVIId(undefined));
-    }
-  }
+  const { isLoading, isError, isFetching } = useNDVI(fieldId);
 
   return (
     <div className={cn("flex justify-center h-auto", {}, className)}>
-      <ScrollArea className="w-3/4 rounded-md bg-primary">
-        {dateItems && dateItems.length && (
-          <List
-            className="flex gap-x-3 justify-center"
-            items={dateItems}
-            renderItem={(item) => {
-              return (
-                <NDVIDateButton
-                  date={item.title}
-                  onClick={() => dispatch(setSelectedNDVIId(item.id))}
-                  selected={item.id === selectedNDVIId}
-                  key={item.id}
-                >
-                  {item.title}
-                </NDVIDateButton>
-              );
-            }}
+      <ScrollArea className="w-3/4 rounded-md bg-primary px-3">
+        {!isError && (
+          <NDVIDatesList
+            fieldId={fieldId}
+            isLoading={isLoading || isFetching}
+            isError={isError}
+            className="flex"
           />
         )}
         <ScrollBar
