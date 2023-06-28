@@ -2,9 +2,14 @@ import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
 import { ComponentPropsWithoutRef } from "react";
 import List from "@/components//ui/List/List";
-import { useAppSelector } from "@/store";
-import { selectNDVIByFieldId } from "@/features/ndvi/ndviSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  selectNDVIByFieldId,
+  selectSelectedNDVIId,
+  setSelectedNDVIId,
+} from "@/features/ndvi/ndviSlice";
 import { FieldId } from "@/types";
+import NDVIDateButton from "@/components/NDVIDateButton";
 
 type NDVISelectorProps = ElementProps<typeof ScrollArea> &
   ComponentPropsWithoutRef<"div"> & {
@@ -13,6 +18,8 @@ type NDVISelectorProps = ElementProps<typeof ScrollArea> &
 
 const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
   const NDVIs = useAppSelector((state) => selectNDVIByFieldId(state, fieldId));
+  const dispatch = useAppDispatch();
+  const selectedNDVIId = useAppSelector(selectSelectedNDVIId);
 
   const dateItems =
     NDVIs &&
@@ -22,15 +29,37 @@ const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
       title: japaneseDateToShortDate(NDVI.date),
     }));
 
+  if (!selectedNDVIId) {
+    if (dateItems && dateItems.length)
+      dispatch(setSelectedNDVIId(dateItems[dateItems.length - 1].id));
+  } else {
+    if (dateItems && dateItems.length) {
+      const selectedNDVI = dateItems.find((item) => item.id === selectedNDVIId);
+      if (!selectedNDVI)
+        dispatch(setSelectedNDVIId(dateItems[dateItems.length - 1].id));
+    } else {
+      dispatch(setSelectedNDVIId(undefined));
+    }
+  }
+
   return (
-    <div className={cn("flex justify-center h-[40px]", {}, className)}>
+    <div className={cn("flex justify-center h-auto", {}, className)}>
       <ScrollArea className="w-3/4 rounded-md bg-primary">
         {dateItems && dateItems.length && (
           <List
-            className="flex gap-x-7 justify-center"
+            className="flex gap-x-3 justify-center"
             items={dateItems}
             renderItem={(item) => {
-              return <div key={item.id}>{item.title}</div>;
+              return (
+                <NDVIDateButton
+                  date={item.title}
+                  onClick={() => dispatch(setSelectedNDVIId(item.id))}
+                  selected={item.id === selectedNDVIId}
+                  key={item.id}
+                >
+                  {item.title}
+                </NDVIDateButton>
+              );
             }}
           />
         )}

@@ -39,7 +39,10 @@ import {
 } from "@/features/map/mapSlice";
 import { useNavigate } from "react-router-dom";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
-import { selectNDVIByFieldId } from "@/features/ndvi/ndviSlice";
+import {
+  selectNDVIByFieldId,
+  selectSelectedNDVIId,
+} from "@/features/ndvi/ndviSlice";
 
 type EditControlProps = ElementProps<typeof EditControl>;
 
@@ -121,7 +124,7 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
     selectNDVIByFieldId(state, selectedFieldId || "")
   );
 
-  const selectedNDVIDate = "20230417";
+  const selectedNDVIId = useAppSelector(selectSelectedNDVIId);
 
   const navigate = useNavigate();
 
@@ -157,10 +160,10 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
   );
 
   const selectedNDVI = useMemo(() => {
-    if (NDVIs && NDVIs.length > 0 && selectedNDVIDate) {
-      return NDVIs.find((ndvi) => ndvi.date === selectedNDVIDate);
+    if (NDVIs && NDVIs.length > 0 && selectedNDVIId) {
+      return NDVIs.find((ndvi) => ndvi.id === selectedNDVIId);
     }
-  }, [NDVIs, selectedNDVIDate]);
+  }, [NDVIs, selectedNDVIId]);
 
   // Zooms to selected field
   useEffect(() => {

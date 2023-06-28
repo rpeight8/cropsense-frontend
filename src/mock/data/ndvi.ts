@@ -36,7 +36,7 @@ const getNDVI = (): NDVI[] => {
       date: "20230417",
       pictureURL: "https://iili.io/HPPWLOv.png",
     },
-  ];
+  ].reverse();
 };
 
 export { getNDVIDates, getNDVI };
