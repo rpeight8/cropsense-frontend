@@ -24,5 +24,5 @@ export const cropsSlice = createSlice({
 
 export const { set } = cropsSlice.actions;
 
-export const selectCrops = (state: RootState) => state.crops;
+export const selectCrops = (state: RootState) => state.crops.crops;
 export default cropsSlice.reducer;

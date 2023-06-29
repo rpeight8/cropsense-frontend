@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/hooks/useFieldAddForm";
 import { ComponentPropsWithoutRef, useEffect } from "react";
+import CropSelect from "@/features/crops/components/CropSelect";
+import { useCrops } from "@/services/crops";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;
 
 const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
-  const navigate = useNavigate();
   const {
     form,
     isError,
@@ -28,9 +29,17 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
     error,
     onSubmit,
     onCancel,
-    newField,
     onErrors,
   } = useFieldAddForm();
+
+  const {
+    isLoading: isLoadingCrops,
+    isFetching: isFetchingCrops,
+    isError: isErrorCrops,
+    isSuccess: isSuccessCrops,
+    error: errorCrops,
+    data: crops,
+  } = useCrops();
 
   return (
     <Form {...form}>
@@ -44,10 +53,29 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
             control={form.control}
             name="name"
             render={({ field }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Field Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="field name" {...field} />
+                  </FormControl>
+                  <FormDescription>Field information</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="crop"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Field Name</FormLabel>
+                <FormLabel>Crop</FormLabel>
                 <FormControl>
-                  <Input placeholder="field name" {...field} />
+                  <CropSelect
+                    isLoading={isLoadingCrops || isFetchingCrops}
+                    onValueChange={field.onChange}
+                  />
                 </FormControl>
                 <FormDescription>Field information</FormDescription>
                 <FormMessage />

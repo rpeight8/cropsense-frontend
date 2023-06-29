@@ -1,5 +1,5 @@
 import { Outlet, useParams } from "react-router-dom";
-import Map from "@/components/FieldsMap";
+import Map from "@/features/fields/components/FieldsMap";
 import { FieldAction } from "@/types";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";

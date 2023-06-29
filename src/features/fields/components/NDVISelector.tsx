@@ -9,9 +9,9 @@ import {
   setSelectedNDVIId,
 } from "@/features/ndvi/ndviSlice";
 import { FieldId } from "@/types";
-import NDVIDateButton from "@/components/NDVIDateButton";
+import NDVIDateButton from "@/features/fields/components/NDVIDateButton";
 import { useNDVI } from "@/services/ndvi";
-import NDVIDatesList from "./NDVIDatesList/NDVIDatesList";
+import NDVIDatesList from "./NDVIDatesList";
 
 type NDVISelectorProps = ElementProps<typeof ScrollArea> &
   ComponentPropsWithoutRef<"div"> & {

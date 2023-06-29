@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 import { CropSchema } from "./crop";
 import { CoordinatesSchema } from "./map";
 
@@ -22,12 +22,12 @@ export const FieldSchema = z.object({
   crop: CropSchema.optional(),
 });
 
-export const FieldForCreationSchema = FieldSchema.omit({
-  id: true,
+export const FieldForCreationSchema = FieldSchema.omit({ id: true }).extend({
+  crop: string().optional(),
 });
 
-export const FieldForUpdateSchema = FieldSchema.omit({
-  id: true,
+export const FieldForUpdateSchema = FieldSchema.omit({ id: true }).extend({
+  crop: string().optional(),
 });
 
 export const fieldAddAction = "add" as const;

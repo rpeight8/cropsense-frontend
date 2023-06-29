@@ -8,7 +8,7 @@ import {
 import { useAppSelector } from "@/store";
 
 import List from "@/components/ui/List/List";
-import FieldListItem from "@/components/FieldsList/FieldListItem";
+import FieldListItem from "@/features/fields/components/FieldsList/FieldListItem";
 import { FieldId } from "@/types";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";

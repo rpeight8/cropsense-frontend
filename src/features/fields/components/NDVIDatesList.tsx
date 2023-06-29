@@ -6,7 +6,7 @@ import {
 import List from "@/components/ui/List/List";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { FieldId } from "@/types";
-import NDVIDateButton from "../NDVIDateButton";
+import NDVIDateButton from "./NDVIDateButton";
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { Component, ComponentPropsWithoutRef } from "react";
 

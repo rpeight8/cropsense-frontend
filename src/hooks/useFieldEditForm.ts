@@ -18,7 +18,7 @@ export const FormSchema = z.object({
     message: "Field name must be at least 1 characters.",
   }),
   geometry: FieldGeometrySchema,
-  crop: CropSchema.optional(),
+  crop: z.string().optional(),
   color: z.string().optional(),
   id: z.string(),
 });

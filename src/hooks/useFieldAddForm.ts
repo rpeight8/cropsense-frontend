@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, FormProvider, set, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
-import { z } from "zod";
+import { string, z } from "zod";
 import { useMutateNewField } from "@/services/fields";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ export const FormSchema = z.object({
     message: "Field name must be at least 1 characters.",
   }),
   geometry: FieldGeometrySchema,
-  crop: CropSchema.optional(),
+  crop: string().optional(),
 });
 
 const useFieldAddForm = () => {
@@ -34,7 +34,7 @@ const useFieldAddForm = () => {
         type: "Polygon",
         coordinates: [],
       },
-      crop: {},
+      crop: undefined,
     },
     resolver: zodResolver(FormSchema),
   });
@@ -67,7 +67,7 @@ const useFieldAddForm = () => {
         description: "Field was successfully created.",
       });
       form.reset();
-      navigate(respData ? `${respData.id}/display` : "/fields");
+      navigate("fields");
     },
     [form, navigate, toast]
   );
@@ -100,6 +100,8 @@ const useFieldAddForm = () => {
 
   const onFormSubmit = useCallback(
     (data: z.infer<typeof FormSchema>) => {
+      // debugger;
+      // return;
       const newField = {
         ...data,
         color: "pink",
@@ -111,7 +113,7 @@ const useFieldAddForm = () => {
 
   const onFormCancel = useCallback(() => {
     form.reset();
-    navigate(-1);
+    navigate("fields");
   }, [form, navigate]);
 
   return {

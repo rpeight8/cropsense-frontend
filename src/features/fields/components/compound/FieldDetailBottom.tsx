@@ -1,5 +1,5 @@
-import EditFieldButton from "@/components/FieldEditButton";
-import FieldEditForm from "@/components/FieldEditForm";
+import EditFieldButton from "@/features/fields/components/FieldEditButton";
+import FieldEditForm from "@/features/fields/components/FieldEditForm";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store";

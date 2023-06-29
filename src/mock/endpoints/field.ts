@@ -14,6 +14,13 @@ export function routesForFields(server: Server) {
 
   server.post(`/fields`, (schema: AppSchema, request) => {
     const attrs = JSON.parse(request.requestBody);
+    if (attrs.crop) {
+      const crop = schema.find("crop", attrs.crop);
+      if (!crop) {
+        return new Response(404, {}, { error: true });
+      }
+      attrs.crop = crop.attrs;
+    }
     const field = schema.create("field", attrs);
     return new Response(200, {}, field);
   });
@@ -22,7 +29,7 @@ export function routesForFields(server: Server) {
     const attrs = JSON.parse(request.requestBody);
     const id = request.params.id;
     const field = schema.find("field", id);
-    
+
     if (!field) {
       return new Response(404, {}, { error: true });
     }

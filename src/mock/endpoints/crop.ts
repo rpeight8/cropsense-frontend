@@ -2,7 +2,7 @@ import { Response, Server } from "miragejs";
 
 import { AppSchema } from "../types";
 
-export function routesForNDVI(server: Server) {
+export function routesForCrops(server: Server) {
   server.get(`/crops`, (schema: AppSchema) => {
     const crops = schema.all("crop");
     return new Response(200, {}, crops);

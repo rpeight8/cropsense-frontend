@@ -7,9 +7,9 @@ import {
 } from "react-router-dom";
 
 import { useFields } from "@/services/fields";
-import FieldsSideBar from "@/features/fields/components/FieldsSideBar";
-import FieldsMap from "@/components/FieldsMap";
-import FieldsDetailBottom from "@/features/fields/components/FieldDetailBottom";
+import FieldsSideBar from "@/features/fields/components/compound/FieldsSideBar";
+import FieldsMap from "@/features/fields/components/FieldsMap";
+import FieldsDetailBottom from "@/features/fields/components/compound/FieldDetailBottom";
 import { useEffect } from "react";
 import {
   selectFieldId,
@@ -26,7 +26,7 @@ import {
   setMapCoordinates,
   setZoom,
 } from "@/features/map/mapSlice";
-import NDVISelector from "@/components/NDVISelector";
+import NDVISelector from "@/features/fields/components/NDVISelector";
 import { useNDVI } from "@/services/ndvi";
 import {
   selectSelectedNDVIId,
@@ -44,6 +44,7 @@ const Fields = () => {
     fieldId,
   } = useURLParametersParser();
   const { isLoading: isLoadingFields, isError } = useFields();
+  
   const fields = useAppSelector(selectFields);
 
   const mapCenter = useAppSelector(selectCenter);

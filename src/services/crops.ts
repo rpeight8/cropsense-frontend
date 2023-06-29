@@ -4,11 +4,11 @@ import { useAppDispatch } from "@/store";
 import { Crops } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFields = () => {
+export const useCrops = () => {
   const dispatch = useAppDispatch();
 
   return useQuery<Crops, Error>(
-    ["fields"],
+    ["crops"],
     async (): Promise<Crops> => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/crops`);
