@@ -67,7 +67,7 @@ const useFieldAddForm = () => {
         description: "Field was successfully created.",
       });
       form.reset();
-      navigate("fields");
+      navigate("");
     },
     [form, navigate, toast]
   );
@@ -113,7 +113,7 @@ const useFieldAddForm = () => {
 
   const onFormCancel = useCallback(() => {
     form.reset();
-    navigate("fields");
+    navigate("");
   }, [form, navigate]);
 
   return {
