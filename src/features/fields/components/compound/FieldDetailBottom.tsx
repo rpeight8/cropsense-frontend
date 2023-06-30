@@ -24,7 +24,12 @@ const FieldsDetailBottom = () => {
       )}
     >
       {(action === "edit" && selectedField && (
-        <FieldEditForm field={selectedField} />
+        <FieldEditForm
+          field={{
+            ...selectedField,
+            crop: selectedField?.crop?.id,
+          }}
+        />
       )) ||
         (action === "display" && (
           <>

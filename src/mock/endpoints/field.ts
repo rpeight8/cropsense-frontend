@@ -30,6 +30,14 @@ export function routesForFields(server: Server) {
     const id = request.params.id;
     const field = schema.find("field", id);
 
+    if (attrs.crop) {
+      const crop = schema.find("crop", attrs.crop);
+      if (!crop) {
+        return new Response(404, {}, { error: true });
+      }
+      attrs.crop = crop.attrs;
+    }
+
     if (!field) {
       return new Response(404, {}, { error: true });
     }

@@ -2,34 +2,50 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
 import { useAppSelector } from "@/store";
 import { selectCrops } from "@/features/crops/cropsSlice";
+import { SelectGroup } from "@radix-ui/react-select";
 
 type CropSelectProps = ElementProps<typeof Select> & {
   isLoading?: boolean;
+  initialCropId?: string;
+  displayNone?: boolean;
 };
 
-const CropSelect = ({ isLoading, ...props }: CropSelectProps) => {
+const CropSelect = ({
+  isLoading,
+  initialCropId,
+  displayNone,
+  ...props
+}: CropSelectProps) => {
   const crops = useAppSelector(selectCrops);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Select {...props}>
+    <Select value={initialCropId} {...props}>
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Select a crop" />
       </SelectTrigger>
       <SelectContent>
-        {crops.map((crop) => (
-          <SelectItem key={crop.id} value={crop.id}>
-            {crop.name}
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          <SelectLabel>Crops</SelectLabel>
+          {displayNone && (
+            <SelectItem key="#NONE" value="None">
+              None
+            </SelectItem>
+          )}
+          {crops.map((crop) => (
+            <SelectItem key={crop.id} value={crop.id}>
+              {crop.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );
