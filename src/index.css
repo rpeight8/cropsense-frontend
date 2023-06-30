@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* hide draw toolbar */
+.leaflet-draw {
+  display: none;
+}
+
+/* hide default attributes */
+.leaflet-bottom.leaflet-right .leaflet-control-attribution {
+  display: none;
+}
