@@ -7,8 +7,9 @@ import {
   ToastViewport,
 } from "@/components/ui/Toast/Toast";
 import { useToast } from "@/components/ui/Toast/useToast";
+import { memo } from "react";
 
-export function Toaster() {
+const Toaster = memo(() => {
   const { toasts } = useToast();
 
   return (
@@ -30,4 +31,8 @@ export function Toaster() {
       <ToastViewport />
     </ToastProvider>
   );
-}
+});
+
+Toaster.displayName = "Toaster";
+
+export default Toaster;

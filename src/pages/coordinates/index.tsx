@@ -3,7 +3,7 @@ import Map from "@/features/fields/components/FieldsMap";
 import { FieldAction } from "@/types";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/Toast/Toaster";
+import Toaster from "@/components/ui/Toast/Toaster";
 
 const Coordinates = () => {
   const { coordinates } = useParams() as {
