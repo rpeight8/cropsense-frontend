@@ -15,7 +15,7 @@ type NavigationListProps = {
   items: ListItemDeclaration[];
 };
 
-const NavigationSideBar = ({ items }: NavigationListProps) => {
+const NavigationList = ({ items }: NavigationListProps) => {
   const renderItem = useCallback((item: ListItemDeclaration) => {
     return (
       <Fragment key={item.text}>
@@ -31,4 +31,4 @@ const NavigationSideBar = ({ items }: NavigationListProps) => {
   );
 };
 
-export default NavigationSideBar;
+export default NavigationList;
