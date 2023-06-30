@@ -43,6 +43,7 @@ import {
   selectNDVIByFieldId,
   selectSelectedNDVIId,
 } from "@/features/ndvi/ndviSlice";
+import { cn } from "@/lib/utils";
 
 type EditControlProps = ElementProps<typeof EditControl>;
 
@@ -260,12 +261,18 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
                   : undefined
               }
               pathOptions={{
-                color: isSelectedOrHoveredField ? "white" : field?.crop?.color,
-                weight: isSelectedOrHoveredField ? 3 : 1,
+                color: "white",
+                weight: isSelectedOrHoveredField ? 3 : 1.5,
                 fillColor:
-                  selectedNDVI && isSelected ? "none" : field?.crop?.color,
+                  selectedNDVI && isSelected ? undefined : field?.crop?.color,
                 opacity: isSelected && action === "edit" ? 0.5 : 1,
-                fillOpacity: isSelected && action === "edit" ? 0.3 : 0.6,
+                fillOpacity: parseFloat(
+                  cn("", {
+                    "0.3": isSelected && action === "edit",
+                    "0": (isSelected && selectedNDVI) || !field?.crop?.color,
+                    "0.6": true,
+                  })
+                ),
               }}
               eventHandlers={{
                 click: () => {

@@ -36,7 +36,7 @@ const CropSelect = ({
         <SelectGroup>
           <SelectLabel>Crops</SelectLabel>
           {displayNone && (
-            <SelectItem key="#NONE" value="None">
+            <SelectItem key="#NONE" value="">
               None
             </SelectItem>
           )}

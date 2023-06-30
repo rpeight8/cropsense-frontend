@@ -20,6 +20,8 @@ export function routesForFields(server: Server) {
         return new Response(404, {}, { error: true });
       }
       attrs.crop = crop.attrs;
+    } else {
+      attrs.crop = undefined;
     }
     const field = schema.create("field", attrs);
     return new Response(200, {}, field);
@@ -27,6 +29,7 @@ export function routesForFields(server: Server) {
 
   server.put(`/fields/:id`, (schema: AppSchema, request) => {
     const attrs = JSON.parse(request.requestBody);
+    console.log(attrs);
     const id = request.params.id;
     const field = schema.find("field", id);
 
@@ -36,6 +39,8 @@ export function routesForFields(server: Server) {
         return new Response(404, {}, { error: true });
       }
       attrs.crop = crop.attrs;
+    } else {
+      attrs.crop = undefined;
     }
 
     if (!field) {

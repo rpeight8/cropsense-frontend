@@ -57,9 +57,8 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
                 <FormItem>
                   <FormLabel>Field Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="field name" {...field} />
+                    <Input placeholder="Field-1" {...field} />
                   </FormControl>
-                  <FormDescription>Field information</FormDescription>
                   <FormMessage />
                 </FormItem>
               </>
@@ -77,7 +76,9 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
                     onValueChange={field.onChange}
                   />
                 </FormControl>
-                <FormDescription>Field information</FormDescription>
+                <FormDescription>
+                  Crop to be assigned to the field
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

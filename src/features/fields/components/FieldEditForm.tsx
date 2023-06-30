@@ -57,9 +57,8 @@ const FieldEditForm = ({ field, className, ...props }: FieldEditFormProps) => {
               <FormItem>
                 <FormLabel>Field Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="field name" {...field} />
+                  <Input placeholder="Field-1" {...field} />
                 </FormControl>
-                <FormDescription>Field information</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
