@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode, memo } from "react";
 
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,12 @@ type ListProps<T> = {
   renderItem: (item: T) => ReactNode;
 } & ComponentPropsWithoutRef<"ul">;
 
-const List = <T,>({ items, renderItem, className, ...props }: ListProps<T>) => {
+export const List = <T,>({
+  items,
+  renderItem,
+  className,
+  ...props
+}: ListProps<T>) => {
   return (
     <ScrollArea className="h-full">
       {(items && items.length && (
@@ -22,4 +27,6 @@ const List = <T,>({ items, renderItem, className, ...props }: ListProps<T>) => {
   );
 };
 
-export default List;
+export const MemoizedList = memo(List) as typeof List;
+
+export default MemoizedList;

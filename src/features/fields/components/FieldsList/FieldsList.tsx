@@ -9,20 +9,27 @@ import { useAppSelector } from "@/store";
 
 import List from "@/components/ui/List/List";
 import FieldListItem from "@/features/fields/components/FieldsList/FieldListItem";
-import { FieldId } from "@/types";
+import { Field, FieldId } from "@/types";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
-  highlightedFieldId?: FieldId;
+  fields: Field[];
+  isLoading?: boolean;
 };
 
-const FieldsList = ({ className, ...props }: FieldListProps) => {
-  const fields = useAppSelector(selectFields);
-
+const FieldsList = ({
+  className,
+  isLoading,
+  fields,
+  ...props
+}: FieldListProps) => {
   const renderField = useCallback((field: (typeof fields)[number]) => {
     return <FieldListItem key={field.id} id={field.id} name={field.name} />;
   }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <List
       items={fields}

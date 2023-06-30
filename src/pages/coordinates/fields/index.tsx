@@ -7,9 +7,9 @@ import {
 } from "react-router-dom";
 
 import { useFields } from "@/services/fields";
-import FieldsSideBar from "@/features/fields/components/compound/FieldsSideBar";
+import FieldsAsideContent from "@/features/fields/components/compound/FieldsAsideContent";
 import FieldsMap from "@/features/fields/components/FieldsMap";
-import FieldsDetailBottom from "@/features/fields/components/compound/FieldDetailBottom";
+import FieldsDetailContent from "@/features/fields/components/compound/FieldDetailContent";
 import { useEffect } from "react";
 import {
   selectFieldId,
@@ -32,6 +32,7 @@ import {
   selectSelectedNDVIId,
   setSelectedNDVIId,
 } from "@/features/ndvi/ndviSlice";
+import { cn } from "@/lib/utils";
 
 const Fields = () => {
   const navigate = useNavigate();
@@ -43,8 +44,12 @@ const Fields = () => {
     action,
     fieldId,
   } = useURLParametersParser();
-  const { isLoading: isLoadingFields, isError } = useFields();
-  
+  const {
+    isLoading: isFieldsLoading,
+    isFetching: isFieldsFetching,
+    isError: isFieldsError,
+  } = useFields();
+
   const fields = useAppSelector(selectFields);
 
   const mapCenter = useAppSelector(selectCenter);
@@ -68,7 +73,7 @@ const Fields = () => {
       return;
     }
 
-    if (!isLoadingFields && fields.length !== 0) {
+    if (!isFieldsLoading && !isFieldsFetching && fields.length !== 0) {
       const field = fields.find((f) => f.id === fieldId);
       if (!field) {
         const navigatePath = `${initialCoordinates[0]},${initialCoordinates[1]},${initialZoom}/fields`;
@@ -83,7 +88,8 @@ const Fields = () => {
     fields,
     initialCoordinates,
     initialZoom,
-    isLoadingFields,
+    isFieldsLoading,
+    isFieldsFetching,
     navigate,
     selectedFieldId,
   ]);
@@ -107,22 +113,20 @@ const Fields = () => {
     return null;
   }
 
-  if (isLoadingFields) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error</div>;
-  }
-
   return (
     <>
-      <FieldsSideBar className="w-[200px]" />
+      <aside className="flex flex-col w-[200px]">
+        <FieldsAsideContent
+          isFieldsLoading={isFieldsFetching || isFieldsLoading}
+          isFieldsError={isFieldsError}
+          action={action}
+        />
+      </aside>
       <div className="flex-1 flex flex-col relative">
-        {fieldId && (
+        {selectedFieldId && (
           <NDVISelector
             className="absolute z-[450] w-full flex-shrink"
-            fieldId={fieldId}
+            fieldId={selectedFieldId}
           />
         )}
         <FieldsMap
@@ -130,7 +134,18 @@ const Fields = () => {
           initialZoom={initialZoom}
           initialPosition={initialCoordinates}
         />
-        <FieldsDetailBottom />
+        <div
+          className={cn(
+            "h-[350px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards",
+            {
+              "h-0 overflow-hidden": !selectedFieldId,
+            }
+          )}
+        >
+          {action && selectedFieldId && (
+            <FieldsDetailContent action={action} fieldId={selectedFieldId} />
+          )}
+        </div>
       </div>
     </>
   );

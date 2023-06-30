@@ -1,28 +1,26 @@
-import EditFieldButton from "@/features/fields/components/FieldEditButton";
+import FieldEditButton from "@/features/fields/components/FieldEditButton";
 import FieldEditForm from "@/features/fields/components/FieldEditForm";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store";
+import { FieldAction, FieldId } from "@/types";
 import {
   selectFields,
   selectSelectedFieldId,
 } from "@features/fields/fieldsSlice";
+import { memo } from "react";
 
-const FieldsDetailBottom = () => {
-  const selectedFieldId = useAppSelector(selectSelectedFieldId);
+type FieldsDetailContent = {
+  action: FieldAction;
+  fieldId: FieldId;
+};
+
+const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
   const fields = useAppSelector(selectFields);
-  const selectedField = fields.find((f) => f.id === selectedFieldId);
-  const { action } = useURLParametersParser();
+  const selectedField = fields.find((f) => f.id === fieldId);
 
   return (
-    <div
-      className={cn(
-        "h-[350px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards",
-        {
-          "h-0 overflow-hidden": !selectedFieldId || !selectedField,
-        }
-      )}
-    >
+    <>
       {(action === "edit" && selectedField && (
         <FieldEditForm
           field={{
@@ -34,11 +32,11 @@ const FieldsDetailBottom = () => {
         (action === "display" && (
           <>
             <p>Field name: {selectedField?.name} </p>
-            <EditFieldButton />
+            <FieldEditButton fieldId={fieldId} />
           </>
         ))}
-    </div>
+    </>
   );
 };
 
-export default FieldsDetailBottom;
+export default FieldsDetailContent;

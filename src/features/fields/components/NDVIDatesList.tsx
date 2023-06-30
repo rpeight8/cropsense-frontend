@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { FieldId } from "@/types";
 import NDVIDateButton from "./NDVIDateButton";
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
-import { Component, ComponentPropsWithoutRef } from "react";
+import { Component, ComponentPropsWithoutRef, useCallback } from "react";
 
 type NDVIDatesListProps = {
   fieldId: FieldId;
@@ -25,31 +25,33 @@ const NDVIDatesList = ({
   const NDVIs = useAppSelector((state) => selectNDVIByFieldId(state, fieldId));
   const dispatch = useAppDispatch();
   const selectedNDVIId = useAppSelector(selectSelectedNDVIId);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
-
   const dateItems = NDVIs.map((NDVI) => ({
     id: NDVI.id,
     title: japaneseDateToShortDate(NDVI.date),
   }));
 
+  const renderItem = useCallback((item: (typeof NDVIs)[number]) => {
+    const title = japaneseDateToShortDate(item.date);
+    return (
+      <NDVIDateButton
+        date={title}
+        onClick={() => dispatch(setSelectedNDVIId(item.id))}
+        selected={item.id === selectedNDVIId}
+        key={item.id}
+      >
+        {title}
+      </NDVIDateButton>
+    );
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+
   return (
     <List
       className={cn("flex gap-x-3 justify-center", {}, className)}
-      items={dateItems}
-      renderItem={(item) => {
-        return (
-          <NDVIDateButton
-            date={item.title}
-            onClick={() => dispatch(setSelectedNDVIId(item.id))}
-            selected={item.id === selectedNDVIId}
-            key={item.id}
-          >
-            {item.title}
-          </NDVIDateButton>
-        );
-      }}
+      items={NDVIs}
+      renderItem={renderItem}
     />
   );
 };

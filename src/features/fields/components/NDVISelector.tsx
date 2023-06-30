@@ -1,6 +1,6 @@
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
-import { ComponentPropsWithoutRef, useEffect } from "react";
+import { ComponentPropsWithoutRef, memo, useEffect } from "react";
 import List from "@/components//ui/List/List";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -18,7 +18,7 @@ type NDVISelectorProps = ElementProps<typeof ScrollArea> &
     fieldId: FieldId;
   };
 
-const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
+const NDVISelector = memo(({ className, fieldId }: NDVISelectorProps) => {
   const { isLoading, isError, isFetching } = useNDVI(fieldId);
 
   return (
@@ -40,6 +40,6 @@ const NDVISelector = ({ className, fieldId }: NDVISelectorProps) => {
       </ScrollArea>
     </div>
   );
-};
+});
 
 export default NDVISelector;

@@ -1,16 +1,20 @@
 import { Button } from "@/components/ui/Button";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
+import { FieldId } from "@/types";
 import { Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type EditFieldButtonProps = ElementProps<typeof Button>;
+type EditFieldButtonProps = ElementProps<typeof Button> & {
+  fieldId: FieldId;
+};
 
-const EditFieldButton = ({
+const FieldEditButton = ({
+  fieldId,
   variant = "default",
   className,
 }: EditFieldButtonProps) => {
   const navigate = useNavigate();
-  const { fieldId } = useURLParametersParser();
+
   return (
     <Button
       variant={variant}
@@ -26,4 +30,4 @@ const EditFieldButton = ({
   );
 };
 
-export default EditFieldButton;
+export default FieldEditButton;
