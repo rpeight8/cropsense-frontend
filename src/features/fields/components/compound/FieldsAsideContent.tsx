@@ -33,4 +33,6 @@ const FieldsAsideContent = memo(
   }
 );
 
+FieldsAsideContent.displayName = "FieldsAsideContent";
+
 export default FieldsAsideContent;

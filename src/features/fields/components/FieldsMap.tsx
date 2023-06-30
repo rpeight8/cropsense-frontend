@@ -105,7 +105,7 @@ const getCoodinatesFromPolygon = (
   return coordinates;
 };
 
-const FieldsMap = memo(({ className, ...props }: MapProps) => {
+const FieldsMap = ({ className, ...props }: MapProps) => {
   const MapRef = useRef<Map>(null);
   const HoveredPolygonRef = useRef<LeafletPolygon>(null);
   const SelectedPolygonRef = useRef<LeafletPolygon>(null);
@@ -357,6 +357,6 @@ const FieldsMap = memo(({ className, ...props }: MapProps) => {
       )}
     </MapContainer>
   );
-});
+};
 
 export default FieldsMap;

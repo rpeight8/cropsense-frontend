@@ -42,4 +42,6 @@ const NDVISelector = memo(({ className, fieldId }: NDVISelectorProps) => {
   );
 });
 
+NDVISelector.displayName = "NDVISelector";
+
 export default NDVISelector;

@@ -27,6 +27,10 @@ export const List = <T,>({
   );
 };
 
-export const MemoizedList = memo(List) as typeof List;
+export const MemoizedList = memo(List) as typeof List & {
+  displayName: string;
+};
+
+MemoizedList.displayName = "List";
 
 export default MemoizedList;
