@@ -10,7 +10,7 @@ type EditFieldButtonProps = ElementProps<typeof Button> & {
 
 const FieldEditButton = ({
   fieldId,
-  variant = "default",
+  variant = "secondary",
   className,
 }: EditFieldButtonProps) => {
   const navigate = useNavigate();

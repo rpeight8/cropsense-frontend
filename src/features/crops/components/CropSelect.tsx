@@ -23,13 +23,10 @@ const CropSelect = ({
   ...props
 }: CropSelectProps) => {
   const crops = useAppSelector(selectCrops);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Select value={initialCropId} {...props}>
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full" isLoading={isLoading}>
         <SelectValue placeholder="Select a crop" />
       </SelectTrigger>
       <SelectContent>

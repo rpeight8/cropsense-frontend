@@ -26,7 +26,7 @@ import {
   setMapCoordinates,
   setZoom,
 } from "@/features/map/mapSlice";
-import NDVISelector from "@/features/fields/components/NDVISelector";
+import NDVISelector from "@/features/ndvi/components/NDVISelector";
 import { useNDVI } from "@/services/ndvi";
 import {
   selectSelectedNDVIId,
@@ -115,7 +115,7 @@ const Fields = () => {
 
   return (
     <>
-      <aside className="flex flex-col w-[200px]">
+      <aside className="flex flex-col w-[200px] p-1">
         <FieldsAsideContent
           isFieldsLoading={isFieldsFetching || isFieldsLoading}
           isFieldsError={isFieldsError}
@@ -143,7 +143,11 @@ const Fields = () => {
           )}
         >
           {action && selectedFieldId && (
-            <FieldsDetailContent action={action} fieldId={selectedFieldId} />
+            <FieldsDetailContent
+              action={action}
+              fieldId={selectedFieldId}
+              isLoading={isFieldsLoading || isFieldsFetching}
+            />
           )}
         </div>
       </div>

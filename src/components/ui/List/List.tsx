@@ -21,7 +21,9 @@ export const List = <T,>({
           {items.map(renderItem)}
         </ul>
       )) || (
-        <div className="flex justify-center items-center h-full">No data</div>
+        <div className="flex justify-center items-center h-full flex-1">
+          No data
+        </div>
       )}
     </ScrollArea>
   );

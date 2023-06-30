@@ -8,10 +8,13 @@ import {
 import { useAppSelector } from "@/store";
 
 import List from "@/components/ui/List/List";
-import FieldListItem from "@/features/fields/components/FieldsList/FieldListItem";
+import FieldListItem, {
+  FieldListItemSkeleton,
+} from "@/features/fields/components/FieldsList/FieldListItem";
 import { Field, FieldId } from "@/types";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
   fields: Field[];
@@ -27,14 +30,30 @@ const FieldsList = ({
   const renderField = useCallback((field: (typeof fields)[number]) => {
     return <FieldListItem key={field.id} id={field.id} name={field.name} />;
   }, []);
+
+  const renderSkeletonField = useCallback((skeleton: { id: string }) => {
+    return <FieldListItemSkeleton key={skeleton.id} />;
+  }, []);
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    const skeletonFields = Array.from({ length: 10 }, (_, i) => ({
+      id: `skeleton-${i}`,
+    }));
+
+    return (
+      <List
+        items={skeletonFields}
+        renderItem={renderSkeletonField}
+        className={className}
+        {...props}
+      />
+    );
   }
   return (
     <List
       items={fields}
       renderItem={renderField}
-      className={className}
+      className={cn("p-0", className)}
       {...props}
     />
   );

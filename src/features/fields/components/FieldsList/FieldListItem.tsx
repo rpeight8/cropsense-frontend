@@ -12,16 +12,25 @@ import {
 } from "@/features/fields/fieldsSlice";
 import { useAppSelector } from "@/store";
 import { useDispatch } from "react-redux";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type FieldlistItemProps = FieldForDisplay &
   ComponentPropsWithoutRef<"li"> & {
     className?: string;
   };
 
+export const FieldListItemSkeleton = () => {
+  return (
+    <ListItem className={cn("text-white flex")}>
+      <Skeleton className="w-full my-1 p-5"></Skeleton>
+    </ListItem>
+  );
+};
+
 const FieldListItem = ({
   id,
   name,
-  className = "",
+  className,
   ...props
 }: FieldlistItemProps) => {
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
@@ -40,9 +49,13 @@ const FieldListItem = ({
     <ListItem
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
-      className={cn("text-white flex hover:bg-slate-600", {
-        "bg-slate-600": id === hoveredFieldId,
-      })}
+      className={cn(
+        "text-white flex hover:bg-slate-600",
+        {
+          "bg-slate-600": id === hoveredFieldId,
+        },
+        className
+      )}
       {...props}
     >
       <Link

@@ -11,6 +11,7 @@ import {
 import { memo } from "react";
 
 type FieldsDetailContent = {
+  isLoading?: boolean;
   action: FieldAction;
   fieldId: FieldId;
 };
@@ -20,9 +21,10 @@ const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
   const selectedField = fields.find((f) => f.id === fieldId);
 
   return (
-    <>
+    <div className="p-1 pt-3 h-full flex w-full">
       {(action === "edit" && selectedField && (
         <FieldEditForm
+          className=""
           field={{
             ...selectedField,
             crop: selectedField?.crop?.id,
@@ -31,11 +33,11 @@ const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
       )) ||
         (action === "display" && (
           <>
-            <p>Field name: {selectedField?.name} </p>
-            <FieldEditButton fieldId={fieldId} />
+            <p className="text-3xl font-bold">{selectedField?.name} </p>
+            <FieldEditButton fieldId={fieldId} className="ml-5" />
           </>
         ))}
-    </>
+    </div>
   );
 };
 

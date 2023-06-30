@@ -8,7 +8,8 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { FieldId } from "@/types";
 import NDVIDateButton from "./NDVIDateButton";
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
-import { Component, ComponentPropsWithoutRef, useCallback } from "react";
+import { ComponentPropsWithoutRef, useCallback } from "react";
+import Spinner from "@/components/ui/Spinner";
 
 type NDVIDatesListProps = {
   fieldId: FieldId;
@@ -18,38 +19,43 @@ type NDVIDatesListProps = {
 
 const NDVIDatesList = ({
   fieldId,
-  isLoading = false,
-  isError = false,
+  isLoading,
+  isError,
   className,
 }: NDVIDatesListProps) => {
   const NDVIs = useAppSelector((state) => selectNDVIByFieldId(state, fieldId));
   const dispatch = useAppDispatch();
   const selectedNDVIId = useAppSelector(selectSelectedNDVIId);
-  const dateItems = NDVIs.map((NDVI) => ({
-    id: NDVI.id,
-    title: japaneseDateToShortDate(NDVI.date),
-  }));
 
-  const renderItem = useCallback((item: (typeof NDVIs)[number]) => {
-    const title = japaneseDateToShortDate(item.date);
+  const renderItem = useCallback(
+    (item: (typeof NDVIs)[number]) => {
+      const title = japaneseDateToShortDate(item.date);
+      return (
+        <NDVIDateButton
+          date={title}
+          onClick={() => dispatch(setSelectedNDVIId(item.id))}
+          selected={item.id === selectedNDVIId}
+          key={item.id}
+          className="h-full"
+        >
+          {title}
+        </NDVIDateButton>
+      );
+    },
+    [selectedNDVIId]
+  );
+
+  if (isLoading)
     return (
-      <NDVIDateButton
-        date={title}
-        onClick={() => dispatch(setSelectedNDVIId(item.id))}
-        selected={item.id === selectedNDVIId}
-        key={item.id}
-      >
-        {title}
-      </NDVIDateButton>
+      <div className="w-full flex justify-center items-center h-11">
+        <Spinner />
+      </div>
     );
-  }, []);
-
-  if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
 
   return (
     <List
-      className={cn("flex gap-x-3 justify-center", {}, className)}
+      className={cn("flex gap-x-3 justify-center h-11", {}, className)}
       items={NDVIs}
       renderItem={renderItem}
     />

@@ -7,6 +7,7 @@ import FieldAddForm from "@/features/fields/components/FieldAddForm";
 import { ComponentPropsWithoutRef, memo } from "react";
 import { cn } from "@/lib/utils";
 import { FieldAction } from "@/types";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type FieldsSideBarProps = {
   isFieldsLoading?: boolean;
@@ -25,7 +26,7 @@ const FieldsAsideContent = memo(
         ) : (
           <>
             <FieldsList isLoading={isFieldsLoading} fields={fields} />
-            <FieldAddButton />
+            <FieldAddButton isLoading={isFieldsLoading} />
           </>
         )}
       </>
