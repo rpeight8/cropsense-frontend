@@ -4,4 +4,4 @@ declare type ElementProps<T> = T extends React.ComponentType<infer Props>
     : never
   : never;
 
-declare type UnionFromArray<T extends any[]> = T[number];
+declare type UnionFromArray<T extends unknown[]> = T[number];

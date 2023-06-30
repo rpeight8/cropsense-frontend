@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/Separator";
 import List from "@/components/ui/List/List";
 import NavigationListItem from "@/components/NavigationList/NavigationListItem";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { useParams } from "react-router-dom";
 
 type ListItemDeclaration = {
   text: string;

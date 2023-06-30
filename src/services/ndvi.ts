@@ -1,4 +1,4 @@
-import { NDVISchema, NDVIsSchema } from "@/schemas/ndvi";
+import { NDVIsSchema } from "@/schemas/ndvi";
 import { useAppDispatch } from "@/store";
 import { FieldId, NDVI, NDVIByFieldId } from "@/types";
 import { useQuery } from "@tanstack/react-query";

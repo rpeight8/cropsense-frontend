@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/Button";
@@ -14,10 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/hooks/useFieldAddForm";
-import { ComponentPropsWithoutRef, useEffect } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import { useCrops } from "@/services/crops";
-import Spinner from "@/components/ui/Spinner";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;

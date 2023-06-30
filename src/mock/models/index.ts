@@ -7,7 +7,7 @@ import { Crop } from "../../types";
 
 const FieldModel: ModelDefinition<
   Omit<Field, "crop"> & {
-    crop: string | undefined;
+    crop: string | Crop;
   }
 > = Model.extend({});
 const NDVIModel: ModelDefinition<NDVI> = Model.extend({});

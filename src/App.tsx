@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import FieldsMap from "./features/fields/components/FieldsMap";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 function App() {
   const navigate = useNavigate();

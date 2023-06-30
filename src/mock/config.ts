@@ -1,5 +1,4 @@
 import { createServer } from "miragejs";
-import { faker } from "@faker-js/faker";
 
 import { endpoints } from "./endpoints";
 import { models } from "./models";
@@ -33,13 +32,14 @@ export function startMirage() {
   server.post(
     `${import.meta.env.VITE_SOME_KEY}/:any`,
     () =>
-      new Promise((_res: any) => {
+      new Promise(() => {
         console.log("external call handler");
       })
   );
 
   server.urlPrefix = import.meta.env.VITE_API_URL ?? "";
   for (const namespace of Object.keys(endpoints)) {
+    // @ts-ignore
     endpoints[namespace](server);
   }
 
