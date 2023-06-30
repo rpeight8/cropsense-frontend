@@ -1,10 +1,8 @@
 import {
   ComponentPropsWithoutRef,
   useEffect,
-  memo,
   useRef,
   useCallback,
-  useState,
   useMemo,
 } from "react";
 import {
@@ -18,11 +16,10 @@ import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
 import { ImageOverlay } from "react-leaflet/ImageOverlay";
-import { Field, FieldCoordinates, FieldGeometry, FieldId } from "@/types";
+import { Field, FieldCoordinates, FieldId } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {
-  selectEditLocalFieldGeometry,
   selectFields,
   selectHoveredFieldId,
   selectSelectedFieldId,
@@ -31,12 +28,7 @@ import {
   setNewLocalFieldGeometry,
 } from "@/features/fields/fieldsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectCenter,
-  selectZoom,
-  setCenter,
-  setZoom,
-} from "@/features/map/mapSlice";
+import { selectCenter, selectZoom } from "@/features/map/mapSlice";
 import { useNavigate } from "react-router-dom";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
 import {
@@ -169,21 +161,20 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
   // Zooms to selected field
   useEffect(() => {
     const Map = MapRef.current;
-    const Polygon = HoveredPolygonRef.current;
+    const Polygon = HoveredPolygonRef.current || SelectedPolygonRef.current;
+    let timer: NodeJS.Timeout | null = null;
     if (Map && Polygon && selectedFieldId) {
-      Map.invalidateSize();
       Map.flyToBounds(Polygon.getBounds(), { duration: 0.5, maxZoom: 14 });
+      // :clown:
+      // Hack to fix incorectly displayed map tiles after flyToBounds
+      timer = setTimeout(() => {
+        Map.invalidateSize();
+      }, 100);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [selectedFieldId]);
-
-  useEffect(() => {
-    const Map = MapRef.current;
-    SelectedPolygonRef.current?.getBounds();
-    // console.log(Map);
-
-    // var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
-    // imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
-  }, [SelectedPolygonRef.current]);
 
   // Triggers polygon drawing on "add" action
   useEffect(() => {
