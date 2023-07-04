@@ -1,12 +1,9 @@
 import FieldEditButton from "@/features/fields/components/FieldEditButton";
 import FieldEditForm from "@/features/fields/components/FieldEditForm";
-import useURLParametersParser from "@/hooks/useURLParametersParser";
-import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store";
 import { FieldAction, FieldId } from "@/types";
 import {
   selectFields,
-  selectSelectedFieldId,
 } from "@features/fields/fieldsSlice";
 import { memo } from "react";
 
@@ -27,7 +24,7 @@ const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
           className=""
           field={{
             ...selectedField,
-            crop: selectedField?.crop?.id,
+            crop: selectedField?.crop,
           }}
         />
       )) ||

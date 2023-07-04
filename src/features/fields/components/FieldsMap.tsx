@@ -23,10 +23,12 @@ import {
   selectFields,
   selectHoveredFieldId,
   selectSelectedFieldId,
-  setEditLocalFieldGeometry,
   setHoveredFieldId,
-  setNewLocalFieldGeometry,
 } from "@/features/fields/fieldsSlice";
+import {
+  setAddFieldGeometry,
+  setEditFieldGeometry,
+} from "@/features/forms/formsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectCenter, selectZoom } from "@/features/map/mapSlice";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +47,6 @@ export type OnCreatedHandler = NonNullable<EditControlProps["onCreated"]>;
 
 type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
   initialPosition?: [number, number];
-  handleNewField?: (coordinates: FieldCoordinates) => void;
   initialZoom: number;
   onFieldClick?: (fieldId: FieldId) => void;
   onDragEnd?: (map: Map) => void;
@@ -143,7 +144,7 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
       const coordinates = getCoodinatesFromPolygon(polygon);
 
       dispatch(
-        setNewLocalFieldGeometry({
+        setAddFieldGeometry({
           type: "Polygon",
           coordinates,
         })
@@ -314,7 +315,7 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
                 const coordinates = getCoodinatesFromPolygon(polygon);
                 dispatch(
                   // Nothing else except Polygon is supported
-                  setEditLocalFieldGeometry({
+                  setEditFieldGeometry({
                     type: "Polygon",
                     coordinates: [...coordinates],
                   })

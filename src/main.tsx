@@ -10,10 +10,7 @@ import App from "./App.tsx";
 import "./index.css";
 import Coordinates from "@/pages/coordinates";
 import Fields from "@/pages/coordinates/fields/";
-import { startMirage } from "./mock/config.ts";
 import { Sensors } from "@/pages/coordinates/sensors";
-
-startMirage();
 
 const router = createBrowserRouter([
   {

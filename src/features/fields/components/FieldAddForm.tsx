@@ -12,14 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/hooks/useFieldAddForm";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, memo } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import { useCrops } from "@/services/crops";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;
 
-const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
+const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
   const {
     form,
     isError,
@@ -46,7 +46,6 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
         <form
           className={cn("w-full h-full flex flex-col", className)}
           onSubmit={form.handleSubmit(onSubmit, onErrors)}
-          {...props}
         >
           <div className="mb-auto">
             <FormField
@@ -72,8 +71,9 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
                   <FormLabel>Crop</FormLabel>
                   <FormControl>
                     <CropSelect
+                      displayNone={true}
                       isLoading={isLoadingCrops || isFetchingCrops}
-                      onValueChange={field.onChange}
+                      onCropSelect={field.onChange}
                     />
                   </FormControl>
                   <FormDescription>
@@ -104,6 +104,6 @@ const FieldAddForm = ({ className, ...props }: FieldsAddFormProps) => {
       {isLoading && <SpinnerLoader />}
     </div>
   );
-};
+});
 
 export default FieldAddForm;

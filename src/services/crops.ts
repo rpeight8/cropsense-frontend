@@ -13,7 +13,7 @@ export const useCrops = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/crops`);
         if (!res.ok) throw new Error("Network response was not ok.");
-        const { crops: data } = await res.json();
+        const data = await res.json();
         CropsSchema.parse(data);
         dispatch(set(data));
         return data;

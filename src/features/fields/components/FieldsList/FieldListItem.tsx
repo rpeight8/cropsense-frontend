@@ -1,6 +1,6 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link} from "react-router-dom";
 
-import { Field, FieldForDisplay } from "@/types";
+import { FieldForDisplay } from "@/types";
 import { cn } from "@/lib/utils";
 
 import ListItem from "@/components/ui/List/ListItem";
@@ -14,7 +14,7 @@ import { useAppSelector } from "@/store";
 import { useDispatch } from "react-redux";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-type FieldlistItemProps = FieldForDisplay &
+type FieldlistItemProps = Omit<FieldForDisplay, "crop"> &
   ComponentPropsWithoutRef<"li"> & {
     className?: string;
   };

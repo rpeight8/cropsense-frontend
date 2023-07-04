@@ -1,9 +1,9 @@
-import { string, z } from "zod";
+import { z } from "zod";
 import { CropSchema } from "./crop";
 import { CoordinatesSchema } from "./map";
 
 export const FieldHoleSchema = z.array(CoordinatesSchema);
-export const FieldPolygonSchema = z.array(CoordinatesSchema);
+export const FieldPolygonSchema = z.array(CoordinatesSchema).min(1);
 
 export const FieldCoordinatesSchema = z.tuple([
   FieldPolygonSchema,
@@ -19,15 +19,13 @@ export const FieldSchema = z.object({
   id: z.string(),
   name: z.string(),
   geometry: FieldGeometrySchema,
-  crop: CropSchema.optional(),
+  crop: CropSchema.nullable(),
 });
 
-export const FieldForCreationSchema = FieldSchema.omit({ id: true }).extend({
-  crop: string().optional(),
-});
+export const FieldForCreationSchema = FieldSchema.omit({ id: true });
 
-export const FieldForUpdateSchema = FieldSchema.omit({ id: true }).extend({
-  crop: string().optional(),
+export const FieldForUpdateSchema = FieldSchema.extend({
+  id: z.string().optional(),
 });
 
 export const fieldAddAction = "add" as const;

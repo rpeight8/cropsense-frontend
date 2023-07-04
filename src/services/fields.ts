@@ -15,7 +15,7 @@ export const useFields = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/fields`);
         if (!res.ok) throw new Error("Network response was not ok.");
-        const { fields: data } = await res.json();
+        const data = await res.json();
         FieldsSchema.parse(data);
         dispatch(set(data));
         return data;
@@ -57,7 +57,7 @@ export const useMutateNewField = (
           body: JSON.stringify(field),
         });
         if (!res.ok) throw new Error("Network response was not ok.");
-        const newField = FieldSchema.parse((await res.json()).field);
+        const newField = FieldSchema.parse(await res.json());
         return newField;
       } catch (error: unknown) {
         console.log(error);
@@ -96,7 +96,7 @@ export const useMutateField = (
           }
         );
         if (!res.ok) throw new Error("Network response was not ok.");
-        const updatedField = FieldSchema.parse((await res.json()).field);
+        const updatedField = FieldSchema.parse(await res.json());
         return updatedField;
       } catch (error: unknown) {
         console.log(error);

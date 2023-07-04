@@ -18,7 +18,7 @@ export const useNDVI = (fieldId: FieldId = "") => {
           `${import.meta.env.VITE_API_URL}/ndvi/${fieldId}`
         );
         if (!res.ok) throw new Error("Network response was not ok.");
-        const { ndvis } = await res.json();
+        const ndvis = await res.json();
         const parsedNDVIs = NDVIsSchema.parse(ndvis);
 
         dispatch(

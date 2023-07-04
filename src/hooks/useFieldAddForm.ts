@@ -1,63 +1,46 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldErrors, FormProvider, set, useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
-import { string, z } from "zod";
+import { z } from "zod";
 import { useMutateNewField } from "@/services/fields";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { CropSchema } from "@/schemas/crop";
 import { FieldGeometrySchema } from "@/schemas/field";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  selectNewLocalFieldGeometry,
-  setNewLocalFieldGeometry,
-} from "@/features/fields/fieldsSlice";
+  selectAddFieldGeometry,
+} from "@/features/forms/formsSlice";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
     message: "Field name must be at least 1 characters.",
   }),
-  geometry: FieldGeometrySchema,
-  crop: string().optional(),
+  crop: CropSchema.nullable(),
 });
 
 const useFieldAddForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const newLocalFieldGeometry = useAppSelector(selectNewLocalFieldGeometry);
+  const addFieldGeometry = useAppSelector(selectAddFieldGeometry);
+  // const addField = useAppSelector(selectAddField);
+
   const dispatch = useAppDispatch();
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",
-      geometry: {
-        type: "Polygon",
-        coordinates: [],
-      },
-      crop: undefined,
+      crop: null,
     },
     resolver: zodResolver(FormSchema),
   });
 
-  useEffect(() => {
-    if (newLocalFieldGeometry) {
-      dispatch(setNewLocalFieldGeometry(undefined));
-    }
-  }, [dispatch, newLocalFieldGeometry]);
-
-  useEffect(() => {
-    if (!newLocalFieldGeometry) {
-      return;
-    }
-    form.setValue("geometry", newLocalFieldGeometry, {
-      shouldValidate: true,
-    });
-  }, [
-    form,
-    newLocalFieldGeometry,
-    newLocalFieldGeometry?.coordinates,
-    newLocalFieldGeometry?.type,
-  ]);
+  const onFormValidationErrors = useCallback(
+    (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
+      console.error(errors);
+    },
+    [toast]
+  );
 
   const onMutateSuccess = useCallback(
     (respData: typeof data) => {
@@ -85,30 +68,25 @@ const useFieldAddForm = () => {
   const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
     useMutateNewField(onMutateSuccess, onMutateError);
 
-  const onFormValidationErrors = useCallback(
-    (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
-      if ("geometry" in errors) {
+  const onFormSubmit = useCallback(
+    (data: z.infer<typeof FormSchema>) => {
+      try {
+        const newField = {
+          ...data,
+          geometry: FieldGeometrySchema.parse(addFieldGeometry),
+        };
+
+        newFieldMutation.mutate(newField);
+      } catch (err) {
         toast({
           variant: "destructive",
           title: "Error",
           description: "Valid field needs to be selected.",
         });
+        return;
       }
     },
-    [toast]
-  );
-
-  const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
-      // debugger;
-      // return;
-      const newField = {
-        ...data,
-        color: "pink",
-      };
-      newFieldMutation.mutate(newField);
-    },
-    [newFieldMutation]
+    [addFieldGeometry, newFieldMutation, toast]
   );
 
   const onFormCancel = useCallback(() => {

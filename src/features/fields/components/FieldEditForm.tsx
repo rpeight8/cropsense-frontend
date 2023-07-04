@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useFormContext } from "react-hook-form";
 import * as z from "zod";
 
 import { cn } from "@/lib/utils";
@@ -17,11 +16,6 @@ import {
 } from "@/components/ui/Form";
 import { FormSchema, useFieldEditForm } from "@/hooks/useFieldEditForm";
 import { ComponentPropsWithoutRef } from "react";
-import {
-  selectFields,
-  selectSelectedFieldId,
-} from "@/features/fields/fieldsSlice";
-import { useAppSelector } from "@/store";
 import CropSelect from "@/features/crops/components/CropSelect";
 import { useCrops } from "@/services/crops";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
@@ -80,9 +74,9 @@ const FieldEditForm = ({
                   <FormControl>
                     <CropSelect
                       isLoading={isLoadingCrops || isFetchingCrops}
-                      initialCropId={form.getValues("crop")}
+                      initialCropId={form.getValues("crop")?.id}
                       displayNone={true}
-                      onValueChange={field.onChange}
+                      onCropSelect={field.onChange}
                     />
                   </FormControl>
                   <FormDescription>

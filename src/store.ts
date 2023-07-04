@@ -5,6 +5,7 @@ import fieldsReducer from "@/features/fields/fieldsSlice";
 import mapReducer from "@/features/map/mapSlice";
 import ndviReducer from "@/features/ndvi/ndviSlice";
 import cropsReducer from "@/features/crops/cropsSlice";
+import formsReducer from "@/features/forms/formsSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     map: mapReducer,
     ndvi: ndviReducer,
     crops: cropsReducer,
+    forms: formsReducer,
   },
 });
 
