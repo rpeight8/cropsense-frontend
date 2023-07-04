@@ -6,6 +6,7 @@ import mapReducer from "@/features/map/mapSlice";
 import ndviReducer from "@/features/ndvi/ndviSlice";
 import cropsReducer from "@/features/crops/cropsSlice";
 import formsReducer from "@/features/forms/formsSlice";
+import authReducer from "@/features/auth/authSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     ndvi: ndviReducer,
     crops: cropsReducer,
     forms: formsReducer,
+    auth: authReducer,
   },
 });
 

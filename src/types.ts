@@ -3,6 +3,7 @@ import * as FieldSchemas from "@schemas/field";
 import * as MapSchemas from "@schemas/map";
 import * as NDVISchemas from "@schemas/ndvi";
 import * as CropSchemas from "@schemas/crop";
+import * as UserSchemas from "@schemas/user";
 
 export type Field = z.infer<typeof FieldSchemas.FieldSchema>;
 export type FieldForCreation = z.infer<
@@ -31,3 +32,5 @@ export type NDVIByFieldId = {
 
 export type Crop = z.infer<typeof CropSchemas.CropSchema>;
 export type Crops = z.infer<typeof CropSchemas.CropsSchema>;
+
+export type User = z.infer<typeof UserSchemas.UserSchema>;
