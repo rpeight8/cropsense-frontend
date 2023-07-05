@@ -2,16 +2,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { z } from "zod";
-import { useMutateField } from "@/services/fields";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CropSchema } from "@/schemas/crop";
-import { FieldGeometrySchema } from "@/schemas/field";
+import { FieldGeometrySchema } from "../schemas";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectEditFieldGeometry,
   setEditFieldGeometry,
 } from "@/features/forms/formsSlice";
+import { CropSchema } from "@/features/crops/schemas";
+import { useMutateField } from "../services";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {

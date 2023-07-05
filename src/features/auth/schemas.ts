@@ -1,20 +1,36 @@
 import { z } from "zod";
 
-export const BackendUserSchema = z.object({
+export const UserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   name: z.string(),
+  roles: z.array(z.string()).optional(),
 });
 
-export const SigninFormSchema = z.object({
+export const UserForSignInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export const UserForSignUpSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export const SignInFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, {
-    message: "Password must be entered.",
+    message: "Enter a password",
   }),
 });
 
-export const SignupFormSchema = z.object({
+export const CredentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
+export const SignUpFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  name: z.string().min(1),
+  name: z.string().min(1).optional(),
 });

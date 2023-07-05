@@ -7,22 +7,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import useSigninForm from "../hooks/useSigninForm";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import useSignInForm from "@/features/auth/hooks/useSignInForm";
 
-type SigninFormProps = ComponentPropsWithoutRef<"form">;
+type SignInFormProps = ComponentPropsWithoutRef<"form">;
 
-const SigninForm = ({ className }: SigninFormProps) => {
-  const { form, onFormSubmit, onFormError } = useSigninForm();
+const SignInForm = ({ className }: SignInFormProps) => {
+  const { form, onFormSubmit, onFormError } = useSignInForm();
 
   return (
-    <div className="h-full relative">
+    <div className="h-full relative text-white">
       <Form {...form}>
         <form
-          className={cn("w-full h-full flex flex-col", className)}
+          className={cn("w-full h-full flex flex-col gap-y-5", className)}
           onSubmit={form.handleSubmit(onFormSubmit, onFormError)}
         >
           <div className="mb-auto">
@@ -60,8 +60,12 @@ const SigninForm = ({ className }: SigninFormProps) => {
             />
           </div>
           <div className="flex">
-            <Button type="submit" variant="secondary" className="bg-accent-2">
-              Submit
+            <Button
+              type="submit"
+              variant="secondary"
+              className="bg-accent-2 flex-1"
+            >
+              Sign In
             </Button>
           </div>
         </form>
@@ -70,4 +74,4 @@ const SigninForm = ({ className }: SigninFormProps) => {
   );
 };
 
-export default SigninForm;
+export default SignInForm;

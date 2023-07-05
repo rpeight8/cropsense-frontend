@@ -1,38 +1,31 @@
 import Coordinates from "@/pages/coordinates";
 import Fields from "@/pages/coordinates/fields";
 import { Sensors } from "@/pages/coordinates/sensors";
-import App from "../App.tsx";
 
 export const protectedRoutes = [
   {
-    path: "/app",
-    element: <App />,
+    path: ":coordinates",
+    element: <Coordinates />,
     children: [
       {
-        path: ":coordinates",
-        element: <Coordinates />,
+        path: "fields",
+        element: <Fields />,
         children: [
           {
-            path: "fields/",
-            element: <Fields />,
+            // add / fiedlId
+            path: ":param1",
             children: [
               {
-                // add / fiedlId
-                path: ":param1",
-                children: [
-                  {
-                    // edit / delete / display
-                    path: ":param2",
-                  },
-                ],
+                // edit / delete / display
+                path: ":param2",
               },
             ],
           },
-          {
-            path: "sensors/",
-            element: <Sensors />,
-          },
         ],
+      },
+      {
+        path: "sensors/",
+        element: <Sensors />,
       },
     ],
   },

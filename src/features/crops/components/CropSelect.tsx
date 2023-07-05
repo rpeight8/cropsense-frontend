@@ -9,7 +9,7 @@ import {
 import { useAppSelector } from "@/store";
 import { selectCrops } from "@/features/crops/cropsSlice";
 import { SelectGroup } from "@radix-ui/react-select";
-import { Crop } from "@/types";
+import { Crop } from "../types";
 
 type CropSelectProps = ElementProps<typeof Select> & {
   isLoading?: boolean;

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
-import { FieldId } from "@/types";
+import { FieldId } from "../types";
 import { Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

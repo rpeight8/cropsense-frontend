@@ -1,11 +1,8 @@
 import FieldEditButton from "@/features/fields/components/FieldEditButton";
 import FieldEditForm from "@/features/fields/components/FieldEditForm";
 import { useAppSelector } from "@/store";
-import { FieldAction, FieldId } from "@/types";
-import {
-  selectFields,
-} from "@features/fields/fieldsSlice";
-import { memo } from "react";
+import { FieldAction, FieldId } from "../../types";
+import { selectFields } from "@features/fields/fieldsSlice";
 
 type FieldsDetailContent = {
   isLoading?: boolean;

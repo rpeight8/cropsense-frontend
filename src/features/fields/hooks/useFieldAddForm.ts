@@ -2,15 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { z } from "zod";
-import { useMutateNewField } from "@/services/fields";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { CropSchema } from "@/schemas/crop";
-import { FieldGeometrySchema } from "@/schemas/field";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectAddFieldGeometry,
-} from "@/features/forms/formsSlice";
+import { selectAddFieldGeometry } from "@/features/forms/formsSlice";
+import { CropSchema } from "@/features/crops/schemas";
+import { useMutateNewField } from "../services";
+import { FieldGeometrySchema } from "../schemas";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -26,7 +24,6 @@ const useFieldAddForm = () => {
   const addFieldGeometry = useAppSelector(selectAddFieldGeometry);
   // const addField = useAppSelector(selectAddField);
 
-  const dispatch = useAppDispatch();
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",

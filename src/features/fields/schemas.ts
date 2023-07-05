@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { CropSchema } from "./crop";
-import { CoordinatesSchema } from "./map";
+import { CropSchema } from "@/features/crops/schemas";
+import { CoordinatesSchema } from "@/features/map/schemas";
 
 export const FieldHoleSchema = z.array(CoordinatesSchema);
 export const FieldPolygonSchema = z.array(CoordinatesSchema).min(1);

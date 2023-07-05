@@ -11,11 +11,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { useFieldAddForm } from "@/hooks/useFieldAddForm";
+import { useFieldAddForm } from "@/features/fields/hooks/useFieldAddForm";
 import { ComponentPropsWithoutRef, memo } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
-import { useCrops } from "@/services/crops";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
+import { useCrops } from "@/features/crops/services";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;
 

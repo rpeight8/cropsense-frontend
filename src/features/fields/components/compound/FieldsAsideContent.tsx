@@ -5,11 +5,9 @@ import FieldAddButton from "@/features/fields/components/FieldAddButton";
 import FieldAddForm from "@/features/fields/components/FieldAddForm";
 import { memo, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { FieldAction } from "@/types";
+import { FieldAction } from "../../types";
 import { Skeleton } from "@/components/ui/Skeleton";
-import {
-  resetAddField,
-} from "@/features/forms/formsSlice";
+import { resetAddField } from "@/features/forms/formsSlice";
 
 type FieldsSideBarProps = {
   isFieldsLoading?: boolean;

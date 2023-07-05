@@ -2,7 +2,8 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { FieldId, NDVI, NDVIByFieldId, NDVIs } from "@/types";
+import { NDVIByFieldId, NDVIs } from "./types";
+import { FieldId } from "../fields/types";
 
 type NDVIState = {
   ndvi: NDVIByFieldId;

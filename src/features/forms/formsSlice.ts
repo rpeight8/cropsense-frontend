@@ -7,7 +7,7 @@ import {
   FieldForCreation,
   FieldForUpdate,
   FieldGeometry,
-} from "@/types";
+} from "../fields/types";
 
 type FieldForCreationGeometry = Pick<FieldForCreation, "geometry">;
 type FieldForUpdateGeometry = Pick<FieldForUpdate, "geometry">;
@@ -52,12 +52,6 @@ export const formsSlice = createSlice({
     ) => {
       state.addField.geometry.coordinates = payload;
     },
-    // setAddFieldName: (state, { payload }: PayloadAction<string>) => {
-    //   state.addField.name = payload;
-    // },
-    // setAddFieldCrop: (state, { payload }: PayloadAction<Crop>) => {
-    //   state.addField.crop = payload;
-    // },
 
     setEditField: (state, { payload }: PayloadAction<FieldForUpdate>) => {
       state.editField = payload;
