@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import useSignupForm from "@/features/auth/hooks/useSignUpForm";
+import useSignUpForm from "../hooks/useSignUpForm";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 import { Input } from "@/components/ui/Input";
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/Button";
 type SignUpFormProps = ComponentPropsWithoutRef<"form">;
 
 const SignUpForm = ({ className }: SignUpFormProps) => {
-  const { form, onFormSubmit, onFormError } = useSignupForm();
+  const { form, onFormSubmit, onFormError } = useSignUpForm();
 
   return (
     <div className="h-full relative text-white">

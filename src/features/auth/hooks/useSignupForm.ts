@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 import { useAuth } from "./useAuth";
 import { useNavigate } from "react-router-dom";
 
-const useSignupForm = () => {
+const useSignUpForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,4 +56,4 @@ const useSignupForm = () => {
   };
 };
 
-export default useSignupForm;
+export default useSignUpForm;

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import useSignInForm from "@/features/auth/hooks/useSignInForm";
+import useSignInForm from "../hooks/useSignInForm";
 
 type SignInFormProps = ComponentPropsWithoutRef<"form">;
 
