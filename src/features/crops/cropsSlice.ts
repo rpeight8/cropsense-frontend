@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { Crops } from "@/types";
+import { Crops } from "./types";
 
 type CropsState = {
   crops: Crops;

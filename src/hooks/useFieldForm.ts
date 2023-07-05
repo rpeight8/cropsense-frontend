@@ -5,8 +5,8 @@ import { FieldAction } from "@/types";
 import {
   useFieldEditForm,
   FormSchema as FormUpdateSchema,
-} from "@hooks/useFieldEditForm";
-import { useFieldAddForm } from "@hooks/useFieldAddForm";
+} from "@/features/fields/hooks/useFieldEditForm";
+import { useFieldAddForm } from "@/features/fields/hooks/useFieldAddForm";
 
 // https://github.com/microsoft/TypeScript/issues/44392
 // https://github.com/microsoft/TypeScript/issues/1805

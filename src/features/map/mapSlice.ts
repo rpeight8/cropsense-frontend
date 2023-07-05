@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { Coordinates, Zoom } from "@/types";
+import { Coordinates, Zoom } from "./types";
 
 type MapState = {
   viewPort: {

@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Field, FieldForCreation, FieldForUpdate, FieldId } from "@/types";
-import { FieldSchema, FieldsSchema } from "@/schemas/field";
-
+import { Field, FieldForCreation, FieldForUpdate, FieldId } from "./types";
+import { FieldSchema, FieldsSchema } from "./schemas";
 import { useAppDispatch } from "@/store";
-import { set } from "@/features/fields/fieldsSlice";
+import { set } from "./fieldsSlice";
+import axios from "axios";
 
 export const useFields = () => {
   const dispatch = useAppDispatch();
@@ -13,15 +13,21 @@ export const useFields = () => {
     ["fields"],
     async (): Promise<Field[]> => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/fields`);
-        if (!res.ok) throw new Error("Network response was not ok.");
-        const data = await res.json();
-        FieldsSchema.parse(data);
-        dispatch(set(data));
-        return data;
+        const resp = await axios.get(`${import.meta.env.VITE_API_URL}/fields`, {
+          withCredentials: true,
+        });
+
+        const fields = FieldsSchema.parse(resp.data);
+        dispatch(set(fields));
+        return fields;
       } catch (error: unknown) {
-        console.log(error);
-        throw new Error("Error fetching fields.");
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error fetching fields."
+          );
+        } else {
+          throw new Error("Error fetching fields.");
+        }
       }
     },
     {
@@ -49,19 +55,24 @@ export const useMutateNewField = (
     },
     mutationFn: async (field: FieldForCreation) => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/fields`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(field),
-        });
-        if (!res.ok) throw new Error("Network response was not ok.");
-        const newField = FieldSchema.parse(await res.json());
+        const resp = await axios.post(
+          `${import.meta.env.VITE_API_URL}/fields`,
+          field,
+          {
+            withCredentials: true,
+          }
+        );
+
+        const newField = FieldSchema.parse(resp.data);
         return newField;
       } catch (error: unknown) {
-        console.log(error);
-        throw new Error("Error creating field.");
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error creating field."
+          );
+        } else {
+          throw new Error("Error creating field..");
+        }
       }
     },
   });
@@ -85,22 +96,24 @@ export const useMutateField = (
     },
     mutationFn: async (field: FieldForUpdate) => {
       try {
-        const res = await fetch(
+        const resp = await axios.put(
           `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
+          field,
           {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(field),
+            withCredentials: true,
           }
         );
-        if (!res.ok) throw new Error("Network response was not ok.");
-        const updatedField = FieldSchema.parse(await res.json());
+
+        const updatedField = FieldSchema.parse(resp.data);
         return updatedField;
       } catch (error: unknown) {
-        console.log(error);
-        throw new Error("Error updating field.");
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error updating field."
+          );
+        } else {
+          throw new Error("Error updating field.");
+        }
       }
     },
   });

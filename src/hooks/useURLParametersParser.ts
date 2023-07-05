@@ -1,6 +1,7 @@
-import { CoordinatesSchema, ZoomSchema } from "@/schemas/map";
-import { FieldActionsSchema } from "@/schemas/field";
-import { Coordinates, FieldAction, Zoom } from "@/types";
+import { CoordinatesSchema, ZoomSchema } from "@/features/map/schemas";
+import { FieldActionsSchema } from "@/features/fields/schemas";
+import { Coordinates, Zoom } from "@/features/map/types";
+import { FieldAction } from "@/features/fields/types";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 

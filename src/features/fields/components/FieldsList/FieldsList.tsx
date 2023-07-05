@@ -1,20 +1,11 @@
 import { ComponentPropsWithoutRef, useCallback } from "react";
 
-import {
-  selectFields,
-  selectHoveredFieldId,
-  setHoveredFieldId,
-} from "@/features/fields/fieldsSlice";
-import { useAppSelector } from "@/store";
-
 import List from "@/components/ui/List/List";
 import FieldListItem, {
   FieldListItemSkeleton,
 } from "@/features/fields/components/FieldsList/FieldListItem";
-import { Field, FieldId } from "@/types";
+import { Field } from "../../types";
 import { cn } from "@/lib/utils";
-import { useDispatch } from "react-redux";
-import { Skeleton } from "@/components/ui/Skeleton";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
   fields: Field[];

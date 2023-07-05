@@ -14,11 +14,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { FormSchema, useFieldEditForm } from "@/hooks/useFieldEditForm";
+import {
+  FormSchema,
+  useFieldEditForm,
+} from "@/features/fields/hooks/useFieldEditForm";
 import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
-import { useCrops } from "@/services/crops";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
+import { useCrops } from "@/features/crops/services";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
   field: z.infer<typeof FormSchema>;

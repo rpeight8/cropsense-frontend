@@ -2,14 +2,14 @@ import {
   selectNDVIByFieldId,
   selectSelectedNDVIId,
   setSelectedNDVIId,
-} from "@/features/ndvi/ndviSlice";
+} from "../ndviSlice";
 import List from "@/components/ui/List/List";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { FieldId } from "@/types";
 import NDVIDateButton from "./NDVIDateButton";
 import { cn, japaneseDateToShortDate } from "@/lib/utils";
 import { ComponentPropsWithoutRef, useCallback } from "react";
 import Spinner from "@/components/ui/Spinner";
+import { FieldId } from "@/features/fields/types";
 
 type NDVIDatesListProps = {
   fieldId: FieldId;

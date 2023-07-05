@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { Field, FieldGeometry, FieldId } from "@/types";
+import { Field, FieldGeometry, FieldId } from "./types";
 
 type FieldsState = {
   hoveredFieldId: FieldId | undefined;
@@ -79,5 +79,4 @@ export const selectNewLocalFieldGeometry = (state: RootState) =>
 export const selectEditLocalFieldGeometry = (state: RootState) =>
   state.fields.editLocalFieldGeometry;
 
-  
 export default fieldsSlice.reducer;

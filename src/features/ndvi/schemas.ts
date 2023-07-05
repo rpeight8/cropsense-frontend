@@ -1,5 +1,5 @@
+import { JapaneseDateFormatSchema } from "@/lib/utils";
 import { z } from "zod";
-import { JapaneseDateFormatSchema } from "./utils";
 
 export const NDVISchema = z.object({
   id: z.string(),

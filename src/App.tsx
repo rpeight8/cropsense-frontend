@@ -1,16 +1,7 @@
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import AppRoutes from "@/routes/AppRoutes";
 
 function App() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.pathname.split("/").length <= 1 || location.pathname === "/") {
-      navigate(`/52.4,31,15/fields`);
-    }
-  }, [location.pathname, navigate]);
-  return <Outlet />;
+  return <AppRoutes />;
 }
 
 export default App;

@@ -1,6 +1,6 @@
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { FieldForDisplay } from "@/types";
+import { FieldForDisplay } from "../../types";
 import { cn } from "@/lib/utils";
 
 import ListItem from "@/components/ui/List/ListItem";

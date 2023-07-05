@@ -1,12 +1,5 @@
-import {
-  useParams,
-  useNavigate,
-  Outlet,
-  useLocation,
-  Form,
-} from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
-import { useFields } from "@/services/fields";
 import FieldsAsideContent from "@/features/fields/components/compound/FieldsAsideContent";
 import FieldsMap from "@/features/fields/components/FieldsMap";
 import FieldsDetailContent from "@/features/fields/components/compound/FieldDetailContent";
@@ -20,19 +13,12 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
 import {
   selectCenter,
-  selectViewPort,
   selectZoom,
-  setCenter,
   setMapCoordinates,
-  setZoom,
 } from "@/features/map/mapSlice";
 import NDVISelector from "@/features/ndvi/components/NDVISelector";
-import { useNDVI } from "@/services/ndvi";
-import {
-  selectSelectedNDVIId,
-  setSelectedNDVIId,
-} from "@/features/ndvi/ndviSlice";
 import { cn } from "@/lib/utils";
+import { useFields } from "@/features/fields/services";
 
 const Fields = () => {
   const navigate = useNavigate();
@@ -56,14 +42,6 @@ const Fields = () => {
   const mapZoom = useAppSelector(selectZoom);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const dispatch = useAppDispatch();
-
-  // Validate url params
-  useEffect(() => {
-    if (!isCoordinatesValid || !isFieldsParamsValid) {
-      navigate(`/52.4,31,10/fields`);
-      return;
-    }
-  }, [isCoordinatesValid, isFieldsParamsValid, navigate]);
 
   useEffect(() => {
     if (!fieldId) {
@@ -110,7 +88,7 @@ const Fields = () => {
   }, [dispatch, initialCoordinates, initialZoom, mapCenter, mapZoom]);
 
   if (!isCoordinatesValid || !isFieldsParamsValid) {
-    return null;
+    return <Navigate to={`/52.4,31,10/fields`} replace />;
   }
 
   return (

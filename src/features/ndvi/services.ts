@@ -1,9 +1,11 @@
-import { NDVIsSchema } from "@/schemas/ndvi";
+import { NDVIsSchema } from "./schemas";
 import { useAppDispatch } from "@/store";
-import { FieldId, NDVI, NDVIByFieldId } from "@/types";
+import { NDVI, NDVIByFieldId } from "./types";
 import { useQuery } from "@tanstack/react-query";
-import { set } from "@/features/ndvi/ndviSlice";
+import { set } from "./ndviSlice";
 import { useToast } from "@/components/ui/Toast/useToast";
+import axios from "axios";
+import { FieldId } from "../fields/types";
 
 export const useNDVI = (fieldId: FieldId = "") => {
   const dispatch = useAppDispatch();
@@ -14,13 +16,14 @@ export const useNDVI = (fieldId: FieldId = "") => {
     async (): Promise<NDVI[]> => {
       if (!fieldId) return [];
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/ndvi/${fieldId}`
+        const resp = await axios.get(
+          `${import.meta.env.VITE_API_URL}/ndvi/${fieldId}`,
+          {
+            withCredentials: true,
+          }
         );
-        if (!res.ok) throw new Error("Network response was not ok.");
-        const ndvis = await res.json();
-        const parsedNDVIs = NDVIsSchema.parse(ndvis);
 
+        const parsedNDVIs = NDVIsSchema.parse(resp.data);
         dispatch(
           set(
             parsedNDVIs.reduce((acc, ndvi) => {
@@ -32,15 +35,15 @@ export const useNDVI = (fieldId: FieldId = "") => {
             }, {} as NDVIByFieldId)
           )
         );
-        return ndvis;
+        return parsedNDVIs;
       } catch (error: unknown) {
-        console.log(error);
-        toast({
-          title: "Error fetching ndvi.",
-          description: "Please try again later.",
-          variant: "destructive",
-        });
-        throw new Error("Error fetching ndvi.");
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error fetching ndvi."
+          );
+        } else {
+          throw new Error("Error fetching ndvi.");
+        }
       }
     },
     {

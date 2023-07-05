@@ -1,17 +1,10 @@
-import { cn, japaneseDateToShortDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
-import { ComponentPropsWithoutRef, memo, useEffect } from "react";
-import List from "@/components//ui/List/List";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectNDVIByFieldId,
-  selectSelectedNDVIId,
-  setSelectedNDVIId,
-} from "@/features/ndvi/ndviSlice";
-import { FieldId } from "@/types";
-import NDVIDateButton from "@/features/ndvi/components/NDVIDateButton";
-import { useNDVI } from "@/services/ndvi";
+import { ComponentPropsWithoutRef, memo } from "react";
+
+import { useNDVI } from "@/features/ndvi/services";
 import NDVIDatesList from "./NDVIDatesList";
+import { FieldId } from "@/features/fields/types";
 
 type NDVISelectorProps = ElementProps<typeof ScrollArea> &
   ComponentPropsWithoutRef<"div"> & {

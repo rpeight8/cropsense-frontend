@@ -1,24 +1,18 @@
-import { Outlet, useParams } from "react-router-dom";
-import Map from "@/features/fields/components/FieldsMap";
-import { FieldAction } from "@/types";
+import { Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";
 import Toaster from "@/components/ui/Toast/Toaster";
+import { memo } from "react";
 
-const Coordinates = () => {
-  const { coordinates } = useParams() as {
-    coordinates: string;
-    action: FieldAction;
-  };
-
+const Coordinates = memo(() => {
   const navigationItems = [
     {
       text: "Fields",
-      link: `/${coordinates}/fields`,
+      link: `fields`,
     },
     {
       text: "Sensors",
-      link: `/${coordinates}/sensors`,
+      link: `sensors`,
     },
   ];
 
@@ -43,6 +37,6 @@ const Coordinates = () => {
       </div>
     </>
   );
-};
+});
 
 export default Coordinates;
