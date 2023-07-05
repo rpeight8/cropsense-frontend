@@ -1,7 +1,6 @@
 import SubSideBar from "@/components/SubSideBar";
-import { useParams } from "react-router-dom";
 
-export const Sensors = () => {
+const SensorsLayout = () => {
   return (
     <div>
       <SubSideBar>
@@ -10,3 +9,5 @@ export const Sensors = () => {
     </div>
   );
 };
+
+export default SensorsLayout;

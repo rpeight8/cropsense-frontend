@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Toaster from "@/components/ui/Toast/Toaster";
 import { memo } from "react";
 
-const Coordinates = memo(() => {
+const CoordinatesLayout = memo(() => {
   const navigationItems = [
     {
       text: "Fields",
@@ -39,4 +39,4 @@ const Coordinates = memo(() => {
   );
 });
 
-export default Coordinates;
+export default CoordinatesLayout;

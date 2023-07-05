@@ -1,15 +1,15 @@
-import Coordinates from "@/pages/coordinates";
-import Fields from "@/pages/coordinates/fields";
-import { Sensors } from "@/pages/coordinates/sensors";
+import CoordinatesLayout from "@/components/CoordinatesLayout";
+import FieldsLayout from "@/features/fields/components/compound/FieldsLayout";
+import SensorsLayout from "@/features/sensors/components/SensorsLayout";
 
 export const protectedRoutes = [
   {
     path: ":coordinates",
-    element: <Coordinates />,
+    element: <CoordinatesLayout />,
     children: [
       {
         path: "fields",
-        element: <Fields />,
+        element: <FieldsLayout />,
         children: [
           {
             // add / fiedlId
@@ -25,7 +25,7 @@ export const protectedRoutes = [
       },
       {
         path: "sensors/",
-        element: <Sensors />,
+        element: <SensorsLayout />,
       },
     ],
   },
