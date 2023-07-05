@@ -16,7 +16,7 @@ const NDVISelector = memo(({ className, fieldId }: NDVISelectorProps) => {
 
   return (
     <div className={cn("flex justify-center h-11", {}, className)}>
-      <ScrollArea className="w-3/4 rounded-md bg-primary px-3">
+      <ScrollArea className="w-3/4 rounded-md px-3">
         {!isError && (
           <NDVIDatesList
             fieldId={fieldId}

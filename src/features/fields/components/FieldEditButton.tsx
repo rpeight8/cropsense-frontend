@@ -8,16 +8,12 @@ type EditFieldButtonProps = ElementProps<typeof Button> & {
   fieldId: FieldId;
 };
 
-const FieldEditButton = ({
-  fieldId,
-  variant = "secondary",
-  className,
-}: EditFieldButtonProps) => {
+const FieldEditButton = ({ fieldId, className }: EditFieldButtonProps) => {
   const navigate = useNavigate();
 
   return (
     <Button
-      variant={variant}
+      variant="default"
       className={className}
       onClick={() => {
         if (fieldId) {

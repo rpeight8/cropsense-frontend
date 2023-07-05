@@ -19,7 +19,7 @@ const SignInForm = ({ className }: SignInFormProps) => {
   const { form, onFormSubmit, onFormError } = useSignInForm();
 
   return (
-    <div className="h-full relative text-white">
+    <div className="h-full relative">
       <Form {...form}>
         <form
           className={cn("w-full h-full flex flex-col gap-y-5", className)}

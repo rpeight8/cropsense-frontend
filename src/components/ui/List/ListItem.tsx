@@ -6,7 +6,7 @@ type ListItem = PropsWithChildren & ComponentPropsWithoutRef<"li">;
 
 const ListItem = ({ children, className, ...props }: ListItem) => {
   return (
-    <li className={cn("text-base", className)} {...props}>
+    <li className={cn("", className)} {...props}>
       {children}
     </li>
   );

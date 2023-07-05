@@ -86,16 +86,16 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
           </div>
           <div className="flex">
             <Button
-              className="mr-auto bg-ternary/"
+              className="mr-auto"
               type="button"
-              variant="default"
+              variant="secondary"
               onClick={() => {
                 onCancel();
               }}
             >
               Cancel
             </Button>
-            <Button type="submit" variant="secondary" className="bg-accent-2">
+            <Button type="submit" variant="default">
               Submit
             </Button>
           </div>

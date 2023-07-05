@@ -16,13 +16,12 @@ const NDVIDateButton = ({
   return (
     <Button
       variant="default"
-      color={selected ? "primary" : "default"}
       onClick={onClick}
       className={cn(
         "w-20 h-10",
         {
-          "bg-accent-2 hover:bg-accent-2": selected,
-          "hover:bg-secondary": !selected,
+          "": selected,
+          "": !selected,
         },
         className
       )}

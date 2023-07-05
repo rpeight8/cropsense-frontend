@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef } from "react";
 
-type SkeletonProps = ComponentPropsWithoutRef<"div">;
-
-function Skeleton({ className, ...props }: SkeletonProps) {
+function Skeleton({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-secondary/20", className)}
+      className={cn("animate-pulse rounded-md bg-primary/10", className)}
       {...props}
     />
   );

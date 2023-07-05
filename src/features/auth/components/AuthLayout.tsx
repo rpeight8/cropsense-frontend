@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 const AuthLayout = () => {
   return (
-    <div className="w-full h-full flex justify-center items-center text-white">
+    <div className="w-full h-full flex justify-center items-center">
       <Tabs defaultValue="signin" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signin">Sign In</TabsTrigger>

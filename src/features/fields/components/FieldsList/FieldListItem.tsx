@@ -21,7 +21,7 @@ type FieldlistItemProps = Omit<FieldForDisplay, "crop"> &
 
 export const FieldListItemSkeleton = () => {
   return (
-    <ListItem className={cn("text-white flex")}>
+    <ListItem className={cn("flex")}>
       <Skeleton className="w-full my-1 p-5"></Skeleton>
     </ListItem>
   );
@@ -50,9 +50,9 @@ const FieldListItem = ({
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
       className={cn(
-        "text-white flex hover:bg-slate-600",
+        "flex",
         {
-          "bg-slate-600": id === hoveredFieldId,
+          "": id === hoveredFieldId,
         },
         className
       )}
@@ -60,7 +60,7 @@ const FieldListItem = ({
     >
       <Link
         className={cn("w-full p-2", {
-          "bg-cyan-700": selectedFieldId === id,
+          "": selectedFieldId === id,
         })}
         to={`${id}/display`}
       >

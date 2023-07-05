@@ -18,19 +18,13 @@ const CoordinatesLayout = memo(() => {
 
   return (
     <>
-      <div className={cn("flex bg-primary h-full gap-1")}>
-        <aside
-          className={cn(
-            "text-white basis-[200px] font-medium text-lg bg-primary"
-          )}
-        >
+      <div className={cn("flex h-full gap-1")}>
+        <aside className={cn("basis-[200px] font-medium text-lg")}>
           <nav className="h-full">
             <NavigationList items={navigationItems} />
           </nav>
         </aside>
-        <main
-          className={cn("flex w-full h-full text-white overflow-hidden", {})}
-        >
+        <main className={cn("flex w-full h-full overflow-hidden", {})}>
           <Outlet />
           <Toaster />
         </main>

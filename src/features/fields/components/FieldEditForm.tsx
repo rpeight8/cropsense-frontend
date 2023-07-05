@@ -92,9 +92,9 @@ const FieldEditForm = ({
           </div>
           <div className="flex">
             <Button
-              className="mr-auto bg-ternary"
+              className="mr-auto"
               type="button"
-              variant="default"
+              variant="secondary"
               onClick={() => {
                 form.reset();
                 navigate(-1);
@@ -102,7 +102,7 @@ const FieldEditForm = ({
             >
               Cancel
             </Button>
-            <Button type="submit" variant="secondary" className="bg-accent-2">
+            <Button type="submit" variant="default">
               Submit
             </Button>
           </div>

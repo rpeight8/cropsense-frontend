@@ -16,7 +16,7 @@ export const UserItem = ({ ...props }: ComponentPropsWithoutRef<"div">) => {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>User</NavigationMenuTrigger>
-          <NavigationMenuContent className="p-5 bg-slate-700">
+          <NavigationMenuContent className="p-5">
             <ul>
               <li>Profile</li>
               <li>Logout</li>

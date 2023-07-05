@@ -19,7 +19,7 @@ const NavigationList = ({ items }: NavigationListProps) => {
     return (
       <Fragment key={item.text}>
         <NavigationListItem {...item} />
-        <Separator className="bg-slate-400" />
+        <Separator />
       </Fragment>
     );
   }, []);
