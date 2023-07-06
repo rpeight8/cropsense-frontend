@@ -36,7 +36,7 @@ const FieldEditForm = ({
 }: FieldEditFormProps) => {
   const navigate = useNavigate();
   const { form, onErrors, onSubmit, isLoading } = useFieldEditForm(field);
-  // const isLoading = true;
+
   const {
     isLoading: isLoadingCrops,
     isFetching: isFetchingCrops,

@@ -23,7 +23,7 @@ const SpinnerLoader = ({
     >
       <div
         className={cn(
-          "bg-primary/80 absolute h-full w-full",
+          "bg-secondary/50 absolute h-full w-full",
           backgroundOverlayClassName
         )}
       />

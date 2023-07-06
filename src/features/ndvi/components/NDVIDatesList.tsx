@@ -3,7 +3,7 @@ import {
   selectSelectedNDVIId,
   setSelectedNDVIId,
 } from "../ndviSlice";
-import List from "@/components/ui/List/List";
+import List from "@/components/ui/List";
 import { useAppDispatch, useAppSelector } from "@/store";
 import NDVIDateButton from "./NDVIDateButton";
 import { cn, japaneseDateToShortDate } from "@/lib/utils";

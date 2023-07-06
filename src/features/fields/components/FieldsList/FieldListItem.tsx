@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { FieldForDisplay } from "../../types";
 import { cn } from "@/lib/utils";
 
-import ListItem from "@/components/ui/List/ListItem";
 import { ComponentPropsWithoutRef, useCallback } from "react";
 import {
   selectHoveredFieldId,
@@ -21,9 +20,9 @@ type FieldlistItemProps = Omit<FieldForDisplay, "crop"> &
 
 export const FieldListItemSkeleton = () => {
   return (
-    <ListItem className={cn("flex")}>
+    <li>
       <Skeleton className="w-full my-1 p-5"></Skeleton>
-    </ListItem>
+    </li>
   );
 };
 
@@ -46,13 +45,13 @@ const FieldListItem = ({
   }, [dispatch]);
 
   return (
-    <ListItem
+    <li
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
       className={cn(
         "flex",
         {
-          "": id === hoveredFieldId,
+          "bg-secondary/20": id === hoveredFieldId,
         },
         className
       )}
@@ -60,13 +59,13 @@ const FieldListItem = ({
     >
       <Link
         className={cn("w-full p-2", {
-          "": selectedFieldId === id,
+          "bg-secondary": selectedFieldId === id,
         })}
         to={`${id}/display`}
       >
         {name}
       </Link>
-    </ListItem>
+    </li>
   );
 };
 

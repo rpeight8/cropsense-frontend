@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectUser, setUser } from "../authSlice";
 import { useCallback, useState } from "react";
-import { signIn, verify, signUp } from "../services";
+import { signIn, verify, signUp, signOut } from "../services";
 import { Credentials } from "../types";
 
 export const useAuth = () => {
@@ -27,6 +27,22 @@ export const useAuth = () => {
     },
     [dispatch]
   );
+
+  const signOutUser = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await signOut();
+      dispatch(setUser(null));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error("Error signing out");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch]);
 
   const signUpWithCredentials = useCallback(
     async (credentials: Credentials) => {
@@ -67,6 +83,7 @@ export const useAuth = () => {
     verifyAuth,
     signInWithCredentials,
     signUpWithCredentials,
+    signOutUser,
     isLoading,
   };
 };

@@ -23,14 +23,14 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
   const {
     form,
     isError,
-    isLoading,
+    // isLoading,
     isSuccess,
+    isLoading,
     error,
     onSubmit,
     onCancel,
     onErrors,
   } = useFieldAddForm();
-
   const {
     isLoading: isLoadingCrops,
     isFetching: isFetchingCrops,
