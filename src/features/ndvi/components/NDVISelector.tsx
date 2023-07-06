@@ -3,7 +3,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
 import { ComponentPropsWithoutRef, memo, useCallback } from "react";
 
 import { useNDVI } from "@/features/ndvi/services";
-import NDVIDatesList from "./NDVIDatesList";
 import { FieldId } from "@/features/fields/types";
 import List from "@/components/ui/List";
 import {
@@ -61,7 +60,7 @@ const NDVISelector = memo(({ className, fieldId }: NDVISelectorProps) => {
   return (
     <div className={cn("flex justify-center h-11 ", {}, className)}>
       <ScrollArea className="w-3/4 rounded-lg px-3flex items-center justify-center bg-secondary">
-        {isLoading && (
+        {(isLoading || isFetching) && (
           <div className="w-full flex justify-center items-center h-11">
             <Spinner />
           </div>

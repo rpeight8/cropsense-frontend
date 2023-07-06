@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import SigninForm from "./SignInForm";
-import SignupForm from "./SignUpForm";
+import SignInForm from "./SignInForm";
+import SignUpForm from "./SignUpForm";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
@@ -25,7 +25,7 @@ const AuthLayout = () => {
               <CardDescription>Sign In using your credentials.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <SigninForm />
+              <SignInForm />
             </CardContent>
           </Card>
         </TabsContent>
@@ -36,7 +36,7 @@ const AuthLayout = () => {
               <CardDescription>Sign Up using your credentials </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <SignupForm />
+              <SignUpForm />
             </CardContent>
           </Card>
         </TabsContent>

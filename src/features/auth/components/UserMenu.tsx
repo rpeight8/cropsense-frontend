@@ -2,12 +2,9 @@ import { ComponentPropsWithoutRef } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from "@/components/ui/NavigationMenu";
 import { useAuth } from "../hooks/useAuth";
 import List, { ListItem } from "@/components/ui/List";

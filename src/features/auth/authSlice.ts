@@ -16,7 +16,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    set: (state, { payload }: PayloadAction<AuthState>) => {
+    set: (_, { payload }: PayloadAction<AuthState>) => {
       return payload;
     },
     setUser: (state, { payload }: PayloadAction<User | null>) => {

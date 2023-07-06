@@ -1,9 +1,4 @@
-import {
-  ComponentPropsWithoutRef,
-  PropsWithChildren,
-  ReactNode,
-  memo,
-} from "react";
+import { ComponentPropsWithoutRef, PropsWithChildren, memo } from "react";
 
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { cn } from "@/lib/utils";
