@@ -13,7 +13,6 @@ type FieldsDetailContent = {
 const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
   const fields = useAppSelector(selectFields);
   const selectedField = fields.find((f) => f.id === fieldId);
-
   return (
     <div className="p-1 pt-3 h-full flex w-full">
       {(action === "edit" && selectedField && (

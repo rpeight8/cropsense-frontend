@@ -5,15 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 type AddFieldButtonProps = ElementProps<typeof Button>;
 
-const AddFieldButton = ({
-  variant = "secondary",
-  className,
-  isLoading,
-}: AddFieldButtonProps) => {
+const AddFieldButton = ({ className, isLoading }: AddFieldButtonProps) => {
   const navigate = useNavigate();
   return (
     <Button
-      variant={variant}
+      variant="default"
       className={className}
       onClick={() => {
         navigate("add");

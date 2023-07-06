@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, useCallback } from "react";
 
-import List from "@/components/ui/List/List";
+import List from "@/components/ui/List";
 import FieldListItem, {
   FieldListItemSkeleton,
 } from "@/features/fields/components/FieldsList/FieldListItem";
@@ -32,21 +32,15 @@ const FieldsList = ({
     }));
 
     return (
-      <List
-        items={skeletonFields}
-        renderItem={renderSkeletonField}
-        className={className}
-        {...props}
-      />
+      <List className={className} {...props}>
+        {skeletonFields.map(renderSkeletonField)}
+      </List>
     );
   }
   return (
-    <List
-      items={fields}
-      renderItem={renderField}
-      className={cn("p-0", className)}
-      {...props}
-    />
+    <List className={cn("p-0", className)} {...props}>
+      {fields.map(renderField)}
+    </List>
   );
 };
 

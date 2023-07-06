@@ -25,15 +25,9 @@
       "@components/*": ["src/components/*"],
       "@components/ui/*": ["src/components/ui/*"],
       "@lib/*": ["src/lib/*"],
-      "@pages/*": ["src/pages/*"],
-      "@mirage/*": ["src/mirage/*"],
       "@features/*": ["src/features/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@schemas/*": ["src/schemas/*"],
-      "@providers/*": ["src/providers/*"],
-      "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"]
+      "@routes/*": ["src/routes/*"]
     }
   },
   "include": ["src"],
