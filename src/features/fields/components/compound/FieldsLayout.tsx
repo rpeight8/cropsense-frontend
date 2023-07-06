@@ -103,7 +103,7 @@ const Fields = () => {
       <div className="flex-1 flex flex-col relative">
         {selectedFieldId && (
           <NDVISelector
-            className="absolute z-[450] w-full flex-shrink"
+            className="absolute z-[450] w-full flex-shrink mt-2"
             fieldId={selectedFieldId}
           />
         )}
