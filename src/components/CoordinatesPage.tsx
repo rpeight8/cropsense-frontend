@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";
 import { memo, useEffect } from "react";
-import UserMenu from "@/features/auth/components/UserMenu";
+import UserMenu from "@/features/auth/components/UserPopover";
 import { Separator } from "@radix-ui/react-separator";
-import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
+import WorkspacesMenu from "@/features/workspaces/components/WorkspacesPopover";
 import {
   useWorkspaceSeasons,
   useWorkspaces,
@@ -15,7 +15,7 @@ import {
   setSelectedWorkspaceId,
   setWorkspaces,
 } from "@/features/workspaces/workspacesSlice";
-import SeasonsMenu from "@/features/seasons/components/SeasonsMenu";
+import SeasonsMenu from "@/features/seasons/components/SeasonsPopover";
 import {
   setSeasons,
   setSelectedSeasonId,
