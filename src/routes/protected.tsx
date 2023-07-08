@@ -1,5 +1,5 @@
 import CoordinatesLayout from "@/components/CoordinatesLayout";
-import FieldsLayout from "@/features/fields/components/compound/FieldsLayout";
+import FieldsLayout from "@/features/fields/components/FieldsLayout";
 import SensorsLayout from "@/features/sensors/components/SensorsLayout";
 
 export const protectedRoutes = [

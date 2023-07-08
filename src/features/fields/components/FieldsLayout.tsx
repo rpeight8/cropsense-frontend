@@ -1,13 +1,14 @@
 import { Navigate, useNavigate } from "react-router-dom";
 
-import FieldsAsideContent from "@/features/fields/components/compound/FieldsAsideContent";
+import FieldsAsideContent from "@/features/fields/components/FieldsAsideContent";
 import FieldsMap from "@/features/fields/components/FieldsMap";
-import FieldsDetailContent from "@/features/fields/components/compound/FieldDetailContent";
+import FieldsDetailContent from "@/features/fields/components/FieldDetailContent";
 import { useEffect } from "react";
 import {
   selectFieldId,
   selectFields,
   selectSelectedFieldId,
+  setFields,
 } from "@/features/fields/fieldsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
@@ -18,9 +19,11 @@ import {
 } from "@/features/map/mapSlice";
 import NDVISelector from "@/features/ndvi/components/NDVISelector";
 import { cn } from "@/lib/utils";
-import { useFields } from "@/features/fields/services";
+import { useSeasonFields } from "@/features/fields/services";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 
-const Fields = () => {
+const Fields = ({ match }: { match: any }) => {
+  console.log(match);
   const navigate = useNavigate();
   const {
     initialCoordinates,
@@ -30,13 +33,15 @@ const Fields = () => {
     action,
     fieldId,
   } = useURLParametersParser();
+
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+
   const {
+    data: fields,
+    isError: isFieldsError,
     isLoading: isFieldsLoading,
     isFetching: isFieldsFetching,
-    isError: isFieldsError,
-  } = useFields();
-
-  const fields = useAppSelector(selectFields);
+  } = useSeasonFields(selectedSeasonId);
 
   const mapCenter = useAppSelector(selectCenter);
   const mapZoom = useAppSelector(selectZoom);
@@ -44,52 +49,62 @@ const Fields = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!fieldId) {
-      if (selectedFieldId !== fieldId) {
-        dispatch(selectFieldId(fieldId));
-      }
-      return;
-    }
+    if (!fields) return;
 
-    if (!isFieldsLoading && !isFieldsFetching && fields.length !== 0) {
-      const field = fields.find((f) => f.id === fieldId);
-      if (!field) {
-        const navigatePath = `${initialCoordinates[0]},${initialCoordinates[1]},${initialZoom}/fields`;
-        navigate(navigatePath);
-      } else if (selectedFieldId !== fieldId) {
-        dispatch(selectFieldId(fieldId));
-      }
-    }
-  }, [
-    dispatch,
-    fieldId,
-    fields,
-    initialCoordinates,
-    initialZoom,
-    isFieldsLoading,
-    isFieldsFetching,
-    navigate,
-    selectedFieldId,
-  ]);
+    dispatch(setFields(fields));
+  }, [dispatch, fields]);
 
   useEffect(() => {
-    if (
-      initialCoordinates[0] !== mapCenter[0] ||
-      initialCoordinates[1] !== mapCenter[1] ||
-      initialZoom !== mapZoom
-    ) {
-      dispatch(
-        setMapCoordinates({
-          center: initialCoordinates,
-          zoom: initialZoom,
-        })
-      );
-    }
-  }, [dispatch, initialCoordinates, initialZoom, mapCenter, mapZoom]);
+    if (!fields) return;
 
-  if (!isCoordinatesValid || !isFieldsParamsValid) {
-    return <Navigate to={`/52.4,31,10/fields`} replace />;
-  }
+    if (fields.length > 0) {
+      dispatch(selectFieldId(fields[0].id || undefined));
+    }
+  }, [dispatch, fields]);
+
+  // useEffect(() => {
+  //   if (!fieldId) {
+  //     if (selectedFieldId !== fieldId) {
+  //       dispatch(selectFieldId(fieldId));
+  //     }
+  //     return;
+  //   }
+
+  //   if (!isFieldsLoading && !isFieldsFetching && fields.length !== 0) {
+  //     const field = fields.find((f) => f.id === fieldId);
+  //     if (!field) {
+  //       const navigatePath = `${initialCoordinates[0]},${initialCoordinates[1]},${initialZoom}/fields`;
+  //       navigate(navigatePath);
+  //     } else if (selectedFieldId !== fieldId) {
+  //       dispatch(selectFieldId(fieldId));
+  //     }
+  //   }
+  // }, [
+  //   dispatch,
+  //   fieldId,
+  //   fields,
+  //   initialCoordinates,
+  //   initialZoom,
+  //   isFieldsLoading,
+  //   isFieldsFetching,
+  //   navigate,
+  //   selectedFieldId,
+  // ]);
+
+  // useEffect(() => {
+  //   if (
+  //     initialCoordinates[0] !== mapCenter[0] ||
+  //     initialCoordinates[1] !== mapCenter[1] ||
+  //     initialZoom !== mapZoom
+  //   ) {
+  //     dispatch(
+  //       setMapCoordinates({
+  //         center: initialCoordinates,
+  //         zoom: initialZoom,
+  //       })
+  //     );
+  //   }
+  // }, [dispatch, initialCoordinates, initialZoom, mapCenter, mapZoom]);
 
   return (
     <>

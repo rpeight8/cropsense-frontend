@@ -30,7 +30,7 @@ export const fieldsSlice = createSlice({
     add: (state, { payload }: PayloadAction<Field>) => {
       state.fields.push(payload);
     },
-    set: (state, { payload }: PayloadAction<Field[]>) => {
+    setFields: (state, { payload }: PayloadAction<Field[]>) => {
       state.fields = payload;
     },
     setHoveredFieldId: (
@@ -60,7 +60,7 @@ export const fieldsSlice = createSlice({
 export const {
   remove,
   add,
-  set,
+  setFields,
   setHoveredFieldId,
   selectFieldId,
   setNewLocalFieldGeometry,

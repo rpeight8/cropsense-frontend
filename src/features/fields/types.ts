@@ -2,6 +2,8 @@ import { z } from "zod";
 import * as FieldSchemas from "./schemas";
 
 export type Field = z.infer<typeof FieldSchemas.FieldSchema>;
+export type Fields = z.infer<typeof FieldSchemas.FieldsSchema>;
+
 export type FieldForCreation = z.infer<
   typeof FieldSchemas.FieldForCreationSchema
 >;

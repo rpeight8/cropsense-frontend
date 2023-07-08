@@ -1,24 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Field, FieldForCreation, FieldForUpdate, FieldId } from "./types";
+import {
+  Field,
+  FieldForCreation,
+  FieldForUpdate,
+  FieldId,
+  Fields,
+} from "./types";
 import { FieldSchema, FieldsSchema } from "./schemas";
-import { useAppDispatch } from "@/store";
-import { set } from "./fieldsSlice";
 import axios from "axios";
 
-export const useFields = () => {
-  const dispatch = useAppDispatch();
-
-  return useQuery<Field[], Error>(
-    ["fields"],
-    async (): Promise<Field[]> => {
+export const useSeasonFields = (seasonId?: string) => {
+  return useQuery<Fields, Error>(
+    ["seasons", seasonId, "fields"],
+    async (): Promise<Fields> => {
       try {
-        const resp = await axios.get(`${import.meta.env.VITE_API_URL}/fields`, {
-          withCredentials: true,
-        });
-
+        const resp = await axios.get(
+          `${import.meta.env.VITE_API_URL}/seasons/${seasonId}/fields`,
+          {
+            withCredentials: true,
+          }
+        );
         const fields = FieldsSchema.parse(resp.data);
-        dispatch(set(fields));
+
         return fields;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -31,11 +35,12 @@ export const useFields = () => {
       }
     },
     {
+      enabled: !!seasonId,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      refetchInterval: 60000,
-      refetchIntervalInBackground: false,
+      staleTime: 60 * 1000 * 1,
+      refetchIntervalInBackground: true,
     }
   );
 };

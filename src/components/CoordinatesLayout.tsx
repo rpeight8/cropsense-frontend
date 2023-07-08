@@ -2,21 +2,69 @@ import { Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";
 import Toaster from "@/components/ui/Toast/Toaster";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import UserMenu from "@/features/auth/components/UserMenu";
 import { Separator } from "@radix-ui/react-separator";
+import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
+import {
+  useWorkspaceSeasons,
+  useWorkspaces,
+} from "@/features/workspaces/services";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  selectSelectedWorkspaceId,
+  selectWorkspace,
+  setSelectedWorkspaceId,
+  setWorkspaces,
+} from "@/features/workspaces/workspacesSlice";
+import SeasonsMenu from "@/features/seasons/components/SeasonsMenu";
+import {
+  selectSeasons,
+  selectSelectedSeasonId,
+  setSeasons,
+  setSelectedSeasonId,
+} from "@/features/seasons/seasonsSlice";
 
 const CoordinatesLayout = memo(() => {
-  const navigationItems = [
-    {
-      text: "Fields",
-      link: `fields`,
-    },
-    {
-      text: "Sensors",
-      link: `sensors`,
-    },
-  ];
+  const { data: workspaces } = useWorkspaces();
+  const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
+  const {
+    isLoading: isSeasonsLoading,
+    isFetching: isSeasonsFetching,
+    data: seasons,
+  } = useWorkspaceSeasons(selectedWorkspaceId);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!workspaces || !workspaces.length) return;
+
+    dispatch(setWorkspaces(workspaces));
+  }, [dispatch, workspaces]);
+
+  useEffect(() => {
+    if (!workspaces || !workspaces.length) return;
+
+    if (workspaces.length > 0) {
+      dispatch(setSelectedWorkspaceId(workspaces[0].id));
+    }
+  }, [dispatch, workspaces]);
+
+  useEffect(() => {
+    if (!seasons || !seasons.length) return;
+    dispatch(setSeasons(seasons));
+  }, [dispatch, seasons]);
+
+  useEffect(() => {
+    if (!seasons) return;
+
+    if (seasons.length > 0) {
+      dispatch(setSelectedSeasonId(seasons[0].id));
+    }
+  }, [dispatch, seasons, selectedWorkspaceId]);
+
+  // if (!isCoordinatesValid || !isFieldsParamsValid) {
+  //   return <Navigate to={`/52.4,31,10/fields`} replace />;
+  // }
 
   return (
     <>
@@ -24,17 +72,18 @@ const CoordinatesLayout = memo(() => {
         <aside
           className={cn("basis-[200px] font-medium text-lg flex flex-col")}
         >
-          <UserMenu className="my-4 text-xl" />
-
+          <WorkspacesMenu />
+          <SeasonsMenu />
           <Separator className="h-0.5 bg-border" />
 
-          <nav className="h-full">
-            <NavigationList items={navigationItems} />
+          <nav className="">
+            <NavigationList />
           </nav>
+
+          <UserMenu className="my-4 text-xl" />
         </aside>
         <main className={cn("flex w-full h-full overflow-hidden", {})}>
           <Outlet />
-          <Toaster />
         </main>
       </div>
     </>

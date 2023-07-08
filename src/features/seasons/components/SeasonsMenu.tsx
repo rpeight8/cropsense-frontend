@@ -6,17 +6,23 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/NavigationMenu";
-import { useAuth } from "../hooks/useAuth";
 import List, { ListItem } from "@/components/ui/List";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  selectSeasons,
+  selectSelectedSeasonId,
+  setSelectedSeasonId,
+} from "../seasonsSlice";
 
-const UserMenu = ({ className, ...props }: ComponentPropsWithoutRef<"div">) => {
-  const { user, signOutUser } = useAuth();
-
-  if (!user) {
-    return null;
-  }
+const SeasonsMenu = ({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div">) => {
+  const seasons = useAppSelector(selectSeasons);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+  const dispatch = useAppDispatch();
 
   return (
     <div className={cn(className)} {...props}>
@@ -24,19 +30,23 @@ const UserMenu = ({ className, ...props }: ComponentPropsWithoutRef<"div">) => {
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger placement="bottom" className="text-lg">
-              {user.email}
+              {seasons.find((season) => season.id === selectedSeasonId)?.name}
             </NavigationMenuTrigger>
             <NavigationMenuContent className="p-5">
               <List className="space-y-2">
                 <ListItem>
-                  <Button
-                    className="w-[100px]"
-                    onClick={() => {
-                      signOutUser();
-                    }}
-                  >
-                    Sign out
-                  </Button>
+                  {seasons.map((season) => (
+                    <Button
+                      variant="link"
+                      key={season.id}
+                      className="w-[100px]"
+                      onClick={() => {
+                        dispatch(setSelectedSeasonId(season.id));
+                      }}
+                    >
+                      {season.name}
+                    </Button>
+                  ))}
                 </ListItem>
               </List>
             </NavigationMenuContent>
@@ -47,4 +57,4 @@ const UserMenu = ({ className, ...props }: ComponentPropsWithoutRef<"div">) => {
   );
 };
 
-export default UserMenu;
+export default SeasonsMenu;
