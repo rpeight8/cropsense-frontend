@@ -16,8 +16,12 @@ import { ComponentPropsWithoutRef, memo } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 import { useCrops } from "@/features/crops/services";
+import { useAppSelector } from "@/store";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 
-type FieldsAddFormProps = ComponentPropsWithoutRef<"form">;
+type FieldsAddFormProps = ComponentPropsWithoutRef<"form"> & {
+  seasonId?: string;
+};
 
 const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
   const {

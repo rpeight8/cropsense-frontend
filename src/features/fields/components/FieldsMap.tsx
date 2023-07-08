@@ -45,15 +45,7 @@ export type { Map, LeafletPolygon as Polygon };
 export type OnEditVertexHandler = NonNullable<EditControlProps["onEdited"]>;
 export type OnCreatedHandler = NonNullable<EditControlProps["onCreated"]>;
 
-type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd"> & {
-  initialPosition?: [number, number];
-  initialZoom: number;
-  onFieldClick?: (fieldId: FieldId) => void;
-  onDragEnd?: (map: Map) => void;
-  onZoomEnd?: (map: Map) => void;
-  onFieldMouseOver?: (fieldId: FieldId) => void;
-  onFieldMouseOut?: () => void;
-};
+type MapProps = Omit<ComponentPropsWithoutRef<"div">, "onDragEnd">;
 
 const LEAFLET_DRAW_POLYGON_BUTTON_CLASS_SELECTOR = ".leaflet-draw-draw-polygon";
 const LEAFLET_EDIT_POLYGON_BUTTON_CLASS_SELECTOR = ".leaflet-draw-edit-edit";
@@ -222,6 +214,7 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
     return null;
   };
 
+  console.log(mapZoom, mapCenter);
   return (
     <MapContainer
       className={className}

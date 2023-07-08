@@ -45,14 +45,15 @@ export const useSeasonFields = (seasonId?: string) => {
   );
 };
 
-export const useMutateNewField = (
+export const useAddField = (
+  seasonId?: string,
   onSuccess?: (data: Field) => void,
   onError?: (error: Error) => void
 ) => {
   const queryClient = useQueryClient();
   const mutation = useMutation<Field, Error, FieldForCreation>({
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["fields"]);
+      queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
       onSuccess?.(data);
     },
     onError: (error) => {
@@ -61,15 +62,15 @@ export const useMutateNewField = (
     mutationFn: async (field: FieldForCreation) => {
       try {
         const resp = await axios.post(
-          `${import.meta.env.VITE_API_URL}/fields`,
+          `${import.meta.env.VITE_API_URL}/seasons/${seasonId}/fields`,
           field,
           {
             withCredentials: true,
           }
         );
 
-        const newField = FieldSchema.parse(resp.data);
-        return newField;
+        const craeteField = FieldSchema.parse(resp.data);
+        return craeteField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -85,15 +86,17 @@ export const useMutateNewField = (
   return mutation;
 };
 
-export const useMutateField = (
+export const useEditField = (
   fieldId: FieldId,
+  seasonId?: string,
   onSuccess?: (data: Field) => void,
   onError?: (error: Error) => void
 ) => {
   const queryClient = useQueryClient();
+
   const mutation = useMutation<Field, Error, FieldForUpdate>({
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["fields"]);
+      queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
       onSuccess?.(data);
     },
     onError: (error) => {

@@ -1,7 +1,6 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList/NavigationList";
 import { cn } from "@/lib/utils";
-import Toaster from "@/components/ui/Toast/Toaster";
 import { memo, useEffect } from "react";
 import UserMenu from "@/features/auth/components/UserMenu";
 import { Separator } from "@radix-ui/react-separator";
@@ -13,19 +12,18 @@ import {
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
-  selectWorkspace,
   setSelectedWorkspaceId,
   setWorkspaces,
 } from "@/features/workspaces/workspacesSlice";
 import SeasonsMenu from "@/features/seasons/components/SeasonsMenu";
 import {
-  selectSeasons,
-  selectSelectedSeasonId,
   setSeasons,
   setSelectedSeasonId,
 } from "@/features/seasons/seasonsSlice";
+import useURLParametersParser from "@/hooks/useURLParametersParser";
 
 const CoordinatesLayout = memo(() => {
+  const { isCoordinatesValid } = useURLParametersParser();
   const { data: workspaces } = useWorkspaces();
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const {
@@ -62,9 +60,9 @@ const CoordinatesLayout = memo(() => {
     }
   }, [dispatch, seasons, selectedWorkspaceId]);
 
-  // if (!isCoordinatesValid || !isFieldsParamsValid) {
-  //   return <Navigate to={`/52.4,31,10/fields`} replace />;
-  // }
+  if (!isCoordinatesValid) {
+    return <Navigate to={`/52.4,31,10/fields`} replace />;
+  }
 
   return (
     <>

@@ -6,7 +6,6 @@ import FieldsDetailContent from "@/features/fields/components/FieldDetailContent
 import { useEffect } from "react";
 import {
   selectFieldId,
-  selectFields,
   selectSelectedFieldId,
   setFields,
 } from "@/features/fields/fieldsSlice";
@@ -22,16 +21,14 @@ import { cn } from "@/lib/utils";
 import { useSeasonFields } from "@/features/fields/services";
 import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 
-const Fields = ({ match }: { match: any }) => {
-  console.log(match);
+const FieldsPage = () => {
   const navigate = useNavigate();
   const {
-    initialCoordinates,
-    initialZoom,
-    isCoordinatesValid,
-    isFieldsParamsValid,
+    initialCoordinates: coordinatesFromURL,
+    initialZoom: zoomFromURL,
     action,
-    fieldId,
+    fieldId: selectedFieldIdFromURL,
+    isFieldsParamsValid,
   } = useURLParametersParser();
 
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
@@ -54,57 +51,44 @@ const Fields = ({ match }: { match: any }) => {
     dispatch(setFields(fields));
   }, [dispatch, fields]);
 
+  // Sync selected field id from URL with redux store
   useEffect(() => {
     if (!fields) return;
 
-    if (fields.length > 0) {
-      dispatch(selectFieldId(fields[0].id || undefined));
+    if (selectedFieldIdFromURL) {
+      if (fields.some((f) => f.id === selectedFieldIdFromURL)) {
+        if (selectedFieldId !== selectedFieldIdFromURL) {
+          dispatch(selectFieldId(selectedFieldIdFromURL));
+        }
+      } else {
+        navigate(`.`);
+      }
+    } else {
+      if (selectedFieldId !== undefined) {
+        dispatch(selectFieldId(undefined));
+      }
     }
-  }, [dispatch, fields]);
+  }, [dispatch, fields, navigate, selectedFieldId, selectedFieldIdFromURL]);
 
-  // useEffect(() => {
-  //   if (!fieldId) {
-  //     if (selectedFieldId !== fieldId) {
-  //       dispatch(selectFieldId(fieldId));
-  //     }
-  //     return;
-  //   }
+  // Sync map center and zoom from URL with redux store
+  useEffect(() => {
+    if (
+      coordinatesFromURL[0] !== mapCenter[0] ||
+      coordinatesFromURL[1] !== mapCenter[1] ||
+      zoomFromURL !== mapZoom
+    ) {
+      dispatch(
+        setMapCoordinates({
+          center: coordinatesFromURL,
+          zoom: zoomFromURL,
+        })
+      );
+    }
+  }, [coordinatesFromURL, dispatch, mapCenter, mapZoom, zoomFromURL]);
 
-  //   if (!isFieldsLoading && !isFieldsFetching && fields.length !== 0) {
-  //     const field = fields.find((f) => f.id === fieldId);
-  //     if (!field) {
-  //       const navigatePath = `${initialCoordinates[0]},${initialCoordinates[1]},${initialZoom}/fields`;
-  //       navigate(navigatePath);
-  //     } else if (selectedFieldId !== fieldId) {
-  //       dispatch(selectFieldId(fieldId));
-  //     }
-  //   }
-  // }, [
-  //   dispatch,
-  //   fieldId,
-  //   fields,
-  //   initialCoordinates,
-  //   initialZoom,
-  //   isFieldsLoading,
-  //   isFieldsFetching,
-  //   navigate,
-  //   selectedFieldId,
-  // ]);
-
-  // useEffect(() => {
-  //   if (
-  //     initialCoordinates[0] !== mapCenter[0] ||
-  //     initialCoordinates[1] !== mapCenter[1] ||
-  //     initialZoom !== mapZoom
-  //   ) {
-  //     dispatch(
-  //       setMapCoordinates({
-  //         center: initialCoordinates,
-  //         zoom: initialZoom,
-  //       })
-  //     );
-  //   }
-  // }, [dispatch, initialCoordinates, initialZoom, mapCenter, mapZoom]);
+  if (!isFieldsParamsValid) {
+    return <Navigate to="." />;
+  }
 
   return (
     <>
@@ -122,11 +106,7 @@ const Fields = ({ match }: { match: any }) => {
             fieldId={selectedFieldId}
           />
         )}
-        <FieldsMap
-          className="flex-1"
-          initialZoom={initialZoom}
-          initialPosition={initialCoordinates}
-        />
+        <FieldsMap className="flex-1" />
         <div
           className={cn(
             "h-[350px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards",
@@ -148,4 +128,4 @@ const Fields = ({ match }: { match: any }) => {
   );
 };
 
-export default Fields;
+export default FieldsPage;
