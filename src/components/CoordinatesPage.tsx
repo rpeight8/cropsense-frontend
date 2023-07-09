@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList";
 import { cn } from "@/lib/utils";
 import { memo, useEffect } from "react";
-import UserMenu from "@/features/auth/components/UserPopover";
+import UserMenu from "@/features/auth/components/UserMenu";
 import { Separator } from "@radix-ui/react-separator";
 import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
 import {
