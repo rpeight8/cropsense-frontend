@@ -94,6 +94,7 @@ const WorkspacesMenu = ({
                 <Button
                   variant="link"
                   onClick={(e) => {
+                    // Prevent the list item from being selected
                     e.stopPropagation();
                     setIsManageDialogOpen(true);
                     setManagingWorkspace({ ...workspace });
