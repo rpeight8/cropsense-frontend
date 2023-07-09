@@ -32,9 +32,9 @@ const NavigationList = () => {
             <NavLink
               to={`${item.link}`}
               className={({ isActive }) => {
-                return cn("flex-1 p-2 hover:bg-secondary/20", {
-                  "bg-secondary/70": isActive,
-                  "hover:bg-secondary/70": isActive,
+                return cn("flex-1 p-2", {
+                  "bg-accent": isActive,
+                  "hover:bg-accent": !isActive,
                 });
               }}
             >

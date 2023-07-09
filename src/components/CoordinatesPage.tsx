@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import NavigationList from "@/components/NavigationList/NavigationList";
+import NavigationList from "@/components/NavigationList";
 import { cn } from "@/lib/utils";
 import { memo, useEffect } from "react";
 import UserMenu from "@/features/auth/components/UserPopover";

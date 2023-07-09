@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/Popover";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
+import { Edit, Plus } from "lucide-react";
 
 const SeasonsMenu = ({
   className,
@@ -39,21 +40,46 @@ const SeasonsMenu = ({
           {seasons.find((season) => season.id === selectedSeasonId)?.name}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto" side="right">
-        <div className="flex flex-col">
+      <PopoverContent className="w-64" side="right">
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none">Seasons</h4>
+          <p className="text-sm text-muted-foreground">Manage your seasons.</p>
+        </div>
+        {/* <div className="grid gap-4"> */}
+        <List>
           {seasons.map((season) => (
-            <Button
-              variant="link"
+            <ListItem
               key={season.id}
-              className="w-[100px]"
+              selected={season.id === selectedSeasonId}
+              className={cn(
+                "w-auto h-12 flex items-center justify-between px-2 rounded-md"
+              )}
               onClick={() => {
                 dispatch(setSelectedSeasonId(season.id));
               }}
             >
-              {season.name}
-            </Button>
+              <div className="w-full flex items-start justify-between">
+                <Button variant="link" className="pl-0">
+                  {season.name}
+                </Button>
+                <Button
+                  variant="link"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Edit size={16} />
+                </Button>
+              </div>
+            </ListItem>
           ))}
-        </div>
+        </List>
+
+        <Button variant="default" className="w-full">
+          <Plus className="h-4 w-4 mr-1" />
+          Add season
+        </Button>
+        {/* </div> */}
       </PopoverContent>
     </Popover>
   );

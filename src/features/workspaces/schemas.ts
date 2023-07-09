@@ -28,3 +28,8 @@ export const WorkspaceWithSeasonsWithFieldsSchema =
 export const WorkspacesWithSeasonsWithFieldsSchema = z.array(
   WorkspaceWithSeasonsWithFieldsSchema
 );
+
+export const WorkspaceForUpdateSchema = WorkspaceSchema;
+export const WorkspaceForCreateSchema = WorkspaceSchema.omit({
+  id: true,
+});
