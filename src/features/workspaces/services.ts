@@ -24,7 +24,7 @@ export const useWorkspaces = () => {
             withCredentials: true,
           }
         );
-        const workspaces = WorkspacesSchema.parse(resp.data);
+        const workspaces = await WorkspacesSchema.parseAsync(resp.data);
 
         return workspaces;
       } catch (error: unknown) {
@@ -47,7 +47,7 @@ export const useWorkspaces = () => {
   );
 };
 
-export const useWorkspaceSeasons = (workspaceId?: string) => {
+export const useWorkspaceSeasons = (workspaceId: string | null) => {
   return useQuery<Seasons, Error>(
     ["workspaces", workspaceId, "seasons"],
     async (): Promise<Seasons> => {
@@ -58,7 +58,7 @@ export const useWorkspaceSeasons = (workspaceId?: string) => {
             withCredentials: true,
           }
         );
-        const seasons = SeasonsSchema.parse(resp.data);
+        const seasons = SeasonsSchema.parseAsync(resp.data);
 
         return seasons;
       } catch (error: unknown) {
@@ -99,7 +99,7 @@ export const useUpdateWorkspace = (workspaceId: string) => {
           }
         );
 
-        const updatedWorkspace = WorkspaceSchema.parse(resp.data);
+        const updatedWorkspace = await WorkspaceSchema.parseAsync(resp.data);
         return updatedWorkspace;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -132,7 +132,7 @@ export const useDeleteWorkspace = (workspaceId: string) => {
           }
         );
 
-        const deletedWorkspace = WorkspaceSchema.parse(resp.data);
+        const deletedWorkspace = await WorkspaceSchema.parseAsync(resp.data);
         return deletedWorkspace;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -166,7 +166,7 @@ export const useCreateWorkspace = () => {
           }
         );
 
-        const createdWorkspace = WorkspaceSchema.parse(resp.data);
+        const createdWorkspace = await WorkspaceSchema.parseAsync(resp.data);
         return createdWorkspace;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

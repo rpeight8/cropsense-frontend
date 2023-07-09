@@ -79,12 +79,12 @@ const useFieldEditForm = (field: z.infer<typeof FormSchema>) => {
   );
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
+    async (data: z.infer<typeof FormSchema>) => {
       try {
         console.log(editFieldGeometry);
         const newField = {
           ...data,
-          geometry: FieldGeometrySchema.parse(editFieldGeometry),
+          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry),
         };
         fieldMutation.mutate(newField);
       } catch (err) {

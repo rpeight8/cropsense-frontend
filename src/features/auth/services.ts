@@ -12,7 +12,7 @@ export const signIn = async (credentials: Credentials) => {
       }
     );
 
-    const user = UserSchema.parse(resp.data);
+    const user = await UserSchema.parseAsync(resp.data);
     return user;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
@@ -61,7 +61,7 @@ export const verify = async () => {
       }
     );
 
-    const user = UserSchema.parse(resp.data);
+    const user = await UserSchema.parseAsync(resp.data);
     return user;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

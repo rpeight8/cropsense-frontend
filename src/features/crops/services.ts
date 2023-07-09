@@ -16,7 +16,7 @@ export const useCrops = () => {
           withCredentials: true,
         });
 
-        const crops = CropsSchema.parse(resp.data);
+        const crops = await CropsSchema.parseAsync(resp.data);
         dispatch(set(crops));
         return crops;
       } catch (error: unknown) {

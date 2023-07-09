@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { memo, useEffect } from "react";
 import UserMenu from "@/features/auth/components/UserPopover";
 import { Separator } from "@radix-ui/react-separator";
-import WorkspacesMenu from "@/features/workspaces/components/WorkspacesPopover";
+import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
 import {
   useWorkspaceSeasons,
   useWorkspaces,
@@ -12,11 +12,14 @@ import {
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
+  selectWorkspaces,
   setSelectedWorkspaceId,
   setWorkspaces,
 } from "@/features/workspaces/workspacesSlice";
-import SeasonsMenu from "@/features/seasons/components/SeasonsPopover";
+import SeasonsMenu from "@/features/seasons/components/SeasonsMenu";
 import {
+  selectSeasons,
+  selectSelectedSeasonId,
   setSeasons,
   setSelectedSeasonId,
 } from "@/features/seasons/seasonsSlice";
@@ -24,41 +27,66 @@ import useURLParametersParser from "@/hooks/useURLParametersParser";
 
 const CoordinatesLayout = memo(() => {
   const { isCoordinatesValid } = useURLParametersParser();
-  const { data: workspaces } = useWorkspaces();
+  const { data: responseWorkspaces } = useWorkspaces();
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
+  const storedWorkspaces = useAppSelector(selectWorkspaces);
   const {
     isLoading: isSeasonsLoading,
     isFetching: isSeasonsFetching,
-    data: seasons,
+    data: responseSeasons,
   } = useWorkspaceSeasons(selectedWorkspaceId);
+  const storedSeasons = useAppSelector(selectSeasons);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!workspaces || !workspaces.length) return;
-
-    dispatch(setWorkspaces(workspaces));
-  }, [dispatch, workspaces]);
-
-  useEffect(() => {
-    if (!workspaces || !workspaces.length) return;
-
-    if (workspaces.length > 0) {
-      dispatch(setSelectedWorkspaceId(workspaces[0].id));
+    if (!responseWorkspaces || !responseWorkspaces.length) {
+      dispatch(setWorkspaces([]));
+      return;
     }
-  }, [dispatch, workspaces]);
+
+    dispatch(setWorkspaces(responseWorkspaces));
+  }, [dispatch, responseWorkspaces]);
 
   useEffect(() => {
-    if (!seasons || !seasons.length) return;
-    dispatch(setSeasons(seasons));
-  }, [dispatch, seasons]);
-
-  useEffect(() => {
-    if (!seasons) return;
-
-    if (seasons.length > 0) {
-      dispatch(setSelectedSeasonId(seasons[0].id));
+    if (!storedWorkspaces || !storedWorkspaces.length) {
+      if (selectedWorkspaceId) dispatch(setSelectedWorkspaceId(null));
+      return;
     }
-  }, [dispatch, seasons, selectedWorkspaceId]);
+
+    if (
+      storedWorkspaces.some((workspace) => workspace.id === selectedWorkspaceId)
+    )
+      return;
+
+    dispatch(setSelectedWorkspaceId(storedWorkspaces[0].id));
+  }, [dispatch, storedWorkspaces, selectedWorkspaceId]);
+
+  useEffect(() => {
+    if (!responseSeasons || !responseSeasons.length) {
+      dispatch(setSeasons([]));
+      return;
+    }
+
+    dispatch(setSeasons(responseSeasons));
+  }, [dispatch, responseSeasons]);
+
+  useEffect(() => {
+    if (!responseSeasons || !responseSeasons.length) {
+      if (selectedSeasonId) setSelectedSeasonId(null);
+      return;
+    }
+
+    if (storedSeasons.some((season) => season.id === selectedSeasonId)) return;
+
+    dispatch(setSelectedSeasonId(responseSeasons[0].id));
+  }, [
+    dispatch,
+    responseSeasons,
+    selectedSeasonId,
+    selectedWorkspaceId,
+    storedSeasons,
+  ]);
 
   if (!isCoordinatesValid) {
     return <Navigate to={`/52.4,31,10/fields`} replace />;

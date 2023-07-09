@@ -214,7 +214,6 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
     return null;
   };
 
-  console.log(mapZoom, mapCenter);
   return (
     <MapContainer
       className={className}

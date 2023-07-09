@@ -68,11 +68,11 @@ const useFieldAddForm = () => {
     useAddField(selectedSeasonId, onMutateSuccess, onMutateError);
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
+    async (data: z.infer<typeof FormSchema>) => {
       try {
         const newField = {
           ...data,
-          geometry: FieldGeometrySchema.parse(addFieldGeometry),
+          geometry: await FieldGeometrySchema.parseAsync(addFieldGeometry),
         };
 
         newFieldMutation.mutate(newField);

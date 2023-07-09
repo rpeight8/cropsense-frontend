@@ -6,12 +6,12 @@ import { Workspaces } from "./types";
 
 type WorkspacesState = {
   workspaces: Workspaces;
-  selectedWorkspaceId: string | undefined;
+  selectedWorkspaceId: string | null;
 };
 
 const initialState: WorkspacesState = {
   workspaces: [],
-  selectedWorkspaceId: undefined,
+  selectedWorkspaceId: null,
 };
 
 export const workspacesSlice = createSlice({
@@ -23,7 +23,7 @@ export const workspacesSlice = createSlice({
     },
     setSelectedWorkspaceId: (
       state,
-      { payload }: PayloadAction<string | undefined>
+      { payload }: PayloadAction<string | null>
     ) => {
       state.selectedWorkspaceId = payload;
     },
@@ -33,7 +33,7 @@ export const workspacesSlice = createSlice({
 export const { setWorkspaces, setSelectedWorkspaceId } =
   workspacesSlice.actions;
 
-export const selectWorkspace = (state: RootState) =>
+export const selectWorkspaces = (state: RootState) =>
   state.workspaces.workspaces;
 export const selectSelectedWorkspaceId = (state: RootState) =>
   state.workspaces.selectedWorkspaceId;

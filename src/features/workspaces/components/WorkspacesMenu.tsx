@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
-  selectWorkspace,
+  selectWorkspaces,
   setSelectedWorkspaceId,
 } from "../workspacesSlice";
 import {
@@ -20,8 +20,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
-import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
 import { Edit, Plus } from "lucide-react";
 import WorkspaceManageDialog from "./WorkspaceManageDialog";
 import WorkspaceAddButton from "./WorkspaceAddButton";
@@ -32,7 +30,7 @@ const WorkspacesMenu = ({
   className,
   ...props
 }: ComponentPropsWithoutRef<"div">) => {
-  const workspaces = useAppSelector(selectWorkspace);
+  const workspaces = useAppSelector(selectWorkspaces);
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
 
@@ -46,7 +44,7 @@ const WorkspacesMenu = ({
     (workspace) => workspace.id === selectedWorkspaceId
   );
 
-  if (!workspaces) {
+  if (!workspaces || workspaces.length === 0) {
     return <WorkspaceAddButton className="w-full" />;
   }
 

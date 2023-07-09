@@ -10,7 +10,7 @@ import {
 import { FieldSchema, FieldsSchema } from "./schemas";
 import axios from "axios";
 
-export const useSeasonFields = (seasonId?: string) => {
+export const useSeasonFields = (seasonId: string | null) => {
   return useQuery<Fields, Error>(
     ["seasons", seasonId, "fields"],
     async (): Promise<Fields> => {
@@ -21,7 +21,7 @@ export const useSeasonFields = (seasonId?: string) => {
             withCredentials: true,
           }
         );
-        const fields = FieldsSchema.parse(resp.data);
+        const fields = await FieldsSchema.parseAsync(resp.data);
 
         return fields;
       } catch (error: unknown) {
@@ -46,7 +46,7 @@ export const useSeasonFields = (seasonId?: string) => {
 };
 
 export const useAddField = (
-  seasonId?: string,
+  seasonId: string | null,
   onSuccess?: (data: Field) => void,
   onError?: (error: Error) => void
 ) => {
@@ -69,7 +69,7 @@ export const useAddField = (
           }
         );
 
-        const craeteField = FieldSchema.parse(resp.data);
+        const craeteField = await FieldSchema.parseAsync(resp.data);
         return craeteField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -88,7 +88,7 @@ export const useAddField = (
 
 export const useEditField = (
   fieldId: FieldId,
-  seasonId?: string,
+  seasonId: string | null,
   onSuccess?: (data: Field) => void,
   onError?: (error: Error) => void
 ) => {
@@ -112,7 +112,7 @@ export const useEditField = (
           }
         );
 
-        const updatedField = FieldSchema.parse(resp.data);
+        const updatedField = await FieldSchema.parseAsync(resp.data);
         return updatedField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

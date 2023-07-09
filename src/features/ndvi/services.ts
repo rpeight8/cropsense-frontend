@@ -23,7 +23,7 @@ export const useNDVI = (fieldId: FieldId = "") => {
           }
         );
 
-        const parsedNDVIs = NDVIsSchema.parse(resp.data);
+        const parsedNDVIs = await NDVIsSchema.parseAsync(resp.data);
         dispatch(
           set(
             parsedNDVIs.reduce((acc, ndvi) => {

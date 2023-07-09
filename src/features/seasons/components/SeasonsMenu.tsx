@@ -23,6 +23,7 @@ import {
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Edit, Plus } from "lucide-react";
+import SeasonAddButton from "./SeasonAddButton";
 
 const SeasonsMenu = ({
   className,
@@ -31,6 +32,10 @@ const SeasonsMenu = ({
   const seasons = useAppSelector(selectSeasons);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const dispatch = useAppDispatch();
+
+  if (!seasons || seasons.length === 0) {
+    return <SeasonAddButton className="w-full" />;
+  }
 
   return (
     <Popover>
@@ -75,10 +80,7 @@ const SeasonsMenu = ({
           ))}
         </List>
 
-        <Button variant="default" className="w-full">
-          <Plus className="h-4 w-4 mr-1" />
-          Add season
-        </Button>
+        <SeasonAddButton className="w-full" />
         {/* </div> */}
       </PopoverContent>
     </Popover>

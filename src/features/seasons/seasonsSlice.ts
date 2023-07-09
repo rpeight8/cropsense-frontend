@@ -6,12 +6,12 @@ import { Seasons } from "./types";
 
 type WorkspacesState = {
   seasons: Seasons;
-  selectedSeasonId: string | undefined;
+  selectedSeasonId: string | null;
 };
 
 const initialState: WorkspacesState = {
   seasons: [],
-  selectedSeasonId: undefined,
+  selectedSeasonId: null,
 };
 
 export const seasonsSlice = createSlice({
@@ -23,7 +23,7 @@ export const seasonsSlice = createSlice({
     },
     setSelectedSeasonId: (
       state,
-      { payload }: PayloadAction<string | undefined>
+      { payload }: PayloadAction<string | null>
     ) => {
       state.selectedSeasonId = payload;
     },
