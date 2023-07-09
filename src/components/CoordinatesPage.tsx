@@ -27,7 +27,8 @@ import useURLParametersParser from "@/hooks/useURLParametersParser";
 
 const CoordinatesLayout = memo(() => {
   const { isCoordinatesValid } = useURLParametersParser();
-  const { data: responseWorkspaces } = useWorkspaces();
+  const { isLoading: isWorkspacesLoading, data: responseWorkspaces } =
+    useWorkspaces();
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const storedWorkspaces = useAppSelector(selectWorkspaces);
   const {
@@ -96,10 +97,12 @@ const CoordinatesLayout = memo(() => {
     <>
       <div className={cn("flex h-full gap-1")}>
         <aside
-          className={cn("basis-[200px] font-medium text-lg flex flex-col")}
+          className={cn(
+            "basis-[200px] font-medium text-lg flex flex-col p-1 gap-y-2"
+          )}
         >
-          <WorkspacesMenu />
-          <SeasonsMenu />
+          <WorkspacesMenu isLoading={isWorkspacesLoading} />
+          <SeasonsMenu isLoading={isWorkspacesLoading || isSeasonsLoading} />
           <Separator className="h-0.5 bg-border" />
 
           <nav className="">

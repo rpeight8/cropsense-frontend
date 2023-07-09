@@ -24,14 +24,20 @@ import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Edit, Plus } from "lucide-react";
 import SeasonAddButton from "./SeasonAddButton";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-const SeasonsMenu = ({
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"div">) => {
+type SeasonMenuProps = ComponentPropsWithoutRef<"div"> & {
+  isLoading?: boolean;
+};
+
+const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
   const seasons = useAppSelector(selectSeasons);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const dispatch = useAppDispatch();
+
+  if (isLoading) {
+    return <Skeleton className="w-full h-9" />;
+  }
 
   if (!seasons || seasons.length === 0) {
     return <SeasonAddButton className="w-full" />;

@@ -25,11 +25,17 @@ import WorkspaceManageDialog from "./WorkspaceManageDialog";
 import WorkspaceAddButton from "./WorkspaceAddButton";
 import { Workspace } from "../types";
 import WorkspaceAddDialog from "./WorkspaceAddDialog";
+import { Skeleton } from "@/components/ui/Skeleton";
+
+type WorkspacesMenuProps = ComponentPropsWithoutRef<"div"> & {
+  isLoading?: boolean;
+};
 
 const WorkspacesMenu = ({
   className,
+  isLoading,
   ...props
-}: ComponentPropsWithoutRef<"div">) => {
+}: WorkspacesMenuProps) => {
   const workspaces = useAppSelector(selectWorkspaces);
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
@@ -44,6 +50,10 @@ const WorkspacesMenu = ({
     (workspace) => workspace.id === selectedWorkspaceId
   );
 
+  if (isLoading) {
+    return <Skeleton className="w-full h-9" />;
+  }
+
   if (!workspaces || workspaces.length === 0) {
     return <WorkspaceAddButton className="w-full" />;
   }
@@ -54,11 +64,6 @@ const WorkspacesMenu = ({
         isOpen={isManageDialogOpen}
         setIsOpen={setIsManageDialogOpen}
         workspace={managingWorkspace}
-        onWorkspaceNameChange={(e) => {
-          const name = e.target.value;
-
-          setManagingWorkspace;
-        }}
       />
       <WorkspaceAddDialog
         isOpen={isAddDialogOpen}
@@ -74,7 +79,6 @@ const WorkspacesMenu = ({
             Manage your workspaces .
           </p>
         </div>
-        {/* <div className="grid gap-4"> */}
         <List>
           {workspaces.map((workspace) => (
             <ListItem
@@ -112,7 +116,6 @@ const WorkspacesMenu = ({
             setIsAddDialogOpen(true);
           }}
         />
-        {/* </div> */}
       </PopoverContent>
     </Popover>
   );
