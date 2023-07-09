@@ -40,11 +40,11 @@ const WorkspacesMenu = ({
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
 
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState<boolean>(false);
   const [managingWorkspace, setManagingWorkspace] = useState<Workspace | null>(
     null
   );
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
 
   if (isLoading) {
     return <Skeleton className="w-full h-9" />;

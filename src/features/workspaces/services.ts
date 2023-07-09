@@ -84,7 +84,6 @@ export const useWorkspaceSeasons = (workspaceId: string | null) => {
 
 export const useUpdateWorkspace = () => {
   const queryClient = useQueryClient();
-  useMutation;
   const mutation = useMutation<
     Workspace,
     Error,

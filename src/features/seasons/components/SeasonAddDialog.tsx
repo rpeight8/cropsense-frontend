@@ -1,25 +1,30 @@
+import { Button } from "@/components/ui/Button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/Dialog";
-import WorkspaceAddForm from "./WorkspaceAddForm";
+import SeasonAddForm from "./SeasonAddForm";
 import { useCallback } from "react";
 
-type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
+type SeasonAddDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  workspaceId: string;
 };
 
-const WorkspaceAddDialog = ({
+const SeasonAddDialog = ({
   isOpen,
   setIsOpen,
+  workspaceId,
   ...props
-}: WorkspaceManageDialogProps) => {
+}: SeasonAddDialogProps) => {
   // Should it be moved to somewhere else?
-  const handleAddWorkspace = useCallback(() => {
+  const handleAddSeason = useCallback(() => {
     setIsOpen(false);
   }, [setIsOpen]);
 
@@ -27,16 +32,16 @@ const WorkspaceAddDialog = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen} {...props}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add new workspace</DialogTitle>
+          <DialogTitle>Add new season</DialogTitle>
           <DialogDescription>
-            Add new workspace here. Click{" "}
+            Add new season here. Click{" "}
             <span className="font-semibold">Submit</span> when you're done.
           </DialogDescription>
         </DialogHeader>
-        <WorkspaceAddForm onAdd={handleAddWorkspace} />
+        <SeasonAddForm onAdd={handleAddSeason} workspaceId={workspaceId} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default WorkspaceAddDialog;
+export default SeasonAddDialog;

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,6 +25,9 @@ import { Input } from "@/components/ui/Input";
 import { Edit, Plus } from "lucide-react";
 import SeasonAddButton from "./SeasonAddButton";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { selectSelectedWorkspaceId } from "@/features/workspaces/workspacesSlice";
+import { Season } from "../types";
+import SeasonAddDialog from "./SeasonAddDialog";
 
 type SeasonMenuProps = ComponentPropsWithoutRef<"div"> & {
   isLoading?: boolean;
@@ -33,30 +36,48 @@ type SeasonMenuProps = ComponentPropsWithoutRef<"div"> & {
 const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
   const seasons = useAppSelector(selectSeasons);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+  const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
+
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState<boolean>(false);
+  const [managingSeason, setManagingSeason] = useState<Season | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
 
   if (isLoading) {
     return <Skeleton className="w-full h-9" />;
+  }
+
+  if (!selectedWorkspaceId) {
+    return <SeasonAddButton className="w-full" disabled />;
   }
 
   if (!seasons || seasons.length === 0) {
     return <SeasonAddButton className="w-full" />;
   }
 
+  const selectedSeason = seasons.find(
+    (season) => season.id === selectedSeasonId
+  );
+
   return (
     <Popover>
+      <SeasonAddDialog
+        isOpen={isAddDialogOpen}
+        setIsOpen={setIsAddDialogOpen}
+        workspaceId={selectedWorkspaceId}
+      />
+      {/* <SeasonManageDialog
+        isOpen={isManageDialogOpen}
+        setIsOpen={setIsManageDialogOpen}
+      /> */}
       <PopoverTrigger asChild>
-        <Button variant="ghost">
-          {" "}
-          {seasons.find((season) => season.id === selectedSeasonId)?.name}
-        </Button>
+        <Button variant="ghost"> {selectedSeason?.name}</Button>
       </PopoverTrigger>
       <PopoverContent className="w-64" side="right">
         <div className="space-y-2">
           <h4 className="font-medium leading-none">Seasons</h4>
           <p className="text-sm text-muted-foreground">Manage your seasons.</p>
         </div>
-        {/* <div className="grid gap-4"> */}
         <List>
           {seasons.map((season) => (
             <ListItem
@@ -76,7 +97,10 @@ const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
                 <Button
                   variant="link"
                   onClick={(e) => {
+                    // Prevent the list item from being selected
                     e.stopPropagation();
+                    setIsManageDialogOpen(true);
+                    setManagingSeason({ ...season });
                   }}
                 >
                   <Edit size={16} />
@@ -86,8 +110,12 @@ const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
           ))}
         </List>
 
-        <SeasonAddButton className="w-full" />
-        {/* </div> */}
+        <SeasonAddButton
+          className="w-full"
+          onClick={() => {
+            setIsAddDialogOpen(true);
+          }}
+        />
       </PopoverContent>
     </Popover>
   );

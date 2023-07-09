@@ -3,20 +3,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
-import { useDeleteWorkspace, useUpdateWorkspace } from "../services";
+import { useDeleteSeason, useUpdateSeason } from "../services";
 
 export const FormSchema = z.object({
   id: z.string(),
+  workspaceId: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
   name: z.string().min(1, {
     message: "Workspace name must be at least 1 characters.",
   }),
 });
 
-const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
+const useSeasonManageForm = (season: z.infer<typeof FormSchema>) => {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    defaultValues: workspace,
+    defaultValues: season,
     resolver: zodResolver(FormSchema),
   });
 
@@ -25,25 +28,25 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
     isSuccess: isUpdateSuccess,
     isError: isUpdateError,
     error: updateError,
-    data: updatedWorkspace,
-    ...workspaceSave
-  } = useUpdateWorkspace();
+    data: updatedSeason,
+    ...seasonSave
+  } = useUpdateSeason(season.id);
 
   const {
     isLoading: isDeleting,
     isSuccess: isDeleteSuccess,
     isError: isDeleteError,
     error: deleteError,
-    data: deletedWorkspace,
-    ...workspaceDelete
-  } = useDeleteWorkspace();
+    data: deletedSeason,
+    ...seasonDelete
+  } = useDeleteSeason(season.workspaceId);
 
   useEffect(() => {
     if (isUpdateSuccess) {
       toast({
         variant: "default",
         title: "Success",
-        description: "Workspace was updated.",
+        description: "Season was updated.",
       });
     }
   }, [isUpdateSuccess, toast]);
@@ -63,7 +66,7 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
       toast({
         variant: "default",
         title: "Success",
-        description: "Workspace was deleted.",
+        description: "Season was deleted.",
       });
     }
   }, [isDeleteSuccess, toast]);
@@ -86,23 +89,31 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
   );
 
   const onFormSubmit = useCallback(
-    (workspace: z.infer<typeof FormSchema>) => {
-      workspaceSave.mutate({ workspace, workspaceId: workspace.id });
+    (season: z.infer<typeof FormSchema>) => {
+      const preparedSeason = {
+        ...season,
+        startDate: season.startDate.toISOString(),
+        endDate: season.endDate.toISOString(),
+      };
+      seasonSave.mutate({
+        season: preparedSeason,
+        seasonId: preparedSeason.id,
+      });
     },
-    [workspaceSave]
+    [seasonSave]
   );
 
   const onFormDelete = useCallback(() => {
-    workspaceDelete.mutate(workspace.id);
-  }, [workspace.id, workspaceDelete]);
+    seasonDelete.mutate(season.id);
+  }, [season.id, seasonDelete]);
 
   return {
     form,
     onSubmit: onFormSubmit,
     onDelete: onFormDelete,
     onErrors: onFormValidationErrors,
-    updatedWorkspace: updatedWorkspace,
-    deletedWorkspace: deletedWorkspace,
+    updatedWorkspace: updatedSeason,
+    deletedWorkspace: deletedSeason,
     isLoading: isUpdating || isDeleting,
     isSuccess: isUpdateSuccess || isDeleteSuccess,
     isError: isUpdateError || isDeleteError,
@@ -110,4 +121,4 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
   };
 };
 
-export default useWorkspaceManageForm;
+export default useSeasonManageForm;
