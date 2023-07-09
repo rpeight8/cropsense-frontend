@@ -82,14 +82,18 @@ export const useWorkspaceSeasons = (workspaceId: string | null) => {
   );
 };
 
-export const useUpdateWorkspace = (workspaceId: string) => {
+export const useUpdateWorkspace = () => {
   const queryClient = useQueryClient();
-
-  const mutation = useMutation<Workspace, Error, WorkspaceForUpdate>({
+  useMutation;
+  const mutation = useMutation<
+    Workspace,
+    Error,
+    { workspace: WorkspaceForUpdate; workspaceId: string }
+  >({
     onSuccess: () => {
       queryClient.invalidateQueries(["workspaces"]);
     },
-    mutationFn: async (workspace: WorkspaceForUpdate) => {
+    mutationFn: async ({ workspace, workspaceId }) => {
       try {
         const resp = await axios.put(
           `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}`,
@@ -116,14 +120,14 @@ export const useUpdateWorkspace = (workspaceId: string) => {
   return mutation;
 };
 
-export const useDeleteWorkspace = (workspaceId: string) => {
+export const useDeleteWorkspace = () => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Workspace, Error>({
+  const mutation = useMutation<Workspace, Error, string>({
     onSuccess: () => {
       queryClient.invalidateQueries(["workspaces"]);
     },
-    mutationFn: async () => {
+    mutationFn: async (workspaceId) => {
       try {
         const resp = await axios.delete(
           `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}`,

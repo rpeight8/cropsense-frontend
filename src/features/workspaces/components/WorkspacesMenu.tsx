@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { ComponentPropsWithoutRef, useCallback, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -46,10 +46,6 @@ const WorkspacesMenu = ({
   );
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const selectedWorkspace = workspaces.find(
-    (workspace) => workspace.id === selectedWorkspaceId
-  );
-
   if (isLoading) {
     return <Skeleton className="w-full h-9" />;
   }
@@ -57,6 +53,10 @@ const WorkspacesMenu = ({
   if (!workspaces || workspaces.length === 0) {
     return <WorkspaceAddButton className="w-full" />;
   }
+
+  const selectedWorkspace = workspaces.find(
+    (workspace) => workspace.id === selectedWorkspaceId
+  );
 
   return (
     <Popover>

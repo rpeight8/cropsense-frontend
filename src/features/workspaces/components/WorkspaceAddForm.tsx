@@ -13,23 +13,34 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useEffect } from "react";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 import useWorkspaceAddForm from "../hooks/useWorkspaceAddForm";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
   wrapperClassName?: string;
+  onAdd?: () => void;
 };
 
 const WorkspaceAddForm = ({
   className,
   wrapperClassName,
+  onAdd,
   ...props
 }: FieldEditFormProps) => {
-  const { form, onErrors, onSubmit, isLoading } = useWorkspaceAddForm();
+  const { form, onErrors, onSubmit, isLoading, isSuccess } =
+    useWorkspaceAddForm();
+
+  // Should it be moved to somewhere else?
+  useEffect(() => {
+    if (isSuccess) {
+      onAdd?.();
+    }
+  }, [isSuccess, onAdd]);
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>
+      {isLoading && <SpinnerLoader />}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, onErrors)}

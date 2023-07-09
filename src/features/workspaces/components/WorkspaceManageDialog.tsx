@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Workspace } from "../types";
 import WorkspaceManageForm from "./WorkspaceManageForm";
+import useWorkspaceManageForm from "../hooks/useWorkspaceManageForm";
+import { useCallback } from "react";
 
 type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
@@ -25,6 +27,15 @@ const WorkspaceManageDialog = ({
   workspace,
   ...props
 }: WorkspaceManageDialogProps) => {
+  // Should it be moved to somewhere else?
+  const handleSaveWorkspace = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+  // Should it be moved to somewhere else?
+  const handleDeleteWorkspace = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
   if (!workspace) {
     return null;
   }
@@ -41,7 +52,11 @@ const WorkspaceManageDialog = ({
             workspace.
           </DialogDescription>
         </DialogHeader>
-        <WorkspaceManageForm workspace={workspace} />
+        <WorkspaceManageForm
+          workspace={workspace}
+          onDelete={handleDeleteWorkspace}
+          onSave={handleSaveWorkspace}
+        />
       </DialogContent>
     </Dialog>
   );

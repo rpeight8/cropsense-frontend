@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/Label";
 import { Workspace } from "../types";
 import WorkspaceManageForm from "./WorkspaceManageForm";
 import WorkspaceAddForm from "./WorkspaceAddForm";
+import { useCallback } from "react";
 
 type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
@@ -24,6 +25,11 @@ const WorkspaceAddDialog = ({
   setIsOpen,
   ...props
 }: WorkspaceManageDialogProps) => {
+  // Should it be moved to somewhere else?
+  const handleAddWorkspace = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} {...props}>
       <DialogContent className="sm:max-w-[425px]">
@@ -34,7 +40,7 @@ const WorkspaceAddDialog = ({
             <span className="font-semibold">Submit</span> when you're done.
           </DialogDescription>
         </DialogHeader>
-        <WorkspaceAddForm />
+        <WorkspaceAddForm onAdd={handleAddWorkspace} />
       </DialogContent>
     </Dialog>
   );

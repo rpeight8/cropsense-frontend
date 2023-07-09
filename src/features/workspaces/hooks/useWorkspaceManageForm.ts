@@ -27,7 +27,7 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
     error: updateError,
     data: updatedWorkspace,
     ...workspaceSave
-  } = useUpdateWorkspace(workspace.id);
+  } = useUpdateWorkspace();
 
   const {
     isLoading: isDeleting,
@@ -36,7 +36,7 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
     error: deleteError,
     data: deletedWorkspace,
     ...workspaceDelete
-  } = useDeleteWorkspace(workspace.id);
+  } = useDeleteWorkspace();
 
   useEffect(() => {
     if (isUpdateSuccess) {
@@ -86,14 +86,14 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
   );
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
-      workspaceSave.mutate(data);
+    (workspace: z.infer<typeof FormSchema>) => {
+      workspaceSave.mutate({ workspace, workspaceId: workspace.id });
     },
     [workspaceSave]
   );
 
   const onFormDelete = useCallback(() => {
-    workspaceDelete.mutate();
+    workspaceDelete.mutate(workspace.id);
   }, [workspaceDelete]);
 
   return {
