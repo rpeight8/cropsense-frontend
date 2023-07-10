@@ -5,6 +5,7 @@ import { FieldErrors, useForm } from "react-hook-form";
 import { endOfYear, startOfDay } from "date-fns";
 import { z } from "zod";
 import { useCreateSeason } from "../services";
+import { on } from "events";
 
 export const FormSchema = z
   .object({
@@ -19,9 +20,11 @@ export const FormSchema = z
     path: ["startDate"],
   });
 
-const useSeasonAddForm = (workspaceId: string) => {
-  const { toast } = useToast();
-
+const useSeasonAddForm = (
+  workspaceId: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",
@@ -31,34 +34,11 @@ const useSeasonAddForm = (workspaceId: string) => {
     resolver: zodResolver(FormSchema),
   });
 
-  const {
-    isLoading: isCreating,
-    isSuccess: isCreateSuccess,
-    isError: isCreateError,
-    error: createError,
-    data: createdSeason,
-    ...seasonSave
-  } = useCreateSeason(workspaceId);
-
-  useEffect(() => {
-    if (isCreateSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Season was created.",
-      });
-    }
-  }, [isCreateSuccess, toast]);
-
-  useEffect(() => {
-    if (isCreateError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: createError?.message,
-      });
-    }
-  }, [toast, isCreateError, createError?.message]);
+  const { isLoading, ...saveSeasonMutation } = useCreateSeason(
+    workspaceId,
+    onSuccess,
+    onError
+  );
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -68,25 +48,17 @@ const useSeasonAddForm = (workspaceId: string) => {
   );
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
-      const preparedSeason = {
-        ...data,
-      };
-      // return;
-      seasonSave.mutate(preparedSeason);
+    (season: z.infer<typeof FormSchema>) => {
+      saveSeasonMutation.mutate(season);
     },
-    [seasonSave]
+    [saveSeasonMutation]
   );
 
   return {
     form,
     onSubmit: onFormSubmit,
     onErrors: onFormValidationErrors,
-    createdSeason,
-    isLoading: isCreating,
-    isSuccess: isCreateSuccess,
-    isError: isCreateError,
-    error: createError,
+    isLoading,
   };
 };
 

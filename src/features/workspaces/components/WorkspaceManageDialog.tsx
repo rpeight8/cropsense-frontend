@@ -1,46 +1,39 @@
-import { Button } from "@/components/ui/Button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/Dialog";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
 import { Workspace } from "../types";
 import WorkspaceManageForm from "./WorkspaceManageForm";
-import useWorkspaceManageForm from "../hooks/useWorkspaceManageForm";
 import { useCallback } from "react";
-import useWorkspaceAddForm from "../hooks/useWorkspaceAddForm";
 import { useToast } from "@/components/ui/Toast/useToast";
 
 type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  workspace: Workspace | null;
+  workspaceToManage: Workspace;
 };
 
 const WorkspaceManageDialog = ({
   isOpen,
   setIsOpen,
-  workspace,
+  workspaceToManage,
   ...props
 }: WorkspaceManageDialogProps) => {
   const { toast } = useToast();
 
-  const handleWorkspaceSuccessUpdate = useCallback(() => {
+  const handleUpdateSuccess = useCallback(() => {
     setIsOpen(false);
     toast({
       variant: "default",
       title: "Success",
       description: "Workspace was updated.",
     });
-  }, [setIsOpen]);
+  }, [setIsOpen, toast]);
 
-  const handleWorkspaceErrorUpdate = useCallback(() => {
+  const handleUpdateError = useCallback(() => {
     toast({
       variant: "destructive",
       title: "Error",
@@ -48,7 +41,7 @@ const WorkspaceManageDialog = ({
     });
   }, [toast]);
 
-  const handleWorkspaceSuccessDelete = useCallback(() => {
+  const handleDeleteSuccess = useCallback(() => {
     setIsOpen(false);
     toast({
       variant: "default",
@@ -57,7 +50,7 @@ const WorkspaceManageDialog = ({
     });
   }, [setIsOpen, toast]);
 
-  const handleWorkspaceErrorDelete = useCallback(() => {
+  const handleDeleteError = useCallback(() => {
     toast({
       variant: "destructive",
       title: "Error",
@@ -65,16 +58,14 @@ const WorkspaceManageDialog = ({
     });
   }, [toast]);
 
-  if (!workspace) {
-    return null;
-  }
+ 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} {...props}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Manage workspace</DialogTitle>
           <DialogDescription>
-            Manage "<span className="font-semibold">{workspace.name}</span>"
+            Manage "<span className="font-semibold">{workspaceToManage.name}</span>"
             workspace here. Click <span className="font-semibold">Submit</span>{" "}
             when you're done with changes or{" "}
             <span className="font-semibold">Delete</span> to delete the
@@ -82,11 +73,11 @@ const WorkspaceManageDialog = ({
           </DialogDescription>
         </DialogHeader>
         <WorkspaceManageForm
-          workspaceToManage={workspace}
-          onUpdateSuccess={handleWorkspaceSuccessUpdate}
-          onUpdateError={handleWorkspaceErrorUpdate}
-          onDeleteSuccess={handleWorkspaceSuccessDelete}
-          onDeleteError={handleWorkspaceErrorDelete}
+          workspaceToManage={workspaceToManage}
+          onUpdateSuccess={handleUpdateSuccess}
+          onUpdateError={handleUpdateError}
+          onDeleteSuccess={handleDeleteSuccess}
+          onDeleteError={handleDeleteError}
         />
       </DialogContent>
     </Dialog>

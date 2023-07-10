@@ -1,4 +1,3 @@
-import { useAppDispatch } from "@/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -8,10 +7,8 @@ import {
   Workspaces,
 } from "./types";
 import { WorkspaceSchema, WorkspacesSchema } from "./schemas";
-import { setWorkspaces } from "./workspacesSlice";
 import { Seasons } from "../seasons/types";
-import { SeasonsFromApiSchema, SeasonsSchema } from "../seasons/schemas";
-import { setSeasons } from "../seasons/seasonsSlice";
+import { SeasonsFromApiSchema } from "../seasons/schemas";
 
 export const useWorkspaces = () => {
   return useQuery<Workspaces, Error>(

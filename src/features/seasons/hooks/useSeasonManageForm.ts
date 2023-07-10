@@ -4,6 +4,8 @@ import { useCallback, useEffect } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDeleteSeason, useUpdateSeason } from "../services";
+import { on } from "events";
+import { Season } from "../types";
 
 export const FormSchema = z.object({
   id: z.string(),
@@ -15,71 +17,36 @@ export const FormSchema = z.object({
   }),
 });
 
-const useSeasonManageForm = (season: z.infer<typeof FormSchema>) => {
-  const { toast } = useToast();
+type UseWorkspaceManageFormProps = {
+  season: Season;
+  onDeleteSuccess?: () => void;
+  onDeleteError?: () => void;
+  onUpdateSuccess?: () => void;
+  onUpdateError?: () => void;
+};
 
+const useSeasonManageForm = ({
+  season,
+  onDeleteError,
+  onDeleteSuccess,
+  onUpdateError,
+  onUpdateSuccess,
+}: UseWorkspaceManageFormProps) => {
+  const preparedSeason = {
+    ...season,
+    startDate: new Date(season.startDate),
+    endDate: new Date(season.endDate),
+  };
   const form = useForm<z.infer<typeof FormSchema>>({
-    defaultValues: season,
+    defaultValues: preparedSeason,
     resolver: zodResolver(FormSchema),
   });
 
-  const {
-    isLoading: isUpdating,
-    isSuccess: isUpdateSuccess,
-    isError: isUpdateError,
-    error: updateError,
-    data: updatedSeason,
-    ...seasonSave
-  } = useUpdateSeason(season.id);
+  const { isLoading: isUpdateLoading, ...updateSeasonMutation } =
+    useUpdateSeason(season.workspaceId, onUpdateSuccess, onUpdateError);
 
-  const {
-    isLoading: isDeleting,
-    isSuccess: isDeleteSuccess,
-    isError: isDeleteError,
-    error: deleteError,
-    data: deletedSeason,
-    ...seasonDelete
-  } = useDeleteSeason(season.workspaceId);
-
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Season was updated.",
-      });
-    }
-  }, [isUpdateSuccess, toast]);
-
-  useEffect(() => {
-    if (isUpdateError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: updateError?.message,
-      });
-    }
-  }, [updateError?.message, isUpdateError, toast]);
-
-  useEffect(() => {
-    if (isDeleteSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Season was deleted.",
-      });
-    }
-  }, [isDeleteSuccess, toast]);
-
-  useEffect(() => {
-    if (isDeleteError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: deleteError?.message,
-      });
-    }
-  }, [deleteError?.message, isDeleteError, toast]);
+  const { isLoading: isDeleteLoading, ...deleteSeasonMutation } =
+    useDeleteSeason(season.workspaceId, onDeleteSuccess, onDeleteError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -90,34 +57,24 @@ const useSeasonManageForm = (season: z.infer<typeof FormSchema>) => {
 
   const onFormSubmit = useCallback(
     (season: z.infer<typeof FormSchema>) => {
-      const preparedSeason = {
-        ...season,
-        // startDate: season.startDate.toISOString(),
-        // endDate: season.endDate.toISOString(),
-      };
-      seasonSave.mutate({
-        season: preparedSeason,
-        seasonId: preparedSeason.id,
+      updateSeasonMutation.mutate({
+        season: season,
+        seasonId: season.id,
       });
     },
-    [seasonSave]
+    [updateSeasonMutation]
   );
 
   const onFormDelete = useCallback(() => {
-    seasonDelete.mutate(season.id);
-  }, [season.id, seasonDelete]);
+    deleteSeasonMutation.mutate(season.id);
+  }, [season.id, deleteSeasonMutation]);
 
   return {
     form,
     onSubmit: onFormSubmit,
     onDelete: onFormDelete,
     onErrors: onFormValidationErrors,
-    updatedWorkspace: updatedSeason,
-    deletedWorkspace: deletedSeason,
-    isLoading: isUpdating || isDeleting,
-    isSuccess: isUpdateSuccess || isDeleteSuccess,
-    isError: isUpdateError || isDeleteError,
-    error: updateError || deleteError,
+    isLoading: isUpdateLoading || isDeleteLoading,
   };
 };
 

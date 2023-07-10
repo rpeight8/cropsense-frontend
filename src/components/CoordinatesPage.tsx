@@ -33,7 +33,6 @@ const CoordinatesLayout = memo(() => {
   const storedWorkspaces = useAppSelector(selectWorkspaces);
   const {
     isLoading: isSeasonsLoading,
-    isFetching: isSeasonsFetching,
     data: responseSeasons,
   } = useWorkspaceSeasons(selectedWorkspaceId);
   const storedSeasons = useAppSelector(selectSeasons);

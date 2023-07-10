@@ -1,32 +1,43 @@
-import { Button } from "@/components/ui/Button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/Dialog";
 import SeasonAddForm from "./SeasonAddForm";
 import { useCallback } from "react";
+import { useToast } from "@/components/ui/Toast/useToast";
 
 type SeasonAddDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  workspaceId: string;
+  addToWorkspaceId: string;
 };
 
 const SeasonAddDialog = ({
   isOpen,
   setIsOpen,
-  workspaceId,
+  addToWorkspaceId,
   ...props
 }: SeasonAddDialogProps) => {
-  // Should it be moved to somewhere else?
-  const handleAddSeason = useCallback(() => {
+  const { toast } = useToast();
+  const handleAddSeasonSuccess = useCallback(() => {
     setIsOpen(false);
-  }, [setIsOpen]);
+    toast({
+      variant: "default",
+      title: "Success",
+      description: "Season was created.",
+    });
+  }, [setIsOpen, toast]);
+
+  const handleAddSeasonError = useCallback(() => {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "An error occured while creating season.",
+    });
+  }, [toast]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} {...props}>
@@ -38,7 +49,11 @@ const SeasonAddDialog = ({
             <span className="font-semibold">Submit</span> when you're done.
           </DialogDescription>
         </DialogHeader>
-        <SeasonAddForm onAdd={handleAddSeason} workspaceId={workspaceId} />
+        <SeasonAddForm
+          onSuccess={handleAddSeasonSuccess}
+          onError={handleAddSeasonError}
+          addToWorkspaceId={addToWorkspaceId}
+        />
       </DialogContent>
     </Dialog>
   );

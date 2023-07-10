@@ -1,6 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import * as z from "zod";
-
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/Button";
@@ -13,33 +10,31 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import { ComponentPropsWithoutRef, useEffect } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 import useSeasonAddForm from "../hooks/useSeasonAddForm";
 import SeasonDatePicker from "./SeasonDatePicker";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
-  workspaceId: string;
+  addToWorkspaceId: string;
   wrapperClassName?: string;
-  onAdd?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 };
 
-const WorkspaceAddForm = ({
+const SeasonAddForm = ({
   className,
   wrapperClassName,
-  onAdd,
-  workspaceId,
+  onSuccess,
+  onError,
+  addToWorkspaceId,
   ...props
 }: FieldEditFormProps) => {
-  const { form, onErrors, onSubmit, isLoading, isSuccess } =
-    useSeasonAddForm(workspaceId);
-
-  // Should it be moved to somewhere else?
-  useEffect(() => {
-    if (isSuccess) {
-      onAdd?.();
-    }
-  }, [isSuccess, onAdd]);
+  const { form, onErrors, onSubmit, isLoading } = useSeasonAddForm(
+    addToWorkspaceId,
+    onSuccess,
+    onError
+  );
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>
@@ -79,7 +74,6 @@ const WorkspaceAddForm = ({
                           date={field.value}
                           buttonRef={field.ref}
                         />
-                        {/* <Input placeholder="Start Date" {...field} /> */}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -119,4 +113,4 @@ const WorkspaceAddForm = ({
   );
 };
 
-export default WorkspaceAddForm;
+export default SeasonAddForm;

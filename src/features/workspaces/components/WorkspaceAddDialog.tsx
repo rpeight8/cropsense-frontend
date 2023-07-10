@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/Dialog";
 import WorkspaceAddForm from "./WorkspaceAddForm";
 import { useCallback } from "react";
-import { useCreateWorkspace } from "../services";
-import { toast, useToast } from "@/components/ui/Toast/useToast";
+import { useToast } from "@/components/ui/Toast/useToast";
 
 type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
@@ -22,7 +21,7 @@ const WorkspaceAddDialog = ({
 }: WorkspaceManageDialogProps) => {
   const { toast } = useToast();
 
-  const handleAddWorkspaceSuccess = useCallback(() => {
+  const handleAddSuccess = useCallback(() => {
     setIsOpen(false);
     toast({
       variant: "default",
@@ -31,7 +30,7 @@ const WorkspaceAddDialog = ({
     });
   }, [setIsOpen, toast]);
 
-  const handleAddWorkspaceError = useCallback(() => {
+  const handleAddError = useCallback(() => {
     toast({
       variant: "destructive",
       title: "Success",
@@ -50,8 +49,8 @@ const WorkspaceAddDialog = ({
           </DialogDescription>
         </DialogHeader>
         <WorkspaceAddForm
-          onSuccess={handleAddWorkspaceSuccess}
-          onError={handleAddWorkspaceError}
+          onSuccess={handleAddSuccess}
+          onError={handleAddError}
         />
       </DialogContent>
     </Dialog>

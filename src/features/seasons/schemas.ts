@@ -6,6 +6,7 @@ export const SeasonSchema = z.object({
   name: z.string(),
   startDate: z.string(),
   endDate: z.string(),
+  workspaceId: z.string(),
 });
 export const SeasonsSchema = z.array(SeasonSchema);
 

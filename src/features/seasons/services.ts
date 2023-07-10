@@ -1,9 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Season, SeasonForCreate, SeasonForUpdate } from "./types";
-import { SeasonFromApiSchema, SeasonSchema } from "./schemas";
+import { SeasonFromApiSchema } from "./schemas";
 
-export const useUpdateSeason = (seasonId: string) => {
+export const useUpdateSeason = (
+  workspaceId: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
   const mutation = useMutation<
     Season,
@@ -11,9 +15,13 @@ export const useUpdateSeason = (seasonId: string) => {
     { season: SeasonForUpdate; seasonId: string }
   >({
     onSuccess: () => {
-      queryClient.invalidateQueries(["seasons", seasonId]);
+      queryClient.invalidateQueries(["workspaces", workspaceId, "seasons"]);
+      if (onSuccess) onSuccess();
     },
-    mutationFn: async ({ season }) => {
+    onError: () => {
+      if (onError) onError();
+    },
+    mutationFn: async ({ season, seasonId }) => {
       try {
         const resp = await axios.put(
           `${import.meta.env.VITE_API_URL}/seasons/${seasonId}`,
@@ -29,12 +37,12 @@ export const useUpdateSeason = (seasonId: string) => {
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
-            error.response?.data?.message || "Error updating workspace."
+            error.response?.data?.message || "Error updating season."
           );
         } else if (error instanceof Error) {
           throw new Error(error.message);
         } else {
-          throw new Error("Error updating workspace.");
+          throw new Error("Error updating season.");
         }
       }
     },
@@ -43,34 +51,41 @@ export const useUpdateSeason = (seasonId: string) => {
   return mutation;
 };
 
-export const useDeleteSeason = (workspaceId: string) => {
+export const useDeleteSeason = (
+  workspaceId: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Season, Error, string>({
+  const mutation = useMutation<void, Error, string>({
     onSuccess: () => {
-      queryClient.invalidateQueries(["workspaces", workspaceId]);
+      queryClient.invalidateQueries(["workspaces", workspaceId, "seasons"], {
+        exact: true,
+      });
+
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
     },
     mutationFn: async (seasonId) => {
       try {
-        const resp = await axios.delete(
+        await axios.delete(
           `${import.meta.env.VITE_API_URL}/seasons/${seasonId}`,
           {
             withCredentials: true,
           }
         );
-
-        const parsedSeason = await SeasonFromApiSchema.parseAsync(resp.data);
-
-        return parsedSeason;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
-            error.response?.data?.message || "Error deleting workspace."
+            error.response?.data?.message || "Error deleting season."
           );
         } else if (error instanceof Error) {
           throw new Error(error.message);
         } else {
-          throw new Error("Error deleting workspace.");
+          throw new Error("Error deleting season.");
         }
       }
     },
@@ -79,12 +94,20 @@ export const useDeleteSeason = (workspaceId: string) => {
   return mutation;
 };
 
-export const useCreateSeason = (workspaceId: string) => {
+export const useCreateSeason = (
+  workspaceId: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<Season, Error, SeasonForCreate>({
     onSuccess: () => {
       queryClient.invalidateQueries(["workspaces", workspaceId, "seasons"]);
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
     },
     mutationFn: async (season: SeasonForCreate) => {
       try {
@@ -104,6 +127,8 @@ export const useCreateSeason = (workspaceId: string) => {
           throw new Error(
             error.response?.data?.message || "Error creating season."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error creating season.");
         }
