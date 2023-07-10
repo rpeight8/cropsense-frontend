@@ -19,24 +19,21 @@ import useWorkspaceAddForm from "../hooks/useWorkspaceAddForm";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
   wrapperClassName?: string;
-  onAdd?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 };
 
 const WorkspaceAddForm = ({
   className,
   wrapperClassName,
-  onAdd,
+  onSuccess,
+  onError,
   ...props
 }: FieldEditFormProps) => {
-  const { form, onErrors, onSubmit, isLoading, isSuccess } =
-    useWorkspaceAddForm();
-
-  // Should it be moved to somewhere else?
-  useEffect(() => {
-    if (isSuccess) {
-      onAdd?.();
-    }
-  }, [isSuccess, onAdd]);
+  const { form, onErrors, onSubmit, isLoading } = useWorkspaceAddForm(
+    onSuccess,
+    onError
+  );
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>

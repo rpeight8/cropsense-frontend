@@ -26,6 +26,7 @@ import WorkspaceAddButton from "./WorkspaceAddButton";
 import { Workspace } from "../types";
 import WorkspaceAddDialog from "./WorkspaceAddDialog";
 import { Skeleton } from "@/components/ui/Skeleton";
+import useWorkspaceAddForm from "../hooks/useWorkspaceAddForm";
 
 type WorkspacesMenuProps = ComponentPropsWithoutRef<"div"> & {
   isLoading?: boolean;
@@ -36,6 +37,9 @@ const WorkspacesMenu = ({
   isLoading,
   ...props
 }: WorkspacesMenuProps) => {
+  const { isLoading: isL } = useWorkspaceAddForm();
+  console.log("Dialog:isLoading", isL);
+
   const workspaces = useAppSelector(selectWorkspaces);
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();

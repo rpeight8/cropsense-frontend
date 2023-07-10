@@ -86,15 +86,22 @@ export const useWorkspaceSeasons = (workspaceId: string | null) => {
   );
 };
 
-export const useUpdateWorkspace = () => {
+export const useUpdateWorkspace = (
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
   const mutation = useMutation<
     Workspace,
-    Error,
+    unknown,
     { workspace: WorkspaceForUpdate; workspaceId: string }
   >({
     onSuccess: () => {
-      queryClient.invalidateQueries(["workspaces"]);
+      queryClient.invalidateQueries(["workspaces"], { exact: true });
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
     },
     mutationFn: async ({ workspace, workspaceId }) => {
       try {
@@ -125,24 +132,28 @@ export const useUpdateWorkspace = () => {
   return mutation;
 };
 
-export const useDeleteWorkspace = () => {
+export const useDeleteWorkspace = (
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Workspace, Error, string>({
+  const mutation = useMutation<void, unknown, string>({
     onSuccess: () => {
       queryClient.invalidateQueries(["workspaces"]);
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
     },
     mutationFn: async (workspaceId) => {
       try {
-        const resp = await axios.delete(
+        await axios.delete(
           `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}`,
           {
             withCredentials: true,
           }
         );
-
-        const deletedWorkspace = await WorkspaceSchema.parseAsync(resp.data);
-        return deletedWorkspace;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -160,12 +171,19 @@ export const useDeleteWorkspace = () => {
   return mutation;
 };
 
-export const useCreateWorkspace = () => {
+export const useCreateWorkspace = (
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<Workspace, Error, WorkspaceForCreate>({
     onSuccess: () => {
-      queryClient.invalidateQueries(["workspaces"]);
+      queryClient.invalidateQueries(["workspaces"], { exact: true });
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
     },
     mutationFn: async (workspace: WorkspaceForCreate) => {
       try {

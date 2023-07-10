@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDeleteWorkspace, useUpdateWorkspace } from "../services";
+import { on } from "events";
 
 export const FormSchema = z.object({
   id: z.string(),
@@ -12,71 +13,31 @@ export const FormSchema = z.object({
   }),
 });
 
-const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
-  const { toast } = useToast();
+type UseWorkspaceManageFormProps = {
+  workspace: z.infer<typeof FormSchema>;
+  onDeleteSuccess?: () => void;
+  onDeleteError?: () => void;
+  onUpdateSuccess?: () => void;
+  onUpdateError?: () => void;
+};
 
+const useWorkspaceManageForm = ({
+  workspace,
+  onDeleteError,
+  onDeleteSuccess,
+  onUpdateError,
+  onUpdateSuccess,
+}: UseWorkspaceManageFormProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: workspace,
     resolver: zodResolver(FormSchema),
   });
 
-  const {
-    isLoading: isUpdating,
-    isSuccess: isUpdateSuccess,
-    isError: isUpdateError,
-    error: updateError,
-    data: updatedWorkspace,
-    ...workspaceSave
-  } = useUpdateWorkspace();
+  const { isLoading: isUpdateLoading, ...updateWorkspaceMutation } =
+    useUpdateWorkspace(onUpdateSuccess, onUpdateError);
 
-  const {
-    isLoading: isDeleting,
-    isSuccess: isDeleteSuccess,
-    isError: isDeleteError,
-    error: deleteError,
-    data: deletedWorkspace,
-    ...workspaceDelete
-  } = useDeleteWorkspace();
-
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Workspace was updated.",
-      });
-    }
-  }, [isUpdateSuccess, toast]);
-
-  useEffect(() => {
-    if (isUpdateError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: updateError?.message,
-      });
-    }
-  }, [updateError?.message, isUpdateError, toast]);
-
-  useEffect(() => {
-    if (isDeleteSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Workspace was deleted.",
-      });
-    }
-  }, [isDeleteSuccess, toast]);
-
-  useEffect(() => {
-    if (isDeleteError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: deleteError?.message,
-      });
-    }
-  }, [deleteError?.message, isDeleteError, toast]);
+  const { isLoading: isDeleteLoading, ...deleteWorkspaceMutation } =
+    useDeleteWorkspace(onDeleteSuccess, onDeleteError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -87,26 +48,21 @@ const useWorkspaceManageForm = (workspace: z.infer<typeof FormSchema>) => {
 
   const onFormSubmit = useCallback(
     (workspace: z.infer<typeof FormSchema>) => {
-      workspaceSave.mutate({ workspace, workspaceId: workspace.id });
+      updateWorkspaceMutation.mutate({ workspace, workspaceId: workspace.id });
     },
-    [workspaceSave]
+    [updateWorkspaceMutation]
   );
 
   const onFormDelete = useCallback(() => {
-    workspaceDelete.mutate(workspace.id);
-  }, [workspace.id, workspaceDelete]);
+    deleteWorkspaceMutation.mutate(workspace.id);
+  }, [deleteWorkspaceMutation, workspace.id]);
 
   return {
     form,
     onSubmit: onFormSubmit,
     onDelete: onFormDelete,
     onErrors: onFormValidationErrors,
-    updatedWorkspace: updatedWorkspace,
-    deletedWorkspace: deletedWorkspace,
-    isLoading: isUpdating || isDeleting,
-    isSuccess: isUpdateSuccess || isDeleteSuccess,
-    isError: isUpdateError || isDeleteError,
-    error: updateError || deleteError,
+    isLoading: isUpdateLoading || isDeleteLoading,
   };
 };
 

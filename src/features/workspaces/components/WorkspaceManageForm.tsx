@@ -21,35 +21,32 @@ import useWorkspaceManageForm, {
 } from "../hooks/useWorkspaceManageForm";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
-  workspace: z.infer<typeof FormSchema>;
-  onDelete?: () => void;
-  onSave?: () => void;
+  workspaceToManage: z.infer<typeof FormSchema>;
+  onDeleteSuccess?: () => void;
+  onUpdateSuccess?: () => void;
+  onDeleteError?: () => void;
+  onUpdateError?: () => void;
   wrapperClassName?: string;
 };
 
 const WorkspaceManageForm = ({
-  workspace,
+  workspaceToManage,
   className,
-  onDelete: handleDelete,
-  onSave: handleSave,
+  onDeleteSuccess,
+  onUpdateSuccess,
+  onDeleteError,
+  onUpdateError,
   wrapperClassName,
   ...props
 }: FieldEditFormProps) => {
-  const { form, onErrors, onSubmit, isLoading, onDelete, isSuccess } =
-    useWorkspaceManageForm(workspace);
-
-  // Should it be moved to somewhere else?
-  useEffect(() => {
-    if (isSuccess) {
-      handleSave?.();
-    }
-  }, [isSuccess, handleSave]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      handleDelete?.();
-    }
-  }, [handleDelete, isSuccess]);
+  const { form, onErrors, onSubmit, isLoading, onDelete } =
+    useWorkspaceManageForm({
+      workspace: workspaceToManage,
+      onDeleteSuccess,
+      onUpdateSuccess,
+      onDeleteError,
+      onUpdateError,
+    });
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>

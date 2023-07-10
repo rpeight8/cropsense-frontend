@@ -11,9 +11,7 @@ export const FormSchema = z.object({
   }),
 });
 
-const useWorkspaceAddForm = () => {
-  const { toast } = useToast();
-
+const useWorkspaceAddForm = (onSuccess?: () => void, onError?: () => void) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",
@@ -23,32 +21,9 @@ const useWorkspaceAddForm = () => {
 
   const {
     isLoading: isCreating,
-    isSuccess: isCreateSuccess,
-    isError: isCreateError,
     error: createError,
-    data: createdWorkspace,
-    ...workspaceSave
-  } = useCreateWorkspace();
-
-  useEffect(() => {
-    if (isCreateSuccess) {
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Workspace was created.",
-      });
-    }
-  }, [isCreateSuccess, toast]);
-
-  useEffect(() => {
-    if (isCreateError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: createError?.message,
-      });
-    }
-  }, [toast, isCreateError, createError?.message]);
+    ...saveWorskpaceMutation
+  } = useCreateWorkspace(onSuccess, onError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -59,19 +34,16 @@ const useWorkspaceAddForm = () => {
 
   const onFormSubmit = useCallback(
     (data: z.infer<typeof FormSchema>) => {
-      workspaceSave.mutate(data);
+      saveWorskpaceMutation.mutate(data);
     },
-    [workspaceSave]
+    [saveWorskpaceMutation]
   );
 
   return {
     form,
     onSubmit: onFormSubmit,
     onErrors: onFormValidationErrors,
-    createdWorkspace,
     isLoading: isCreating,
-    isSuccess: isCreateSuccess,
-    isError: isCreateError,
     error: createError,
   };
 };

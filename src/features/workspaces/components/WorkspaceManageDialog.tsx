@@ -14,6 +14,8 @@ import { Workspace } from "../types";
 import WorkspaceManageForm from "./WorkspaceManageForm";
 import useWorkspaceManageForm from "../hooks/useWorkspaceManageForm";
 import { useCallback } from "react";
+import useWorkspaceAddForm from "../hooks/useWorkspaceAddForm";
+import { useToast } from "@/components/ui/Toast/useToast";
 
 type WorkspaceManageDialogProps = ElementProps<typeof Dialog> & {
   isOpen: boolean;
@@ -27,14 +29,41 @@ const WorkspaceManageDialog = ({
   workspace,
   ...props
 }: WorkspaceManageDialogProps) => {
-  // Should it be moved to somewhere else?
-  const handleSaveWorkspace = useCallback(() => {
+  const { toast } = useToast();
+
+  const handleWorkspaceSuccessUpdate = useCallback(() => {
     setIsOpen(false);
+    toast({
+      variant: "default",
+      title: "Success",
+      description: "Workspace was updated.",
+    });
   }, [setIsOpen]);
-  // Should it be moved to somewhere else?
-  const handleDeleteWorkspace = useCallback(() => {
+
+  const handleWorkspaceErrorUpdate = useCallback(() => {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "An error occured while updating workspace.",
+    });
+  }, [toast]);
+
+  const handleWorkspaceSuccessDelete = useCallback(() => {
     setIsOpen(false);
-  }, [setIsOpen]);
+    toast({
+      variant: "default",
+      title: "Success",
+      description: "Workspace was deleted.",
+    });
+  }, [setIsOpen, toast]);
+
+  const handleWorkspaceErrorDelete = useCallback(() => {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "An error occured while deleting workspace.",
+    });
+  }, [toast]);
 
   if (!workspace) {
     return null;
@@ -53,9 +82,11 @@ const WorkspaceManageDialog = ({
           </DialogDescription>
         </DialogHeader>
         <WorkspaceManageForm
-          workspace={workspace}
-          onDelete={handleDeleteWorkspace}
-          onSave={handleSaveWorkspace}
+          workspaceToManage={workspace}
+          onUpdateSuccess={handleWorkspaceSuccessUpdate}
+          onUpdateError={handleWorkspaceErrorUpdate}
+          onDeleteSuccess={handleWorkspaceSuccessDelete}
+          onDeleteError={handleWorkspaceErrorDelete}
         />
       </DialogContent>
     </Dialog>
