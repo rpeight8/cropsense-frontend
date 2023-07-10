@@ -2,6 +2,7 @@ import { useToast } from "@/components/ui/Toast/useToast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
+import { endOfYear, startOfDay } from "date-fns";
 import { z } from "zod";
 import { useCreateSeason } from "../services";
 
@@ -24,8 +25,8 @@ const useSeasonAddForm = (workspaceId: string) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: startOfDay(new Date()),
+      endDate: endOfYear(new Date()),
     },
     resolver: zodResolver(FormSchema),
   });
