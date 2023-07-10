@@ -7,6 +7,8 @@ import ndviReducer from "@/features/ndvi/ndviSlice";
 import cropsReducer from "@/features/crops/cropsSlice";
 import formsReducer from "@/features/forms/formsSlice";
 import authReducer from "@/features/auth/authSlice";
+import workspacesReducer from "@/features/workspaces/workspacesSlice";
+import seasonsReducer from "@/features/seasons/seasonsSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ const store = configureStore({
     crops: cropsReducer,
     forms: formsReducer,
     auth: authReducer,
+    workspaces: workspacesReducer,
+    seasons: seasonsReducer,
   },
 });
 

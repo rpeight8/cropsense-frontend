@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        selected: {
+          DEFAULT: "hsl(var(--selected))",
+          foreground: "hsl(var(--selected-foreground))",
+        },
+        hovered: {
+          DEFAULT: "hsl(var(--hovered))",
+          foreground: "hsl(var(--hovered-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

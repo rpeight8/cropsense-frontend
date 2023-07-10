@@ -16,7 +16,7 @@ export const useCrops = () => {
           withCredentials: true,
         });
 
-        const crops = CropsSchema.parse(resp.data);
+        const crops = await CropsSchema.parseAsync(resp.data);
         dispatch(set(crops));
         return crops;
       } catch (error: unknown) {
@@ -24,6 +24,8 @@ export const useCrops = () => {
           throw new Error(
             error.response?.data?.message || "Error fetching crops."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error fetching crops.");
         }

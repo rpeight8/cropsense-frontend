@@ -12,6 +12,7 @@ import {
 import { useAppSelector } from "@/store";
 import { useDispatch } from "react-redux";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { ListItem } from "@/components/ui/List";
 
 type FieldlistItemProps = Omit<FieldForDisplay, "crop"> &
   ComponentPropsWithoutRef<"li"> & {
@@ -45,27 +46,23 @@ const FieldListItem = ({
   }, [dispatch]);
 
   return (
-    <li
+    <ListItem
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
+      selected={id === selectedFieldId}
       className={cn(
         "flex",
         {
-          "bg-secondary/20": id === hoveredFieldId,
+          "bg-accent": id === hoveredFieldId && id !== selectedFieldId,
         },
         className
       )}
       {...props}
     >
-      <Link
-        className={cn("w-full p-2", {
-          "bg-secondary": selectedFieldId === id,
-        })}
-        to={`${id}/display`}
-      >
+      <Link className={cn("w-full p-2")} to={`${id}/display`}>
         {name}
       </Link>
-    </li>
+    </ListItem>
   );
 };
 

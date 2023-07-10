@@ -11,7 +11,8 @@ import {
   setEditFieldGeometry,
 } from "@/features/forms/formsSlice";
 import { CropSchema } from "@/features/crops/schemas";
-import { useMutateField } from "../services";
+import { useEditField } from "../services";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -32,6 +33,7 @@ const useFieldEditForm = (field: z.infer<typeof FormSchema>) => {
 
   const dispatch = useAppDispatch();
   const editFieldGeometry = useAppSelector(selectEditFieldGeometry);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
 
   useEffect(() => {
     dispatch(setEditFieldGeometry(field.geometry));
@@ -61,7 +63,7 @@ const useFieldEditForm = (field: z.infer<typeof FormSchema>) => {
   );
 
   const { isLoading, isSuccess, isError, error, data, ...fieldMutation } =
-    useMutateField(field.id, onMutateSuccess, onMutateError);
+    useEditField(field.id, selectedSeasonId, onMutateSuccess, onMutateError);
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
@@ -77,12 +79,12 @@ const useFieldEditForm = (field: z.infer<typeof FormSchema>) => {
   );
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
+    async (data: z.infer<typeof FormSchema>) => {
       try {
         console.log(editFieldGeometry);
         const newField = {
           ...data,
-          geometry: FieldGeometrySchema.parse(editFieldGeometry),
+          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry),
         };
         fieldMutation.mutate(newField);
       } catch (err) {

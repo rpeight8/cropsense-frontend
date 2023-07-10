@@ -12,22 +12,29 @@ type ListItemDeclaration = {
   link: string;
 };
 
-type NavigationListProps = {
-  items: ListItemDeclaration[];
-};
+const navigationItems = [
+  {
+    text: "Fields",
+    link: `fields`,
+  },
+  {
+    text: "Sensors",
+    link: `sensors`,
+  },
+];
 
-const NavigationList = ({ items }: NavigationListProps) => {
+const NavigationList = () => {
   return (
     <ScrollArea className="h-full">
       <List>
-        {items.map((item) => (
+        {navigationItems.map((item) => (
           <li key={item.text} className="flex">
             <NavLink
               to={`${item.link}`}
               className={({ isActive }) => {
-                return cn("flex-1 p-2 hover:bg-secondary/20", {
-                  "bg-secondary/70": isActive,
-                  "hover:bg-secondary/70": isActive,
+                return cn("flex-1 p-2", {
+                  "bg-accent": isActive,
+                  "hover:bg-accent": !isActive,
                 });
               }}
             >

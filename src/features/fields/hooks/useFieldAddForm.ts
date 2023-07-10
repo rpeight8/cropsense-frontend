@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectAddFieldGeometry } from "@/features/forms/formsSlice";
 import { CropSchema } from "@/features/crops/schemas";
-import { useMutateNewField } from "../services";
+import { useAddField } from "../services";
 import { FieldGeometrySchema } from "../schemas";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -22,6 +23,7 @@ const useFieldAddForm = () => {
   const navigate = useNavigate();
 
   const addFieldGeometry = useAppSelector(selectAddFieldGeometry);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   // const addField = useAppSelector(selectAddField);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -63,14 +65,14 @@ const useFieldAddForm = () => {
   );
 
   const { isLoading, isSuccess, isError, error, data, ...newFieldMutation } =
-    useMutateNewField(onMutateSuccess, onMutateError);
+    useAddField(selectedSeasonId, onMutateSuccess, onMutateError);
 
   const onFormSubmit = useCallback(
-    (data: z.infer<typeof FormSchema>) => {
+    async (data: z.infer<typeof FormSchema>) => {
       try {
         const newField = {
           ...data,
-          geometry: FieldGeometrySchema.parse(addFieldGeometry),
+          geometry: await FieldGeometrySchema.parseAsync(addFieldGeometry),
         };
 
         newFieldMutation.mutate(newField);

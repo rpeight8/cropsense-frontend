@@ -21,11 +21,30 @@ export const List = ({ className, children, ...props }: ListProps) => {
   );
 };
 
-type ListItem = PropsWithChildren & ComponentPropsWithoutRef<"li">;
+type ListItem = PropsWithChildren &
+  ComponentPropsWithoutRef<"li"> & {
+    selected?: boolean;
+  };
 
-export const ListItem = ({ children, className, ...props }: ListItem) => {
+export const ListItem = ({
+  children,
+  className,
+  selected,
+  ...props
+}: ListItem) => {
   return (
-    <li className={cn("", className)} {...props}>
+    <li
+      className={cn(
+        "cursor-pointer",
+        {
+          "hover:bg-accent hover:text-accent-foreground transition-colors duration-150":
+            !selected,
+          "bg-accent text-accent-foreground": selected,
+        },
+        className
+      )}
+      {...props}
+    >
       {children}
     </li>
   );
