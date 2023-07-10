@@ -29,6 +29,8 @@ export const useSeasonFields = (seasonId: string | null) => {
           throw new Error(
             error.response?.data?.message || "Error fetching fields."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error fetching fields.");
         }
@@ -76,8 +78,10 @@ export const useAddField = (
           throw new Error(
             error.response?.data?.message || "Error creating field."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
-          throw new Error("Error creating field..");
+          throw new Error("Error creating field.");
         }
       }
     },
@@ -119,6 +123,8 @@ export const useEditField = (
           throw new Error(
             error.response?.data?.message || "Error updating field."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error updating field.");
         }

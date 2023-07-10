@@ -31,6 +31,8 @@ export const useUpdateSeason = (seasonId: string) => {
           throw new Error(
             error.response?.data?.message || "Error updating workspace."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error updating workspace.");
         }
@@ -65,6 +67,8 @@ export const useDeleteSeason = (workspaceId: string) => {
           throw new Error(
             error.response?.data?.message || "Error deleting workspace."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error deleting workspace.");
         }

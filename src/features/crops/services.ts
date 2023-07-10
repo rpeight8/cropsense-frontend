@@ -24,6 +24,8 @@ export const useCrops = () => {
           throw new Error(
             error.response?.data?.message || "Error fetching crops."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error fetching crops.");
         }

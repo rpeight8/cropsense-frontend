@@ -17,8 +17,10 @@ export const signIn = async (credentials: Credentials) => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Error logging in");
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
     } else {
-      throw new Error("Error logging in");
+      throw new Error("Error logging in.");
     }
   }
 };
@@ -31,6 +33,8 @@ export const signUp = async (credentials: Credentials) => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Error creating user");
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
     } else {
       throw new Error("Error creating user");
     }
@@ -45,8 +49,10 @@ export const signOut = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Error logging out");
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
     } else {
-      throw new Error("Error logging out");
+      throw new Error("Error logging out.");
     }
   }
 };
@@ -66,8 +72,10 @@ export const verify = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Error verifying user");
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
     } else {
-      throw new Error("Error verifying user");
+      throw new Error("Error verifying user.");
     }
   }
 };
