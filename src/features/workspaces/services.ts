@@ -10,7 +10,7 @@ import {
 import { WorkspaceSchema, WorkspacesSchema } from "./schemas";
 import { setWorkspaces } from "./workspacesSlice";
 import { Seasons } from "../seasons/types";
-import { SeasonsSchema } from "../seasons/schemas";
+import { SeasonsFromApiSchema, SeasonsSchema } from "../seasons/schemas";
 import { setSeasons } from "../seasons/seasonsSlice";
 
 export const useWorkspaces = () => {
@@ -32,6 +32,8 @@ export const useWorkspaces = () => {
           throw new Error(
             error.response?.data?.message || "Error fetching workspaces."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error fetching workspaces.");
         }
@@ -58,14 +60,16 @@ export const useWorkspaceSeasons = (workspaceId: string | null) => {
             withCredentials: true,
           }
         );
-        const seasons = SeasonsSchema.parseAsync(resp.data);
+        const parsedSeasons = await SeasonsFromApiSchema.parseAsync(resp.data);
 
-        return seasons;
+        return parsedSeasons;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
             error.response?.data?.message || "Error fetching seasons."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error fetching seasons.");
         }
@@ -109,6 +113,8 @@ export const useUpdateWorkspace = () => {
           throw new Error(
             error.response?.data?.message || "Error updating workspace."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error updating workspace.");
         }
@@ -142,6 +148,8 @@ export const useDeleteWorkspace = () => {
           throw new Error(
             error.response?.data?.message || "Error deleting workspace."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error deleting workspace.");
         }
@@ -176,6 +184,8 @@ export const useCreateWorkspace = () => {
           throw new Error(
             error.response?.data?.message || "Error creating workspace."
           );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
         } else {
           throw new Error("Error creating workspace.");
         }

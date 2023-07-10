@@ -5,13 +5,18 @@ import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateSeason } from "../services";
 
-export const FormSchema = z.object({
-  name: z.string().min(1, {
-    message: "Workspace name must be at least 1 characters.",
-  }),
-  startDate: z.date(),
-  endDate: z.date(),
-});
+export const FormSchema = z
+  .object({
+    name: z.string().min(1, {
+      message: "Workspace name must be at least 1 characters.",
+    }),
+    startDate: z.date(),
+    endDate: z.date(),
+  })
+  .refine((data) => data.startDate <= data.endDate, {
+    message: "Start date must be less than or equal to end date.",
+    path: ["startDate"],
+  });
 
 const useSeasonAddForm = (workspaceId: string) => {
   const { toast } = useToast();
@@ -65,9 +70,8 @@ const useSeasonAddForm = (workspaceId: string) => {
     (data: z.infer<typeof FormSchema>) => {
       const preparedSeason = {
         ...data,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
       };
+      // return;
       seasonSave.mutate(preparedSeason);
     },
     [seasonSave]

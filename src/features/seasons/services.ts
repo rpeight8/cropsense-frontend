@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Season, SeasonForCreate, SeasonForUpdate } from "./types";
-import { SeasonSchema } from "./schemas";
+import { SeasonFromApiSchema, SeasonSchema } from "./schemas";
 
 export const useUpdateSeason = (seasonId: string) => {
   const queryClient = useQueryClient();
@@ -23,8 +23,9 @@ export const useUpdateSeason = (seasonId: string) => {
           }
         );
 
-        const updatedWorkspace = await SeasonSchema.parseAsync(resp.data);
-        return updatedWorkspace;
+        const parsedSeason = await SeasonFromApiSchema.parseAsync(resp.data);
+
+        return parsedSeason;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -56,8 +57,9 @@ export const useDeleteSeason = (workspaceId: string) => {
           }
         );
 
-        const deletedWorkspace = await SeasonSchema.parseAsync(resp.data);
-        return deletedWorkspace;
+        const parsedSeason = await SeasonFromApiSchema.parseAsync(resp.data);
+
+        return parsedSeason;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -90,8 +92,9 @@ export const useCreateSeason = (workspaceId: string) => {
           }
         );
 
-        const createdWorkspace = await SeasonSchema.parseAsync(resp.data);
-        return createdWorkspace;
+        const parsedSeason = await SeasonFromApiSchema.parseAsync(resp.data);
+
+        return parsedSeason;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(

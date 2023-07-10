@@ -92,8 +92,8 @@ const useSeasonManageForm = (season: z.infer<typeof FormSchema>) => {
     (season: z.infer<typeof FormSchema>) => {
       const preparedSeason = {
         ...season,
-        startDate: season.startDate.toISOString(),
-        endDate: season.endDate.toISOString(),
+        // startDate: season.startDate.toISOString(),
+        // endDate: season.endDate.toISOString(),
       };
       seasonSave.mutate({
         season: preparedSeason,

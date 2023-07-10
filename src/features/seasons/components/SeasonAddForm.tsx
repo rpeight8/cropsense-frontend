@@ -68,16 +68,23 @@ const WorkspaceAddForm = ({
               <FormField
                 control={form.control}
                 name="startDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <SeasonDatePicker />
-                      {/* <Input placeholder="Start Date" {...field} /> */}
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <SeasonDatePicker
+                          onButtonBlur={field.onBlur}
+                          onButtonChange={field.onChange}
+                          date={field.value}
+                          buttonRef={field.ref}
+                        />
+                        {/* <Input placeholder="Start Date" {...field} /> */}
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
 
               <FormField
@@ -87,7 +94,12 @@ const WorkspaceAddForm = ({
                   <FormItem>
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
-                      <SeasonDatePicker />
+                      <SeasonDatePicker
+                        onButtonBlur={field.onBlur}
+                        onButtonChange={field.onChange}
+                        date={field.value}
+                        buttonRef={field.ref}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

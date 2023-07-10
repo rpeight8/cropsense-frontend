@@ -21,10 +21,7 @@ export const seasonsSlice = createSlice({
     setSeasons: (state, { payload }: PayloadAction<Seasons>) => {
       state.seasons = payload;
     },
-    setSelectedSeasonId: (
-      state,
-      { payload }: PayloadAction<string | null>
-    ) => {
+    setSelectedSeasonId: (state, { payload }: PayloadAction<string | null>) => {
       state.selectedSeasonId = payload;
     },
   },
