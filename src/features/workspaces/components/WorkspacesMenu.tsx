@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
-  selectWorkspaces,
   setSelectedWorkspaceId,
 } from "../workspacesSlice";
 import {
@@ -21,15 +20,12 @@ import { Workspace } from "../types";
 import WorkspaceAddDialog from "./WorkspaceAddDialog";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useWorkspaces } from "../services";
-import useURLParametersParser from "@/hooks/useURLParametersParser";
-import { useNavigate } from "react-router-dom";
 
-type WorkspacesMenuProps = ComponentPropsWithoutRef<"div">;
+// type WorkspacesMenuProps = ComponentPropsWithoutRef<"div">;
 
-const WorkspacesMenu = ({ className, ...props }: WorkspacesMenuProps) => {
-  const navigate = useNavigate();
+const WorkspacesMenu = () => {
   const { data: workspaces, isLoading } = useWorkspaces();
-  const { workspaceId: selectedWorkspaceId } = useURLParametersParser();
+  const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
 
   const [isManageDialogOpen, setIsManageDialogOpen] = useState<boolean>(false);

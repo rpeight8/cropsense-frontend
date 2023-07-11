@@ -4,8 +4,6 @@ import { Coordinates, Zoom } from "@/features/map/types";
 import { FieldAction } from "@/features/fields/types";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { WorkspaceIdURLSchema } from "@/features/workspaces/schemas";
-import { SeasonIdURLSchema } from "@/features/seasons/schemas";
 
 const getParsedURLCoordinatesParameters = (
   coordinates: string
@@ -27,38 +25,6 @@ const getParsedURLCoordinatesParameters = (
   } catch (err) {
     return { initialCoordinates: [52, 32], initialZoom: 15, valid: false };
   }
-};
-
-const getParsedWorkspaceIdParameter = (
-  workspaceId: string | undefined
-): { workspaceId: string | undefined; valid: boolean } => {
-  if (!workspaceId) {
-    return {
-      workspaceId,
-      valid: true,
-    };
-  }
-
-  return {
-    workspaceId,
-    valid: WorkspaceIdURLSchema.safeParse(workspaceId).success,
-  };
-};
-
-const getParsedSeasonIdParameter = (
-  seasonId: string | undefined
-): { seasonId: string | undefined; valid: boolean } => {
-  if (!seasonId) {
-    return {
-      seasonId,
-      valid: true,
-    };
-  }
-
-  return {
-    seasonId,
-    valid: SeasonIdURLSchema.safeParse(seasonId).success,
-  };
 };
 
 const getParsedURLFieldParameters = (
@@ -103,43 +69,22 @@ const getParsedURLFieldParameters = (
 };
 
 export const useURLParametersParser = () => {
-  const {
-    coordinates = "",
-    workspaceId = "",
-    seasonsId = "",
-    fieldParam1 = "",
-    fieldParam2 = "",
-  } = useParams();
+  const { coordinates = "", param1 = "", param2 = "" } = useParams();
 
   const parsedURLCoordinatesParameters = useMemo(
     () => getParsedURLCoordinatesParameters(coordinates),
     [coordinates]
   );
-
-  const parsedURLWorkspaceId = useMemo(
-    () => getParsedWorkspaceIdParameter(workspaceId),
-    [workspaceId]
-  );
-
-  const parsedURLSeasonsId = useMemo(
-    () => getParsedSeasonIdParameter(seasonsId),
-    [seasonsId]
-  );
-
   const parsedURLFieldParameters = useMemo(
-    () => getParsedURLFieldParameters(fieldParam1, fieldParam2),
-    [fieldParam1, fieldParam2]
+    () => getParsedURLFieldParameters(param1, param2),
+    [param1, param2]
   );
 
   return {
     ...parsedURLCoordinatesParameters,
     ...parsedURLFieldParameters,
-    ...parsedURLWorkspaceId,
-    ...parsedURLSeasonsId,
     isCoordinatesValid: parsedURLCoordinatesParameters.valid,
     isFieldsParamsValid: parsedURLFieldParameters.valid,
-    isWorkspaceIdValid: parsedURLWorkspaceId.valid,
-    isSeasonIdValid: parsedURLSeasonsId.valid,
   };
 };
 

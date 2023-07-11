@@ -6,7 +6,7 @@ import { Field, FieldGeometry, FieldId } from "./types";
 
 type FieldsState = {
   hoveredFieldId: FieldId | undefined;
-  selectedFieldId: FieldId | undefined;
+  selectedFieldId: FieldId | null;
   newLocalFieldGeometry: FieldGeometry | undefined;
   editLocalFieldGeometry: FieldGeometry | undefined;
   fields: Field[];
@@ -16,7 +16,7 @@ const initialState: FieldsState = {
   fields: [],
   newLocalFieldGeometry: undefined,
   editLocalFieldGeometry: undefined,
-  selectedFieldId: undefined,
+  selectedFieldId: null,
   hoveredFieldId: undefined,
 };
 
@@ -39,7 +39,7 @@ export const fieldsSlice = createSlice({
     ) => {
       state.hoveredFieldId = payload;
     },
-    selectFieldId: (state, { payload }: PayloadAction<FieldId | undefined>) => {
+    setSelectedFieldId: (state, { payload }: PayloadAction<FieldId | null>) => {
       state.selectedFieldId = payload;
     },
     setNewLocalFieldGeometry: (
@@ -62,7 +62,7 @@ export const {
   add,
   setFields,
   setHoveredFieldId,
-  selectFieldId,
+  setSelectedFieldId,
   setNewLocalFieldGeometry,
   setEditLocalFieldGeometry,
 } = fieldsSlice.actions;
