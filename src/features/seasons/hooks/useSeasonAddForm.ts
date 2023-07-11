@@ -34,7 +34,7 @@ const useSeasonAddForm = (
     resolver: zodResolver(FormSchema),
   });
 
-  const { isLoading, ...saveSeasonMutation } = useCreateSeason(
+  const { isLoading, ...createSeasonMutation } = useCreateSeason(
     workspaceId,
     onSuccess,
     onError
@@ -49,9 +49,9 @@ const useSeasonAddForm = (
 
   const onFormSubmit = useCallback(
     (season: z.infer<typeof FormSchema>) => {
-      saveSeasonMutation.mutate(season);
+      createSeasonMutation.mutate(season);
     },
-    [saveSeasonMutation]
+    [createSeasonMutation]
   );
 
   return {

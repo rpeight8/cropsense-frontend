@@ -1,43 +1,30 @@
 import { ComponentPropsWithoutRef, useState } from "react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/NavigationMenu";
 import List, { ListItem } from "@/components/ui/List";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectSeasons,
-  selectSelectedSeasonId,
-  setSelectedSeasonId,
-} from "../seasonsSlice";
+import { selectSelectedSeasonId, setSelectedSeasonId } from "../seasonsSlice";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
-import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
-import { Edit, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import SeasonAddButton from "./SeasonAddButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { selectSelectedWorkspaceId } from "@/features/workspaces/workspacesSlice";
 import { Season } from "../types";
 import SeasonAddDialog from "./SeasonAddDialog";
 import SeasonManageDialog from "./SeasonManageDialog";
+import { useWorkspaceSeasons } from "../services";
 
-type SeasonMenuProps = ComponentPropsWithoutRef<"div"> & {
-  isLoading?: boolean;
-};
+type SeasonMenuProps = ComponentPropsWithoutRef<"div">;
 
-const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
-  const seasons = useAppSelector(selectSeasons);
-  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+const SeasonsMenu = ({ className, ...props }: SeasonMenuProps) => {
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+  const { data: seasons, isLoading } = useWorkspaceSeasons(selectedWorkspaceId);
+
   const dispatch = useAppDispatch();
 
   const [isManageDialogOpen, setIsManageDialogOpen] = useState<boolean>(false);
@@ -48,7 +35,7 @@ const SeasonsMenu = ({ className, isLoading, ...props }: SeasonMenuProps) => {
     return <Skeleton className="w-full h-9" />;
   }
 
-  if (!selectedWorkspaceId) {
+  if (!selectedWorkspaceId || !seasons) {
     return <SeasonAddButton className="w-full" disabled />;
   }
 

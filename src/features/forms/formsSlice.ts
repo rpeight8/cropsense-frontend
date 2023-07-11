@@ -4,12 +4,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import {
   FieldCoordinates,
-  FieldForCreation,
+  FieldForCreate,
   FieldForUpdate,
   FieldGeometry,
 } from "../fields/types";
 
-type FieldForCreationGeometry = Pick<FieldForCreation, "geometry">;
+type FieldForCreationGeometry = Pick<FieldForCreate, "geometry">;
 type FieldForUpdateGeometry = Pick<FieldForUpdate, "geometry">;
 
 type FormsState = {
@@ -40,7 +40,7 @@ export const formsSlice = createSlice({
   name: "forms",
   initialState: initialState,
   reducers: {
-    setAddField: (state, { payload }: PayloadAction<FieldForCreation>) => {
+    setAddField: (state, { payload }: PayloadAction<FieldForCreate>) => {
       state.addField = payload;
     },
     setAddFieldGeometry: (state, { payload }: PayloadAction<FieldGeometry>) => {

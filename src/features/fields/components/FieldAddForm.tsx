@@ -12,37 +12,35 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/features/fields/hooks/useFieldAddForm";
-import { ComponentPropsWithoutRef, memo } from "react";
+import { ComponentPropsWithoutRef, memo, useEffect } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
-import { useCrops } from "@/features/crops/services";
-import { useAppSelector } from "@/store";
-import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
+import { useAppDispatch } from "@/store";
+import { resetAddField } from "@/features/forms/formsSlice";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form"> & {
-  seasonId?: string;
+  addToSeasonsId: string;
+  onSuccess?: () => void;
+  onError?: () => void;
 };
 
-const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
-  const {
-    form,
-    isError,
-    // isLoading,
-    isSuccess,
-    isLoading,
-    error,
-    onSubmit,
-    onCancel,
-    onErrors,
-  } = useFieldAddForm();
-  const {
-    isLoading: isLoadingCrops,
-    isFetching: isFetchingCrops,
-    isError: isErrorCrops,
-    isSuccess: isSuccessCrops,
-    error: errorCrops,
-    data: crops,
-  } = useCrops();
+const FieldAddForm = ({
+  className,
+  addToSeasonsId,
+  onSuccess,
+  onError,
+}: FieldsAddFormProps) => {
+  const { form, isLoading, onSubmit, onCancel, onErrors } = useFieldAddForm(
+    addToSeasonsId,
+    onSuccess,
+    onError
+  );
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(resetAddField());
+  }, [dispatch]);
 
   return (
     <div className="h-full relative">
@@ -76,7 +74,6 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
                   <FormControl>
                     <CropSelect
                       displayNone={true}
-                      isLoading={isLoadingCrops || isFetchingCrops}
                       onCropSelect={field.onChange}
                     />
                   </FormControl>
@@ -108,6 +105,5 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
       {isLoading && <SpinnerLoader />}
     </div>
   );
-});
-
+};
 export default FieldAddForm;

@@ -2,12 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Field,
-  FieldForCreation,
+  FieldForCreate,
   FieldForUpdate,
   FieldId,
   Fields,
 } from "./types";
-import { FieldSchema, FieldsSchema } from "./schemas";
+import { FieldApiSchema, FieldSchema, FieldsApiSchema } from "./schemas";
 import axios from "axios";
 
 export const useSeasonFields = (seasonId: string | null) => {
@@ -21,8 +21,7 @@ export const useSeasonFields = (seasonId: string | null) => {
             withCredentials: true,
           }
         );
-        const fields = await FieldsSchema.parseAsync(resp.data);
-
+        const fields = await FieldsApiSchema.parseAsync(resp.data);
         return fields;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -41,27 +40,27 @@ export const useSeasonFields = (seasonId: string | null) => {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      staleTime: 60 * 1000 * 1,
+      staleTime: 60 * 1000 * 10,
       refetchIntervalInBackground: true,
     }
   );
 };
 
-export const useAddField = (
-  seasonId: string | null,
-  onSuccess?: (data: Field) => void,
-  onError?: (error: Error) => void
+export const useCreateField = (
+  seasonId: string,
+  onSuccess?: () => void,
+  onError?: () => void
 ) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation<Field, Error, FieldForCreation>({
-    onSuccess: (data) => {
+  const mutation = useMutation<Field, Error, FieldForCreate>({
+    onSuccess: () => {
       queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
-      onSuccess?.(data);
+      if (onSuccess) onSuccess();
     },
-    onError: (error) => {
-      onError?.(error);
+    onError: () => {
+      if (onError) onError();
     },
-    mutationFn: async (field: FieldForCreation) => {
+    mutationFn: async (field) => {
       try {
         const resp = await axios.post(
           `${import.meta.env.VITE_API_URL}/seasons/${seasonId}/fields`,
@@ -71,8 +70,8 @@ export const useAddField = (
           }
         );
 
-        const craeteField = await FieldSchema.parseAsync(resp.data);
-        return craeteField;
+        const createdField = await FieldApiSchema.parseAsync(resp.data);
+        return createdField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -90,23 +89,29 @@ export const useAddField = (
   return mutation;
 };
 
-export const useEditField = (
-  fieldId: FieldId,
+export const useUpdateField = (
   seasonId: string | null,
-  onSuccess?: (data: Field) => void,
-  onError?: (error: Error) => void
+  onSuccess?: () => void,
+  onError?: () => void
 ) => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Field, Error, FieldForUpdate>({
-    onSuccess: (data) => {
+  const mutation = useMutation<
+    Field,
+    Error,
+    {
+      fieldId: FieldId;
+      field: FieldForUpdate;
+    }
+  >({
+    onSuccess: () => {
       queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
-      onSuccess?.(data);
+      if (onSuccess) onSuccess();
     },
-    onError: (error) => {
-      onError?.(error);
+    onError: () => {
+      if (onError) onError();
     },
-    mutationFn: async (field: FieldForUpdate) => {
+    mutationFn: async ({ fieldId, field }) => {
       try {
         const resp = await axios.put(
           `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
@@ -116,7 +121,7 @@ export const useEditField = (
           }
         );
 
-        const updatedField = await FieldSchema.parseAsync(resp.data);
+        const updatedField = await FieldApiSchema.parseAsync(resp.data);
         return updatedField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

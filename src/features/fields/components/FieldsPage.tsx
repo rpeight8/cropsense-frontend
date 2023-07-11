@@ -35,39 +35,26 @@ const FieldsPage = () => {
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
 
   const {
-    data: responseFields,
+    data: fields,
     isError: isFieldsError,
     isLoading: isFieldsLoading,
     isFetching: isFieldsFetching,
   } = useSeasonFields(selectedSeasonId);
-
-  const storedFields = useAppSelector(selectFields);
 
   const mapCenter = useAppSelector(selectCenter);
   const mapZoom = useAppSelector(selectZoom);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (!responseFields) {
-      if (storedFields) {
-        dispatch(setFields([]));
-      }
-      return;
-    }
-
-    dispatch(setFields(responseFields));
-  }, [dispatch, responseFields]);
-
   // Sync selected field id from URL with redux store
   useEffect(() => {
-    if (!responseFields || !responseFields.length) {
+    if (!fields || !fields.length) {
       if (selectedFieldId !== undefined) dispatch(selectFieldId(undefined));
       return;
     }
 
     if (selectedFieldIdFromURL) {
-      if (responseFields.some((f) => f.id === selectedFieldIdFromURL)) {
+      if (fields.some((field) => field.id === selectedFieldIdFromURL)) {
         if (selectedFieldId !== selectedFieldIdFromURL) {
           dispatch(selectFieldId(selectedFieldIdFromURL));
         }
@@ -79,13 +66,7 @@ const FieldsPage = () => {
         dispatch(selectFieldId(undefined));
       }
     }
-  }, [
-    dispatch,
-    responseFields,
-    navigate,
-    selectedFieldId,
-    selectedFieldIdFromURL,
-  ]);
+  }, [dispatch, navigate, selectedFieldId, selectedFieldIdFromURL, fields]);
 
   // Sync map center and zoom from URL with redux store
   useEffect(() => {
@@ -110,11 +91,7 @@ const FieldsPage = () => {
   return (
     <>
       <aside className="flex flex-col w-[200px] p-1">
-        <FieldsAsideContent
-          isFieldsLoading={isFieldsFetching || isFieldsLoading}
-          isFieldsError={isFieldsError}
-          action={action}
-        />
+        <FieldsAsideContent />
       </aside>
       <div className="flex-1 flex flex-col relative">
         {selectedFieldId && (

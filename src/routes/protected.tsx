@@ -1,31 +1,41 @@
-import CoordinatesLayout from "@/components/CoordinatesPage";
+import RootLayout from "@/components/RootLayout";
 import FieldsLayout from "@/features/fields/components/FieldsPage";
 import SensorsLayout from "@/features/sensors/components/SensorsLayout";
 
 export const protectedRoutes = [
   {
     path: ":coordinates",
-    element: <CoordinatesLayout />,
+    element: <RootLayout />,
     children: [
       {
-        path: "fields",
-        element: <FieldsLayout />,
+        path: "workspace/:workspaceId",
         children: [
           {
-            // add / fiedlId
-            path: ":param1",
+            path: "seasons/:seasonId",
             children: [
               {
-                // edit / delete / display
-                path: ":param2",
+                path: "fields",
+                element: <FieldsLayout />,
+                children: [
+                  {
+                    // add / fiedlId
+                    path: ":fieldParam1",
+                    children: [
+                      {
+                        // edit / delete / display
+                        path: ":fieldParam2",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                path: "sensors/",
+                element: <SensorsLayout />,
               },
             ],
           },
         ],
-      },
-      {
-        path: "sensors/",
-        element: <SensorsLayout />,
       },
     ],
   },
