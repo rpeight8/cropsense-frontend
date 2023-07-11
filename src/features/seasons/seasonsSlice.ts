@@ -1,8 +1,7 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import {createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "@/store";
-import { Seasons } from "./types";
 
 type SeasonsState = {
   selectedSeasonId: string | null;

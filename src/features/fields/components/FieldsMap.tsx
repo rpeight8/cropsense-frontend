@@ -16,11 +16,10 @@ import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
 import { ImageOverlay } from "react-leaflet/ImageOverlay";
-import { Field, FieldCoordinates, FieldId } from "../types";
+import { Field, FieldCoordinates} from "../types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {
-  selectFields,
   selectHoveredFieldId,
   selectSelectedFieldId,
   setHoveredFieldId,
@@ -106,8 +105,6 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const {
     data: fields,
-    isLoading,
-    isFetching,
   } = useSeasonFields(selectedSeasonId);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const hoveredFieldId = useAppSelector(selectHoveredFieldId);

@@ -1,10 +1,8 @@
-import { useToast } from "@/components/ui/Toast/useToast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDeleteWorkspace, useUpdateWorkspace } from "../services";
-import { on } from "events";
 
 export const FormSchema = z.object({
   id: z.string(),

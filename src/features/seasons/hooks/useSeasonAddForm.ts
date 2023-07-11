@@ -1,11 +1,9 @@
-import { useToast } from "@/components/ui/Toast/useToast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect } from "react";
+import { useCallback} from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { endOfYear, startOfDay } from "date-fns";
 import { z } from "zod";
 import { useCreateSeason } from "../services";
-import { on } from "events";
 
 export const FormSchema = z
   .object({

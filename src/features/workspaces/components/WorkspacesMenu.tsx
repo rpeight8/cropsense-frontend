@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { useState } from "react";
 
 import List, { ListItem } from "@/components/ui/List";
 import { Button } from "@/components/ui/Button";

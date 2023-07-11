@@ -15,7 +15,6 @@ import {
   setMapCoordinates,
 } from "@/features/map/mapSlice";
 import NDVISelector from "@/features/ndvi/components/NDVISelector";
-import { cn } from "@/lib/utils";
 import { useSeasonFields } from "@/features/fields/services";
 import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 import FieldDetailPanel from "./FieldDetailPanel";
@@ -25,7 +24,6 @@ const FieldsPage = () => {
   const {
     initialCoordinates: coordinatesFromURL,
     initialZoom: zoomFromURL,
-    action,
     fieldId: selectedFieldIdFromURL,
     isFieldsParamsValid,
   } = useURLParametersParser();
