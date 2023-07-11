@@ -7,7 +7,7 @@ import {
   FieldId,
   Fields,
 } from "./types";
-import { FieldApiSchema, FieldSchema, FieldsApiSchema } from "./schemas";
+import { FieldApiSchema, FieldsApiSchema } from "./schemas";
 import axios from "axios";
 
 export const useSeasonFields = (seasonId: string | null) => {
