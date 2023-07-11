@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { useState } from "react";
 import List, { ListItem } from "@/components/ui/List";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -18,9 +18,9 @@ import SeasonAddDialog from "./SeasonAddDialog";
 import SeasonManageDialog from "./SeasonManageDialog";
 import { useWorkspaceSeasons } from "../services";
 
-type SeasonMenuProps = ComponentPropsWithoutRef<"div">;
+// type SeasonMenuProps = ComponentPropsWithoutRef<"div">;
 
-const SeasonsMenu = ({ className, ...props }: SeasonMenuProps) => {
+const SeasonsMenu = () => {
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const { data: seasons, isLoading } = useWorkspaceSeasons(selectedWorkspaceId);

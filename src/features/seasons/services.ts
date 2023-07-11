@@ -139,7 +139,7 @@ export const useCreateSeason = (
   return mutation;
 };
 
-export const useWorkspaceSeasons = (workspaceId: string | undefined) => {
+export const useWorkspaceSeasons = (workspaceId: string | null) => {
   return useQuery<Seasons, Error>(
     ["workspaces", workspaceId, "seasons"],
     async (): Promise<Seasons> => {
