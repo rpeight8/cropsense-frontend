@@ -3,8 +3,11 @@ import { FieldErrors, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "@/store";
-import { selectAddFieldGeometry } from "@/features/forms/formsSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  resetAddField,
+  selectAddFieldGeometry,
+} from "@/features/forms/formsSlice";
 import { CropSchema } from "@/features/crops/schemas";
 import { useCreateField } from "../services";
 import { FieldGeometrySchema } from "../schemas";
@@ -24,6 +27,12 @@ const useFieldAddForm = (
 ) => {
   const navigate = useNavigate();
   const addFieldGeometry = useAppSelector(selectAddFieldGeometry);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(resetAddField());
+  }, [dispatch]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {

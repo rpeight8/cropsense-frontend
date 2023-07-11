@@ -2,7 +2,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 import FieldsAsideContent from "@/features/fields/components/FieldsAsideContent";
 import FieldsMap from "@/features/fields/components/FieldsMap";
-import FieldsDetailContent from "@/features/fields/components/FieldDetailContent";
 import { useEffect } from "react";
 import {
   selectSelectedFieldId,
@@ -95,7 +94,6 @@ const FieldsPage = () => {
         )}
         <FieldsMap className="flex-1" />
         <FieldDetailPanel />
-        
       </div>
     </>
   );
