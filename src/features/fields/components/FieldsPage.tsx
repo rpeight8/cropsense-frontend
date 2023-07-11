@@ -6,6 +6,7 @@ import FieldsDetailContent from "@/features/fields/components/FieldDetailContent
 import { useEffect } from "react";
 import {
   selectFieldId,
+  selectFields,
   selectSelectedFieldId,
   setFields,
 } from "@/features/fields/fieldsSlice";
@@ -34,11 +35,13 @@ const FieldsPage = () => {
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
 
   const {
-    data: fields,
+    data: responseFields,
     isError: isFieldsError,
     isLoading: isFieldsLoading,
     isFetching: isFieldsFetching,
   } = useSeasonFields(selectedSeasonId);
+
+  const storedFields = useAppSelector(selectFields);
 
   const mapCenter = useAppSelector(selectCenter);
   const mapZoom = useAppSelector(selectZoom);
@@ -46,17 +49,25 @@ const FieldsPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!fields) return;
+    if (!responseFields) {
+      if (storedFields) {
+        dispatch(setFields([]));
+      }
+      return;
+    }
 
-    dispatch(setFields(fields));
-  }, [dispatch, fields]);
+    dispatch(setFields(responseFields));
+  }, [dispatch, responseFields]);
 
   // Sync selected field id from URL with redux store
   useEffect(() => {
-    if (!fields) return;
+    if (!responseFields || !responseFields.length) {
+      if (selectedFieldId !== undefined) dispatch(selectFieldId(undefined));
+      return;
+    }
 
     if (selectedFieldIdFromURL) {
-      if (fields.some((f) => f.id === selectedFieldIdFromURL)) {
+      if (responseFields.some((f) => f.id === selectedFieldIdFromURL)) {
         if (selectedFieldId !== selectedFieldIdFromURL) {
           dispatch(selectFieldId(selectedFieldIdFromURL));
         }
@@ -68,7 +79,13 @@ const FieldsPage = () => {
         dispatch(selectFieldId(undefined));
       }
     }
-  }, [dispatch, fields, navigate, selectedFieldId, selectedFieldIdFromURL]);
+  }, [
+    dispatch,
+    responseFields,
+    navigate,
+    selectedFieldId,
+    selectedFieldIdFromURL,
+  ]);
 
   // Sync map center and zoom from URL with redux store
   useEffect(() => {
