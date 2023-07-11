@@ -40,7 +40,7 @@ const CoordinatesLayout = memo(() => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!responseWorkspaces || !responseWorkspaces.length) {
+    if (!responseWorkspaces) {
       dispatch(setWorkspaces([]));
       return;
     }
@@ -63,7 +63,7 @@ const CoordinatesLayout = memo(() => {
   }, [dispatch, storedWorkspaces, selectedWorkspaceId]);
 
   useEffect(() => {
-    if (!responseSeasons || !responseSeasons.length) {
+    if (!responseSeasons) {
       dispatch(setSeasons([]));
       return;
     }
