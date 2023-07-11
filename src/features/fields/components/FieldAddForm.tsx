@@ -36,11 +36,7 @@ const FieldAddForm = ({
     onError
   );
 
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(resetAddField());
-  }, [dispatch]);
+  
 
   return (
     <div className="h-full relative">

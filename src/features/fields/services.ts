@@ -139,3 +139,42 @@ export const useUpdateField = (
 
   return mutation;
 };
+
+export const useDeleteField = (
+  seasonId: string | null,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<void, Error, FieldId>({
+    onSuccess: () => {
+      queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
+    },
+    mutationFn: async (fieldId) => {
+      try {
+        await axios.delete(
+          `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error deleting field."
+          );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
+        } else {
+          throw new Error("Error deleting field.");
+        }
+      }
+    },
+  });
+
+  return mutation;
+};

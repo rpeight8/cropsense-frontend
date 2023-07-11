@@ -10,7 +10,7 @@ import {
   setEditFieldGeometry,
 } from "@/features/forms/formsSlice";
 import { CropSchema } from "@/features/crops/schemas";
-import { useUpdateField } from "../services";
+import { useDeleteField, useUpdateField } from "../services";
 
 export const FormSchema = z.object({
   name: z.string().min(1, {
@@ -22,17 +22,21 @@ export const FormSchema = z.object({
   id: z.string(),
 });
 
-type UseFieldEditFormProps = {
+type UseFieldManageFormProps = {
   field: z.infer<typeof FormSchema>;
-  onSuccess?: () => void;
-  onError?: () => void;
+  onDeleteSuccess?: () => void;
+  onDeleteError?: () => void;
+  onUpdateSuccess?: () => void;
+  onUpdateError?: () => void;
 };
 
-const useFieldEditForm = ({
+const useFieldManageForm = ({
   field,
-  onSuccess,
-  onError,
-}: UseFieldEditFormProps) => {
+  onDeleteError,
+  onDeleteSuccess,
+  onUpdateError,
+  onUpdateSuccess,
+}: UseFieldManageFormProps) => {
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -47,10 +51,16 @@ const useFieldEditForm = ({
     dispatch(setEditFieldGeometry(field.geometry));
   }, [dispatch, field.geometry]);
 
-  const { isLoading, ...updateFieldMutation } = useUpdateField(
+  const { isLoading: isUpdateLoading, ...updateFieldMutation } = useUpdateField(
     field.seasonId,
-    onSuccess,
-    onError
+    onUpdateSuccess,
+    onUpdateError
+  );
+
+  const { isLoading: isDeleteLoading, ...deleteFieldMutation } = useDeleteField(
+    field.seasonId,
+    onDeleteSuccess,
+    onDeleteError
   );
 
   const onFormValidationErrors = useCallback(
@@ -78,17 +88,22 @@ const useFieldEditForm = ({
     [editFieldGeometry, updateFieldMutation]
   );
 
+  const onDelete = useCallback(() => {
+    deleteFieldMutation.mutate(field.id);
+  }, [deleteFieldMutation, field.id]);
+
   const onFormCancel = useCallback(() => {
     navigate(-1);
   }, [navigate]);
 
   return {
     form,
-    isLoading,
+    onDelete,
+    isLoading: isUpdateLoading || isDeleteLoading,
     onCancel: onFormCancel,
     onSubmit: onFormSubmit,
     onErrors: onFormValidationErrors,
   };
 };
 
-export { useFieldEditForm };
+export default useFieldManageForm;

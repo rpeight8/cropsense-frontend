@@ -14,34 +14,40 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
-import {
+import useFieldManageForm, {
   FormSchema,
-  useFieldEditForm,
-} from "@/features/fields/hooks/useFieldEditForm";
+} from "@/features/fields/hooks/useFieldManageForm";
 import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 
-type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
+type FieldManageFormProps = ComponentPropsWithoutRef<"form"> & {
   field: z.infer<typeof FormSchema>;
-  onSuccess?: () => void;
-  onError?: () => void;
+  onUpdateSuccess?: () => void;
+  onUpdateError?: () => void;
+  onDeleteSuccess?: () => void;
+  onDeleteError?: () => void;
   wrapperClassName?: string;
 };
 
-const FieldEditForm = ({
+const FieldManageForm = ({
   field,
-  onSuccess,
-  onError,
+  onUpdateSuccess,
+  onUpdateError,
+  onDeleteSuccess,
+  onDeleteError,
   className,
   wrapperClassName,
   ...props
-}: FieldEditFormProps) => {
-  const { form, onErrors, onSubmit, onCancel, isLoading } = useFieldEditForm({
-    field,
-    onSuccess,
-    onError,
-  });
+}: FieldManageFormProps) => {
+  const { form, onErrors, onSubmit, onCancel, onDelete, isLoading } =
+    useFieldManageForm({
+      field,
+      onUpdateSuccess,
+      onUpdateError,
+      onDeleteSuccess,
+      onDeleteError,
+    });
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>
@@ -86,9 +92,19 @@ const FieldEditForm = ({
               )}
             />
           </div>
-          <div className="flex">
+          <div className="flex gap-x-2">
             <Button
-              className="mr-auto"
+              type="button"
+              variant="destructive"
+              onClick={(e) => {
+                onDelete();
+              }}
+            >
+              {" "}
+              Delete
+            </Button>
+            <Button
+              className="ml-auto"
               type="button"
               variant="secondary"
               onClick={() => {
@@ -97,6 +113,7 @@ const FieldEditForm = ({
             >
               Cancel
             </Button>
+
             <Button type="submit" variant="default">
               Submit
             </Button>
@@ -108,4 +125,4 @@ const FieldEditForm = ({
   );
 };
 
-export default FieldEditForm;
+export default FieldManageForm;
