@@ -21,30 +21,27 @@ import {
 import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
-import { useCrops } from "@/features/crops/services";
 
 type FieldEditFormProps = ComponentPropsWithoutRef<"form"> & {
   field: z.infer<typeof FormSchema>;
+  onSuccess?: () => void;
+  onError?: () => void;
   wrapperClassName?: string;
 };
 
 const FieldEditForm = ({
   field,
+  onSuccess,
+  onError,
   className,
   wrapperClassName,
   ...props
 }: FieldEditFormProps) => {
-  const navigate = useNavigate();
-  const { form, onErrors, onSubmit, isLoading } = useFieldEditForm(field);
-
-  const {
-    isLoading: isLoadingCrops,
-    isFetching: isFetchingCrops,
-    isError: isErrorCrops,
-    isSuccess: isSuccessCrops,
-    error: errorCrops,
-    data: crops,
-  } = useCrops();
+  const { form, onErrors, onSubmit, onCancel, isLoading } = useFieldEditForm({
+    field,
+    onSuccess,
+    onError,
+  });
 
   return (
     <div className={cn("h-full w-full relative", wrapperClassName)}>
@@ -76,7 +73,6 @@ const FieldEditForm = ({
                   <FormLabel>Crop</FormLabel>
                   <FormControl>
                     <CropSelect
-                      isLoading={isLoadingCrops || isFetchingCrops}
                       initialCropId={form.getValues("crop")?.id}
                       displayNone={true}
                       onCropSelect={field.onChange}
@@ -96,8 +92,7 @@ const FieldEditForm = ({
               type="button"
               variant="secondary"
               onClick={() => {
-                form.reset();
-                navigate(-1);
+                onCancel();
               }}
             >
               Cancel

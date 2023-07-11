@@ -20,9 +20,18 @@ export const FieldSchema = z.object({
   name: z.string(),
   geometry: FieldGeometrySchema,
   crop: CropSchema.nullable(),
+  seasonId: z.string(),
 });
 
-export const FieldForCreationSchema = FieldSchema.omit({ id: true });
+export const FieldsSchema = z.array(FieldSchema);
+
+export const FieldApiSchema = FieldSchema;
+export const FieldsApiSchema = FieldsSchema;
+
+export const FieldForCreateSchema = FieldSchema.omit({
+  id: true,
+  seasonId: true,
+});
 
 export const FieldForUpdateSchema = FieldSchema.extend({
   id: z.string().optional(),
@@ -50,5 +59,3 @@ export const FieldActionsSchema = z
       message: "Invalid field action value",
     }
   );
-
-export const FieldsSchema = z.array(FieldSchema);

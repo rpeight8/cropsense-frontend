@@ -5,7 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 type AddFieldButtonProps = ElementProps<typeof Button>;
 
-const AddFieldButton = ({ className, isLoading }: AddFieldButtonProps) => {
+const AddFieldButton = ({
+  className,
+  isLoading,
+  ...props
+}: AddFieldButtonProps) => {
   const navigate = useNavigate();
   return (
     <Button
@@ -15,6 +19,7 @@ const AddFieldButton = ({ className, isLoading }: AddFieldButtonProps) => {
         navigate("add");
       }}
       isLoading={isLoading}
+      {...props}
     >
       {isLoading ? (
         <Spinner className="h-4 w-4 mr-1" />

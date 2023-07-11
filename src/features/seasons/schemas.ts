@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { FieldsSchema } from "../fields/schemas";
 
+export const SeasonIdURLSchema = z.string().min(1);
+
 export const SeasonSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -20,8 +22,10 @@ export const SeasonWithFieldsSchema = SeasonSchema.extend({
 
 export const SeasonsWithFieldsSchema = z.array(SeasonWithFieldsSchema);
 
-export const SeasonForCreateSchema = z.object({
-  name: z.string(),
+export const SeasonForCreateSchema = SeasonSchema.omit({
+  id: true,
+  workspaceId: true,
+}).extend({
   startDate: z.date(),
   endDate: z.date(),
 });

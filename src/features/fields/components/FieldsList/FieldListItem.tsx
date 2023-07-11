@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ListItem } from "@/components/ui/List";
 
-type FieldlistItemProps = Omit<FieldForDisplay, "crop"> &
+type FieldlistItemProps = Omit<FieldForDisplay, "crop" | "seasonId"> &
   ComponentPropsWithoutRef<"li"> & {
     className?: string;
   };

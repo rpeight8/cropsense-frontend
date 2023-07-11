@@ -35,7 +35,7 @@ export const useCrops = () => {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      refetchInterval: 60000,
+      staleTime: Infinity,
       refetchIntervalInBackground: false,
     }
   );

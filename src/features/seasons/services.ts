@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Season, SeasonForCreate, SeasonForUpdate } from "./types";
-import { SeasonFromApiSchema } from "./schemas";
+import { Season, SeasonForCreate, SeasonForUpdate, Seasons } from "./types";
+import { SeasonFromApiSchema, SeasonsFromApiSchema } from "./schemas";
 
 export const useUpdateSeason = (
   workspaceId: string,
@@ -109,7 +109,7 @@ export const useCreateSeason = (
     onError: () => {
       if (onError) onError();
     },
-    mutationFn: async (season: SeasonForCreate) => {
+    mutationFn: async (season) => {
       try {
         const resp = await axios.post(
           `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}/seasons`,
@@ -137,4 +137,41 @@ export const useCreateSeason = (
   });
 
   return mutation;
+};
+
+export const useWorkspaceSeasons = (workspaceId: string | undefined) => {
+  return useQuery<Seasons, Error>(
+    ["workspaces", workspaceId, "seasons"],
+    async (): Promise<Seasons> => {
+      try {
+        const resp = await axios.get(
+          `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}/seasons`,
+          {
+            withCredentials: true,
+          }
+        );
+        const parsedSeasons = await SeasonsFromApiSchema.parseAsync(resp.data);
+
+        return parsedSeasons;
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error fetching seasons."
+          );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
+        } else {
+          throw new Error("Error fetching seasons.");
+        }
+      }
+    },
+    {
+      enabled: !!workspaceId,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: Infinity,
+      refetchIntervalInBackground: false,
+    }
+  );
 };

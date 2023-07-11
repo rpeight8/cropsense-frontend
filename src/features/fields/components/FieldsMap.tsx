@@ -38,6 +38,8 @@ import {
   selectSelectedNDVIId,
 } from "@/features/ndvi/ndviSlice";
 import { cn } from "@/lib/utils";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
+import { useSeasonFields } from "../services";
 
 type EditControlProps = ElementProps<typeof EditControl>;
 
@@ -101,10 +103,15 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
 
   const dispatch = useAppDispatch();
 
-  const fields = useAppSelector(selectFields);
+  const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
+  const {
+    data: fields,
+    isLoading,
+    isFetching,
+  } = useSeasonFields(selectedSeasonId);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const hoveredFieldId = useAppSelector(selectHoveredFieldId);
-  const selectedField = fields.find((field) => field.id === selectedFieldId);
+  const selectedField = fields?.find((field) => field.id === selectedFieldId);
 
   const NDVIs = useAppSelector((state) =>
     selectNDVIByFieldId(state, selectedFieldId || "")
@@ -227,53 +234,55 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
         apiKey={GOOGLE_API_KEY}
         type="hybrid"
       ></ReactLeafletGoogleLayer>
-      <LayerGroup>
-        {fields.map((field: Field) => {
-          const isSelected = selectedFieldId === field.id;
-          const isHovered = hoveredFieldId === field.id;
-          const isSelectedOrHoveredField =
-            isSelected || hoveredFieldId === field.id;
-          return (
-            <Polygon
-              key={field.id}
-              positions={[field.geometry.coordinates[0]]}
-              ref={
-                isHovered
-                  ? HoveredPolygonRef
-                  : isSelected
-                  ? SelectedPolygonRef
-                  : undefined
-              }
-              pathOptions={{
-                color: "white",
-                weight: isSelectedOrHoveredField ? 3 : 1.5,
-                fillColor:
-                  selectedNDVI && isSelected ? undefined : field?.crop?.color,
-                opacity: isSelected && action === "edit" ? 0.5 : 1,
-                fillOpacity: parseFloat(
-                  cn("", {
-                    "0.3": isSelected && action === "edit",
-                    "0": (isSelected && selectedNDVI) || !field?.crop?.color,
-                    "0.6": true,
-                  })
-                ),
-              }}
-              eventHandlers={{
-                click: () => {
-                  if (action === "edit") return;
-                  navigate(`${field.id}/display`);
-                },
-                mouseover: () => {
-                  dispatch(setHoveredFieldId(field.id));
-                },
-                mouseout: () => {
-                  dispatch(setHoveredFieldId(undefined));
-                },
-              }}
-            />
-          );
-        })}
-      </LayerGroup>
+      {fields && (
+        <LayerGroup>
+          {fields.map((field: Field) => {
+            const isSelected = selectedFieldId === field.id;
+            const isHovered = hoveredFieldId === field.id;
+            const isSelectedOrHoveredField =
+              isSelected || hoveredFieldId === field.id;
+            return (
+              <Polygon
+                key={field.id}
+                positions={[field.geometry.coordinates[0]]}
+                ref={
+                  isHovered
+                    ? HoveredPolygonRef
+                    : isSelected
+                    ? SelectedPolygonRef
+                    : undefined
+                }
+                pathOptions={{
+                  color: "white",
+                  weight: isSelectedOrHoveredField ? 3 : 1.5,
+                  fillColor:
+                    selectedNDVI && isSelected ? undefined : field?.crop?.color,
+                  opacity: isSelected && action === "edit" ? 0.5 : 1,
+                  fillOpacity: parseFloat(
+                    cn("", {
+                      "0.3": isSelected && action === "edit",
+                      "0": (isSelected && selectedNDVI) || !field?.crop?.color,
+                      "0.6": true,
+                    })
+                  ),
+                }}
+                eventHandlers={{
+                  click: () => {
+                    if (action === "edit") return;
+                    navigate(`${field.id}/display`);
+                  },
+                  mouseover: () => {
+                    dispatch(setHoveredFieldId(field.id));
+                  },
+                  mouseout: () => {
+                    dispatch(setHoveredFieldId(undefined));
+                  },
+                }}
+              />
+            );
+          })}
+        </LayerGroup>
+      )}
       <LayerGroup>
         {action !== "edit" &&
           action !== "add" &&

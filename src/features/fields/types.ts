@@ -4,9 +4,7 @@ import * as FieldSchemas from "./schemas";
 export type Field = z.infer<typeof FieldSchemas.FieldSchema>;
 export type Fields = z.infer<typeof FieldSchemas.FieldsSchema>;
 
-export type FieldForCreation = z.infer<
-  typeof FieldSchemas.FieldForCreationSchema
->;
+export type FieldForCreate = z.infer<typeof FieldSchemas.FieldForCreateSchema>;
 export type FieldForUpdate = z.infer<typeof FieldSchemas.FieldForUpdateSchema>;
 export type FieldGeometry = z.infer<typeof FieldSchemas.FieldGeometrySchema>;
 export type FieldWithoutGeometry = Omit<Field, "geometry">;

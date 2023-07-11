@@ -2,19 +2,34 @@ import FieldEditButton from "@/features/fields/components/FieldEditButton";
 import FieldEditForm from "@/features/fields/components/FieldEditForm";
 import { useAppSelector } from "@/store";
 import { FieldAction, FieldId } from "../types";
-import { selectFields } from "@features/fields/fieldsSlice";
+import {
+  selectFields,
+  selectSelectedFieldId,
+} from "@features/fields/fieldsSlice";
+import { useSeasonFields } from "../services";
+import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
+import { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
+import useURLParametersParser from "@/hooks/useURLParametersParser";
 
-type FieldsDetailContent = {
-  isLoading?: boolean;
-  action: FieldAction;
-  fieldId: FieldId;
-};
+type FieldsDetailContentProps = ComponentPropsWithoutRef<"div">;
 
-const FieldsDetailContent = ({ action, fieldId }: FieldsDetailContent) => {
-  const fields = useAppSelector(selectFields);
+const FieldsDetailContent = ({
+  className,
+  ...props
+}: FieldsDetailContentProps) => {
+  const selectedSeasonsId = useAppSelector(selectSelectedSeasonId);
+  const { action } = useURLParametersParser();
+  const { data: fields } = useSeasonFields(selectedSeasonsId);
+  const selectedFieldId = useAppSelector(selectSelectedFieldId);
+
+  if (!fields) {
+    return null;
+  }
+
   const selectedField = fields.find((f) => f.id === fieldId);
   return (
-    <div className="p-1 pt-3 h-full flex w-full">
+    <div className={cn("p-1 pt-3 h-full flex w-full", className)} {...props}>
       {(action === "edit" && selectedField && (
         <FieldEditForm
           className=""
