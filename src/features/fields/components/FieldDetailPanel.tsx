@@ -9,6 +9,7 @@ import FieldManageForm from "./FieldManageForm";
 import FieldEditButton from "./FieldEditButton";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { useNavigate } from "react-router-dom";
+import FieldWeatherCard from "../weather/components/FieldWeatherCard";
 
 type FieldDetailPanelProps = ComponentPropsWithoutRef<"div">;
 
@@ -71,7 +72,7 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
     >
       {action && selectedFieldId && (
         <div
-          className={cn("p-1 pt-3 h-full flex w-full", className)}
+          className={cn("p-1 pt-3 h-full flex w-full flex-col", className)}
           {...props}
         >
           {(action === "edit" && selectedField && (
@@ -91,8 +92,11 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
           )) ||
             (action === "display" && (
               <>
-                <p className="text-3xl font-bold">{selectedField?.name} </p>
-                <FieldEditButton fieldId={selectedFieldId} className="ml-5" />
+                <div className="flex">
+                  <p className="text-3xl font-bold">{selectedField?.name} </p>
+                  <FieldEditButton className="ml-5" />
+                </div>
+                <FieldWeatherCard />
               </>
             ))}
         </div>
