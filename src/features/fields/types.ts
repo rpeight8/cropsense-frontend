@@ -16,3 +16,5 @@ export type FieldCoordinates = Field["geometry"]["coordinates"];
 export type FieldAction = (typeof FieldSchemas.fieldActions)[number];
 
 export type FieldId = Field["id"];
+
+export type FieldSummary = z.infer<typeof FieldSchemas.FieldSummaryApiSchema>;

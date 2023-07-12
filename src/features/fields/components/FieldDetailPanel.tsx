@@ -10,6 +10,7 @@ import FieldEditButton from "./FieldEditButton";
 import { useToast } from "@/components/ui/Toast/useToast";
 import { useNavigate } from "react-router-dom";
 import FieldWeatherCard from "../weather/components/FieldWeatherCard";
+import FieldSummaryCard from "./FieldSummary/FieldSummaryCard";
 
 type FieldDetailPanelProps = ComponentPropsWithoutRef<"div">;
 
@@ -64,7 +65,7 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
   return (
     <div
       className={cn(
-        "h-[350px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards",
+        "h-[350px] w-[full] animate-fade-right transition-all duration-100 animate-fade-up animate-once animate-ease-linear animate-reverse animate-fill-backwards grid",
         {
           "h-0 overflow-hidden": !selectedFieldId,
         }
@@ -72,7 +73,10 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
     >
       {action && selectedFieldId && (
         <div
-          className={cn("p-1 pt-3 h-full flex w-full flex-col", className)}
+          className={cn(
+            "p-1 pt-3 overflow-hidden grid grid-rows-[40px_1fr] gap-3",
+            className
+          )}
           {...props}
         >
           {(action === "edit" && selectedField && (
@@ -96,7 +100,14 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
                   <p className="text-3xl font-bold">{selectedField?.name} </p>
                   <FieldEditButton className="ml-5" />
                 </div>
-                <FieldWeatherCard />
+                <div className="grid grid-cols-[1fr_auto] grid-rows-1 gap-2">
+                  <section className="grid">
+                    <FieldWeatherCard />
+                  </section>
+                  <section className="grid grid-cols-[minmax(1fr, 200px)]">
+                    <FieldSummaryCard />
+                  </section>
+                </div>
               </>
             ))}
         </div>
