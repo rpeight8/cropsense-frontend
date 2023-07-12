@@ -5,9 +5,14 @@ import {
   FieldForCreate,
   FieldForUpdate,
   FieldId,
+  FieldSummary,
   Fields,
 } from "./types";
-import { FieldApiSchema, FieldsApiSchema } from "./schemas";
+import {
+  FieldApiSchema,
+  FieldSummaryApiSchema,
+  FieldsApiSchema,
+} from "./schemas";
 import axios from "axios";
 
 export const useSeasonFields = (seasonId: string | null) => {
@@ -177,4 +182,81 @@ export const useDeleteField = (
   });
 
   return mutation;
+};
+
+export const useFieldSummary = (fieldId: string | null) => {
+  return useQuery<FieldSummary, Error>(
+    ["fields", fieldId, "information"],
+    async (): Promise<FieldSummary> => {
+      return {
+        id: fieldId!,
+        name: "Field 1",
+        seasons: [
+          {
+            id: "1",
+            name: "Season 1",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "1",
+              name: "Crop 1",
+              color: "red",
+            },
+          },
+          {
+            id: "2",
+            name: "Season 2",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "2",
+              name: "Crop 2",
+              color: "yellow",
+            },
+          },
+          {
+            id: "3",
+            name: "Season 3",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "3",
+              name: "Crop 3",
+              color: "green",
+            },
+          },
+        ],
+        area: 100,
+        areaUnit: "ha",
+      };
+      try {
+        const resp = await axios.get(
+          `${import.meta.env.VITE_API_URL}/fields/${fieldId}/summary`,
+          {
+            withCredentials: true,
+          }
+        );
+        const summary = await FieldSummaryApiSchema.parseAsync(resp.data);
+        return summary;
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error fetching field."
+          );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
+        } else {
+          throw new Error("Error fetching field.");
+        }
+      }
+    },
+    {
+      enabled: !!fieldId,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 60 * 1000 * 10,
+      refetchIntervalInBackground: true,
+    }
+  );
 };

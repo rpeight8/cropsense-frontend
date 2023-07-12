@@ -2,6 +2,16 @@ import { z } from "zod";
 import { CropSchema } from "@/features/crops/schemas";
 import { CoordinatesSchema } from "@/features/map/schemas";
 
+// It has to be impoert from ../seasons/schemas.ts, but I just copied it here
+//  bacause of the circular dependency
+export const SeasonSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  workspaceId: z.string(),
+});
+
 export const FieldHoleSchema = z.array(CoordinatesSchema);
 export const FieldPolygonSchema = z.array(CoordinatesSchema).min(1);
 
@@ -59,3 +69,19 @@ export const FieldActionsSchema = z
       message: "Invalid field action value",
     }
   );
+
+export const FieldSeasonSummarySchema = SeasonSchema.extend({
+  crop: CropSchema.nullable(),
+}).omit({
+  workspaceId: true,
+});
+
+export const FieldSeasonsSummarySchema = z.array(FieldSeasonSummarySchema);
+
+export const FieldSummaryApiSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  seasons: FieldSeasonsSummarySchema,
+  area: z.number(),
+  areaUnit: z.string(),
+});
