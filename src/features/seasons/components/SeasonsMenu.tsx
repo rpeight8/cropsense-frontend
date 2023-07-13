@@ -23,15 +23,19 @@ import { useWorkspaceSeasons } from "../services";
 const SeasonsMenu = () => {
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
-  const { data: seasons, isLoading } = useWorkspaceSeasons(selectedWorkspaceId);
+  const {
+    data: seasons,
+    isLoading,
+    isFetching,
+  } = useWorkspaceSeasons(selectedWorkspaceId);
 
   const dispatch = useAppDispatch();
 
   const [isManageDialogOpen, setIsManageDialogOpen] = useState<boolean>(false);
   const [managingSeason, setManagingSeason] = useState<Season | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
-
-  if (isLoading) {
+  console.log(isLoading, isFetching);
+  if ((isLoading && isFetching) || isFetching) {
     return <Skeleton className="w-full h-9" />;
   }
 

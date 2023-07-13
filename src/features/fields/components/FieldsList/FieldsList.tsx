@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useCallback } from "react";
+import { ComponentPropsWithoutRef, useCallback, useEffect } from "react";
 
 import List from "@/components/ui/List";
 import FieldListItem, {
@@ -8,18 +8,31 @@ import { cn } from "@/lib/utils";
 import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
 import { useAppSelector } from "@/store";
 import { useSeasonFields } from "../../services";
+import { useToast } from "@/components/ui/Toast/useToast";
 
 type FieldListProps = ComponentPropsWithoutRef<"ul"> & {
   isLoading?: boolean;
 };
 
 const FieldsList = ({ className, ...props }: FieldListProps) => {
+  const { toast } = useToast();
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const {
     data: fields,
     isLoading,
     isFetching,
+    isError,
   } = useSeasonFields(selectedSeasonId);
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Error",
+        description: "Could not load fields",
+        variant: "destructive",
+      });
+    }
+  }, [isError, toast]);
 
   const renderField = useCallback(
     (field: NonNullable<typeof fields>[number]) => {
@@ -32,11 +45,7 @@ const FieldsList = ({ className, ...props }: FieldListProps) => {
     return <FieldListItemSkeleton key={skeleton.id} />;
   }, []);
 
-  if (!fields) {
-    return null;
-  }
-
-  if (isLoading || isFetching) {
+  if ((isLoading && isFetching) || isFetching) {
     const skeletonFields = Array.from({ length: 10 }, (_, i) => ({
       id: `skeleton-${i}`,
     }));
@@ -46,6 +55,10 @@ const FieldsList = ({ className, ...props }: FieldListProps) => {
         {skeletonFields.map(renderSkeletonField)}
       </List>
     );
+  }
+
+  if (!fields) {
+    return null;
   }
 
   return (
