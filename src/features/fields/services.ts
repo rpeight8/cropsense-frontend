@@ -34,9 +34,12 @@ export const useSeasonFields = (seasonId: string | null) => {
             error.response?.data?.message || "Error fetching fields."
           );
         } else if (error instanceof Error) {
-          throw new Error(error.message);
+          console.error(error.message);
+          throw new Error(
+            "Server responded with an unappropriated data format."
+          );
         } else {
-          throw new Error("Error fetching fields.");
+          throw new Error("Unexpected error occured while fetching fields.");
         }
       }
     },
