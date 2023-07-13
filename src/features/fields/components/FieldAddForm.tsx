@@ -12,11 +12,10 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/features/fields/hooks/useFieldAddForm";
-import { ComponentPropsWithoutRef, memo, useEffect } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
-import { useAppDispatch } from "@/store";
-import { resetAddField } from "@/features/forms/formsSlice";
+import CropDatePicker from "../../crops/components/CropDatePicker";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form"> & {
   addToSeasonsId: string;
@@ -36,8 +35,8 @@ const FieldAddForm = ({
     onError
   );
 
-  
-
+  const cropId = form.getValues("cropId");
+  console.log(cropId);
   return (
     <div className="h-full relative">
       <Form {...form}>
@@ -63,7 +62,7 @@ const FieldAddForm = ({
             />
             <FormField
               control={form.control}
-              name="crop"
+              name="cropId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Crop</FormLabel>
@@ -80,6 +79,56 @@ const FieldAddForm = ({
                 </FormItem>
               )}
             />
+
+            <div>
+              <FormField
+                control={form.control}
+                name="cropPlantingDate"
+                rules={{
+                  validate: (value) => {
+                    console.log("date:", value);
+                    if (!value && cropId) {
+                      return false;
+                    }
+                  },
+                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Plant Date</FormLabel>
+                    <FormControl>
+                      <CropDatePicker
+                        disabled={!cropId}
+                        onButtonBlur={field.onBlur}
+                        onButtonChange={field.onChange}
+                        date={field.value || undefined}
+                        buttonRef={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cropHarvestDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Harvest Date</FormLabel>
+                    <FormControl>
+                      <CropDatePicker
+                        disabled={!cropId}
+                        onButtonBlur={field.onBlur}
+                        onButtonChange={field.onChange}
+                        date={field.value || undefined}
+                        buttonRef={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div className="flex">
             <Button

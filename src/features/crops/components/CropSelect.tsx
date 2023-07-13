@@ -15,7 +15,7 @@ import { useCrops } from "../services";
 type CropSelectProps = ElementProps<typeof Select> & {
   initialCropId?: string;
   displayNone?: boolean;
-  onCropSelect?: (crop: Crop | null) => void;
+  onCropSelect?: (cropId: string) => void;
 };
 
 const CropSelect = ({
@@ -32,8 +32,7 @@ const CropSelect = ({
       value={initialCropId}
       onValueChange={(e) => {
         if (onCropSelect) {
-          const selectedCrop = crops?.find((crop) => crop.id === e);
-          onCropSelect(selectedCrop || null);
+          onCropSelect(e);
         }
 
         if (onValueChange) {

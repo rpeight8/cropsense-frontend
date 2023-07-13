@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CropSchema } from "@/features/crops/schemas";
+import { CropRotationsSchema, CropSchema } from "@/features/crops/schemas";
 import { CoordinatesSchema } from "@/features/map/schemas";
 
 // It has to be impoert from ../seasons/schemas.ts, but I just copied it here
@@ -29,7 +29,15 @@ export const FieldSchema = z.object({
   id: z.string(),
   name: z.string(),
   geometry: FieldGeometrySchema,
-  crop: CropSchema.nullable(),
+  crop: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      color: z.string(),
+      startDate: z.string(),
+      endDate: z.string(),
+    })
+    .nullable(),
   seasonId: z.string(),
 });
 
@@ -41,6 +49,14 @@ export const FieldsApiSchema = FieldsSchema;
 export const FieldForCreateSchema = FieldSchema.omit({
   id: true,
   seasonId: true,
+}).extend({
+  crop: z
+    .object({
+      id: z.string(),
+      startDate: z.string(),
+      endDate: z.string(),
+    })
+    .nullable(),
 });
 
 export const FieldForUpdateSchema = FieldSchema.extend({
@@ -71,7 +87,7 @@ export const FieldActionsSchema = z
   );
 
 export const FieldSeasonSummarySchema = SeasonSchema.extend({
-  crop: CropSchema.nullable(),
+  crop: CropRotationsSchema.nullable(),
 }).omit({
   workspaceId: true,
 });

@@ -9,7 +9,7 @@ import {
   selectEditFieldGeometry,
   setEditFieldGeometry,
 } from "@/features/forms/formsSlice";
-import { CropSchema } from "@/features/crops/schemas";
+import { CropRotationSchema, CropSchema } from "@/features/crops/schemas";
 import { useDeleteField, useUpdateField } from "../services";
 
 export const FormSchema = z.object({
@@ -18,7 +18,7 @@ export const FormSchema = z.object({
   }),
   geometry: FieldGeometrySchema,
   seasonId: z.string(),
-  crop: CropSchema.nullable(),
+  crop: CropRotationSchema.nullable(),
   id: z.string(),
 });
 
