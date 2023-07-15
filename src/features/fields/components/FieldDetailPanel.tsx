@@ -80,19 +80,21 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
           {...props}
         >
           {(action === "edit" && selectedField && (
-            <FieldManageForm
-              className=""
-              onDeleteSuccess={onDeleteSuccess}
-              onDeleteError={onDeleteError}
-              onUpdateSuccess={onUpdateSuccess}
-              onUpdateError={onUpdateError}
-              field={{
-                ...selectedField,
-                crop: selectedField.crop && {
-                  ...selectedField.crop,
-                },
-              }}
-            />
+            <>
+              <FieldManageForm
+                className=""
+                onDeleteSuccess={onDeleteSuccess}
+                onDeleteError={onDeleteError}
+                onUpdateSuccess={onUpdateSuccess}
+                onUpdateError={onUpdateError}
+                field={{
+                  ...selectedField,
+                  crop: selectedField.crop && {
+                    ...selectedField.crop,
+                  },
+                }}
+              />
+            </>
           )) ||
             (action === "display" && (
               <>
