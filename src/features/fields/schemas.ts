@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { CropRotationsSchema, CropSchema } from "@/features/crops/schemas";
+import {
+  CropRotationsApiSchema,
+  CropRotationsSchema,
+} from "@/features/crops/schemas";
 import { CoordinatesSchema } from "@/features/map/schemas";
 
 // It has to be impoert from ../seasons/schemas.ts, but I just copied it here
@@ -29,27 +32,32 @@ export const FieldSchema = z.object({
   id: z.string(),
   name: z.string(),
   geometry: FieldGeometrySchema,
-  crop: z
-    .object({
-      id: z.string(),
-      name: z.string(),
-      color: z.string(),
-      startDate: z.string(),
-      endDate: z.string(),
-    })
-    .nullable(),
+  cropRotations: CropRotationsSchema,
   seasonId: z.string(),
 });
 
 export const FieldsSchema = z.array(FieldSchema);
 
-export const FieldApiSchema = FieldSchema;
-export const FieldsApiSchema = FieldsSchema;
+export const FieldApiSchema = FieldSchema.extend({
+  cropRotations: CropRotationsApiSchema,
+});
+export const FieldsApiSchema = z.array(FieldApiSchema);
 
 export const FieldForCreateSchema = FieldSchema.omit({
   id: true,
   seasonId: true,
 }).extend({
+  cropRotations: z.array(
+    z.object({
+      cropId: z.string(),
+      startDate: z.string(),
+      endDate: z.string(),
+    })
+  ),
+});
+
+export const FieldForUpdateSchema = FieldSchema.extend({
+  id: z.string().optional(),
   crop: z
     .object({
       id: z.string(),
@@ -57,10 +65,6 @@ export const FieldForCreateSchema = FieldSchema.omit({
       endDate: z.string(),
     })
     .nullable(),
-});
-
-export const FieldForUpdateSchema = FieldSchema.extend({
-  id: z.string().optional(),
 });
 
 export const fieldAddAction = "add" as const;

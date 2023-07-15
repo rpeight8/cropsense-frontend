@@ -11,19 +11,61 @@ import {
 } from "@/features/forms/formsSlice";
 import { CropRotationSchema, CropSchema } from "@/features/crops/schemas";
 import { useDeleteField, useUpdateField } from "../services";
+import { Field } from "../types";
 
-export const FormSchema = z.object({
-  name: z.string().min(1, {
-    message: "Field name must be at least 1 characters.",
-  }),
-  geometry: FieldGeometrySchema,
-  seasonId: z.string(),
-  crop: CropRotationSchema.nullable(),
-  id: z.string(),
-});
+export const FormSchema = z
+  .object({
+    id: z.string(),
+    name: z.string().min(1, {
+      message: "Field name must be at least 1 characters.",
+    }),
+    seasonId: z.string(),
+    cropId: z.string().nullable(),
+    cropPlantingDate: z.date().nullable(),
+    cropHarvestDate: z.date().nullable(),
+    geometry: FieldGeometrySchema,
+  })
+  .refine(
+    (data) => {
+      if (!data.cropId) return true;
+      if (!data.cropPlantingDate) return false;
+      return true;
+    },
+    {
+      message: "Planting Date must be specified.",
+      path: ["cropPlantingDate"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (!data.cropId) return true;
+      if (!data.cropHarvestDate) return false;
+      return true;
+    },
+    {
+      message: "Harvest Date must be specified.",
+      path: ["cropHarvestDate"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (!data.cropId) return true;
+      if (
+        data.cropPlantingDate &&
+        data.cropHarvestDate &&
+        data.cropPlantingDate > data.cropHarvestDate
+      )
+        return false;
+      return true;
+    },
+    {
+      message: "Harvest Date must be after Planting Date.",
+      path: ["cropHarvestDate"],
+    }
+  );
 
 type UseFieldManageFormProps = {
-  field: z.infer<typeof FormSchema>;
+  field: Field;
   onDeleteSuccess?: () => void;
   onDeleteError?: () => void;
   onUpdateSuccess?: () => void;
@@ -39,8 +81,19 @@ const useFieldManageForm = ({
 }: UseFieldManageFormProps) => {
   const navigate = useNavigate();
 
+  const crop = field.crop;
+  const fieldForForm = {
+    name: field.name,
+    id: field.id,
+    seasonId: field.seasonId,
+    cropId: crop ? crop.id : null,
+    cropPlantingDate: crop ? new Date(crop.startDate) : null,
+    cropHarvestDate: crop ? new Date(crop.endDate) : null,
+    geometry: field.geometry,
+  };
+
   const form = useForm<z.infer<typeof FormSchema>>({
-    defaultValues: field,
+    defaultValues: fieldForForm,
     resolver: zodResolver(FormSchema),
   });
 
@@ -74,8 +127,16 @@ const useFieldManageForm = ({
     async (field: z.infer<typeof FormSchema>) => {
       try {
         const preparedField = {
-          ...field,
-          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry),
+          id: field.id,
+          name: field.name,
+          seasonId: field.seasonId,
+          crop: (field.cropId && {
+            id: field.cropId,
+            startDate: field.cropPlantingDate!.toISOString(),
+            endDate: field.cropHarvestDate!.toISOString(),
+          }) ||
+          null,
+          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry) 
         };
         updateFieldMutation.mutate({
           fieldId: preparedField.id,

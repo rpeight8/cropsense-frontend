@@ -5,6 +5,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
+import { startOfDay } from "date-fns";
 import {
   MapContainer,
   Polygon,
@@ -16,7 +17,7 @@ import type { Map, Polygon as LeafletPolygon } from "leaflet";
 import { EditControl } from "react-leaflet-draw";
 import ReactLeafletGoogleLayer from "react-leaflet-google-layer";
 import { ImageOverlay } from "react-leaflet/ImageOverlay";
-import { Field, FieldCoordinates} from "../types";
+import { Field, FieldCoordinates } from "../types";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {
@@ -103,9 +104,7 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
   const dispatch = useAppDispatch();
 
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
-  const {
-    data: fields,
-  } = useSeasonFields(selectedSeasonId);
+  const { data: fields } = useSeasonFields(selectedSeasonId);
   const selectedFieldId = useAppSelector(selectSelectedFieldId);
   const hoveredFieldId = useAppSelector(selectHoveredFieldId);
   const selectedField = fields?.find((field) => field.id === selectedFieldId);
@@ -238,6 +237,13 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
             const isHovered = hoveredFieldId === field.id;
             const isSelectedOrHoveredField =
               isSelected || hoveredFieldId === field.id;
+            const currentDate = startOfDay(new Date());
+            const currentCropRotation = field.cropRotations.find(
+              (cropRotation) =>
+                new Date(cropRotation.startDate) <= currentDate &&
+                new Date(cropRotation.endDate) >= currentDate
+            );
+
             return (
               <Polygon
                 key={field.id}
@@ -253,12 +259,16 @@ const FieldsMap = ({ className, ...props }: MapProps) => {
                   color: "white",
                   weight: isSelectedOrHoveredField ? 3 : 1.5,
                   fillColor:
-                    selectedNDVI && isSelected ? undefined : field?.crop?.color,
+                    selectedNDVI && isSelected
+                      ? undefined
+                      : currentCropRotation?.crop.color,
                   opacity: isSelected && action === "edit" ? 0.5 : 1,
                   fillOpacity: parseFloat(
                     cn("", {
                       "0.3": isSelected && action === "edit",
-                      "0": (isSelected && selectedNDVI) || !field?.crop?.color,
+                      "0":
+                        (isSelected && selectedNDVI) ||
+                        !currentCropRotation?.crop.color,
                       "0.6": true,
                     })
                   ),

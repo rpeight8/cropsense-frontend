@@ -8,49 +8,67 @@ import {
   resetAddField,
   selectAddFieldGeometry,
 } from "@/features/forms/formsSlice";
-import { CropRotationSchema, CropSchema } from "@/features/crops/schemas";
 import { useCreateField } from "../services";
 import { FieldGeometrySchema } from "../schemas";
+import { v1 as uuidv1 } from "uuid";
+import { useToast } from "@/components/ui/Toast/useToast";
 
-export const FormSchema = z
-  .object({
-    name: z.string().min(1, {
-      message: "Field name must be at least 1 characters.",
-    }),
-    cropId: z.string().nullable(),
-    cropPlantingDate: z.date().nullable(),
-    cropHarvestDate: z.date().nullable(),
-    geometry: FieldGeometrySchema,
-  })
-  .refine(
-    (data) => {
-      debugger;
-      if (!data.cropId) return true;
-      if (!data.cropPlantingDate) return false;
-      return true;
-    },
-    {
-      message: "Start date must be less than or equal to end date.",
-      path: ["cropPlantingDate"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (!data.cropId) return true;
-      if (!data.cropHarvestDate) return false;
-      return true;
-    },
-    {
-      message: "End date must be greater than or equal to start date.",
-      path: ["cropHarvestDate"],
-    }
-  );
+export const FormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Field name must be at least 1 characters.",
+  }),
+  cropRotations: z.array(
+    z
+      .object({
+        _key: z.string(),
+        cropId: z.string().nullable(),
+        cropPlantingDate: z.date().nullable(),
+        cropHarvestDate: z.date().nullable(),
+      })
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate || !data.cropHarvestDate) return true;
+          return data.cropPlantingDate < data.cropHarvestDate;
+        },
+        {
+          message: "Harvest Date must be after Planting Date.",
+          path: ["cropHarvestDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate) return false;
+          return true;
+        },
+        {
+          message: "Planting Date must be specified.",
+          path: ["cropPlantingDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropHarvestDate) return false;
+          return true;
+        },
+        {
+          message: "Harvest Date must be specified.",
+          path: ["cropHarvestDate"],
+        }
+      )
+  ),
+
+  geometry: FieldGeometrySchema,
+});
 
 const useFieldAddForm = (
   seasonsId: string,
   onSuccess?: () => void,
   onError?: () => void
 ) => {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const addFieldGeometry = useAppSelector(selectAddFieldGeometry);
 
@@ -63,9 +81,14 @@ const useFieldAddForm = (
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       name: "",
-      cropId: null,
-      cropPlantingDate: null,
-      cropHarvestDate: null,
+      cropRotations: [
+        {
+          _key: uuidv1(),
+          cropId: null,
+          cropPlantingDate: null,
+          cropHarvestDate: null,
+        },
+      ],
       geometry: addFieldGeometry,
     },
     resolver: zodResolver(FormSchema),
@@ -77,9 +100,15 @@ const useFieldAddForm = (
 
   const onFormValidationErrors = useCallback(
     (errors: FieldErrors<z.infer<typeof FormSchema>>) => {
-      console.error(errors);
+      if (errors.geometry) {
+        toast({
+          title: "Geometry is invalid.",
+          description: "Please draw a valid geometry.",
+          variant: "destructive",
+        });
+      }
     },
-    []
+    [toast]
   );
 
   const { isLoading, ...createFieldMutation } = useCreateField(
@@ -92,13 +121,14 @@ const useFieldAddForm = (
     async (field: z.infer<typeof FormSchema>) => {
       const fieldForCreate = {
         name: field.name,
-        crop:
-          (field.cropId && {
-            id: field.cropId,
-            startDate: field.cropPlantingDate!.toISOString(),
-            endDate: field.cropHarvestDate!.toISOString(),
-          }) ||
-          null,
+        cropRotations: field.cropRotations
+          .filter((cropRotation) => cropRotation.cropId !== null)
+          .map((cropRotation) => ({
+            // TODO: Add typeguard to previous .filter call to ensure TS that cropPlantingDate and cropHarvestDate are not null
+            cropId: cropRotation.cropId!,
+            startDate: cropRotation.cropPlantingDate!.toISOString(),
+            endDate: cropRotation.cropHarvestDate!.toISOString(),
+          })),
         geometry: field.geometry,
       };
       createFieldMutation.mutate(fieldForCreate);
