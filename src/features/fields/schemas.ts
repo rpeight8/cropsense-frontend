@@ -58,13 +58,13 @@ export const FieldForCreateSchema = FieldSchema.omit({
 
 export const FieldForUpdateSchema = FieldSchema.extend({
   id: z.string().optional(),
-  crop: z
-    .object({
-      id: z.string(),
+  cropRotations: z.array(
+    z.object({
+      cropId: z.string(),
       startDate: z.string(),
       endDate: z.string(),
     })
-    .nullable(),
+  ),
 });
 
 export const fieldAddAction = "add" as const;
