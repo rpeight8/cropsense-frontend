@@ -22,6 +22,7 @@ import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
 import CropDatePicker from "@/features/crops/components/CropDatePicker";
 import { Field } from "../types";
+import List from "@/components/ui/List";
 
 type FieldManageFormProps = ComponentPropsWithoutRef<"form"> & {
   field: Field;
@@ -51,7 +52,8 @@ const FieldManageForm = ({
       onDeleteError,
     });
 
-  const cropId = form.getValues("cropId");
+  const cropRotations = form.getValues("cropRotations");
+
   return (
     <>
       <h4 className="font-semibold">Manage Field '{field.name}'</h4>
@@ -76,73 +78,78 @@ const FieldManageForm = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="cropId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Crop</FormLabel>
-                    <FormControl>
-                      <CropSelect
-                        initialCropId={cropId || undefined}
-                        displayNone={true}
-                        onCropSelect={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Crop to be assigned to the field
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex gap-x-4 flex-wrap">
-                <FormField
-                  control={form.control}
-                  name="cropPlantingDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Plant Date</FormLabel>
-                      <FormControl>
-                        <CropDatePicker
-                          disabled={!cropId}
-                          onButtonBlur={field.onBlur}
-                          onButtonChange={field.onChange}
-                          date={field.value || undefined}
-                          buttonRef={field.ref}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Planting Date of selected crop
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
+              <h3 className="text-lg font-medium">Crop Rotations</h3>
+
+              <List className="divide-y space-y-8">
                 <FormField
                   control={form.control}
-                  name="cropHarvestDate"
+                  name="cropId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Harvest Date</FormLabel>
+                      <FormLabel>Crop</FormLabel>
                       <FormControl>
-                        <CropDatePicker
-                          disabled={!cropId}
-                          onButtonBlur={field.onBlur}
-                          onButtonChange={field.onChange}
-                          date={field.value || undefined}
-                          buttonRef={field.ref}
+                        <CropSelect
+                          initialCropId={cropId || undefined}
+                          displayNone={true}
+                          onCropSelect={field.onChange}
                         />
                       </FormControl>
                       <FormDescription>
-                        Harvest Date of selected crop
+                        Crop to be assigned to the field
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
+                <div className="flex gap-x-4 flex-wrap">
+                  <FormField
+                    control={form.control}
+                    name="cropPlantingDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Plant Date</FormLabel>
+                        <FormControl>
+                          <CropDatePicker
+                            disabled={!cropId}
+                            onButtonBlur={field.onBlur}
+                            onButtonChange={field.onChange}
+                            date={field.value || undefined}
+                            buttonRef={field.ref}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Planting Date of selected crop
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="cropHarvestDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Harvest Date</FormLabel>
+                        <FormControl>
+                          <CropDatePicker
+                            disabled={!cropId}
+                            onButtonBlur={field.onBlur}
+                            onButtonChange={field.onChange}
+                            date={field.value || undefined}
+                            buttonRef={field.ref}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Harvest Date of selected crop
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </List>
             </div>
             <div className="flex gap-x-2">
               <Button

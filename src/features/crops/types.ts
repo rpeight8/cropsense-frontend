@@ -1,7 +1,5 @@
 import { z } from "zod";
-import * as CropSchemas from "./schemas";
+import { CropRotationsSchema } from "./schemas";
 
-export type Crop = z.infer<typeof CropSchemas.CropSchema>;
-export type Crops = z.infer<typeof CropSchemas.CropsSchema>;
-
-
+export type CropRotation = z.infer<typeof CropRotationsSchema>[number];
+export type CropRotations = z.infer<typeof CropRotationsSchema>;

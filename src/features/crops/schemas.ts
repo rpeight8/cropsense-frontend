@@ -8,10 +8,11 @@ export const CropSchema = z.object({
 export const CropsSchema = z.array(CropSchema);
 
 export const CropRotationSchema = z.object({
-  id: z.string(),
-  crop: CropSchema,
-  startDate: z.date(),
-  endDate: z.date(),
+  id: z.string().optional(),
+  _key: z.string(),
+  cropId: z.string().nullable(),
+  cropPlantingDate: z.date().nullable(),
+  cropHarvestDate: z.date().nullable(),
 });
 export const CropRotationsSchema = z.array(CropRotationSchema);
 

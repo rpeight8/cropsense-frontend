@@ -9,60 +9,61 @@ import {
   selectEditFieldGeometry,
   setEditFieldGeometry,
 } from "@/features/forms/formsSlice";
-import { CropRotationSchema, CropSchema } from "@/features/crops/schemas";
+import { v1 as uuidv1 } from "uuid";
 import { useDeleteField, useUpdateField } from "../services";
 import { Field } from "../types";
 
-export const FormSchema = z
-  .object({
-    id: z.string(),
-    name: z.string().min(1, {
-      message: "Field name must be at least 1 characters.",
-    }),
-    seasonId: z.string(),
-    cropId: z.string().nullable(),
-    cropPlantingDate: z.date().nullable(),
-    cropHarvestDate: z.date().nullable(),
-    geometry: FieldGeometrySchema,
-  })
-  .refine(
-    (data) => {
-      if (!data.cropId) return true;
-      if (!data.cropPlantingDate) return false;
-      return true;
-    },
-    {
-      message: "Planting Date must be specified.",
-      path: ["cropPlantingDate"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (!data.cropId) return true;
-      if (!data.cropHarvestDate) return false;
-      return true;
-    },
-    {
-      message: "Harvest Date must be specified.",
-      path: ["cropHarvestDate"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (!data.cropId) return true;
-      if (
-        data.cropPlantingDate &&
-        data.cropHarvestDate &&
-        data.cropPlantingDate > data.cropHarvestDate
+export const FormSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, {
+    message: "Field name must be at least 1 characters.",
+  }),
+  seasonId: z.string(),
+  cropRotations: z.array(
+    z
+      .object({
+        _key: z.string(),
+        id: z.string().optional(),
+        cropId: z.string().nullable(),
+        cropPlantingDate: z.date().nullable(),
+        cropHarvestDate: z.date().nullable(),
+      })
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate || !data.cropHarvestDate) return true;
+          return data.cropPlantingDate < data.cropHarvestDate;
+        },
+        {
+          message: "Harvest Date must be after Planting Date.",
+          path: ["cropHarvestDate"],
+        }
       )
-        return false;
-      return true;
-    },
-    {
-      message: "Harvest Date must be after Planting Date.",
-      path: ["cropHarvestDate"],
-    }
-  );
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate) return false;
+          return true;
+        },
+        {
+          message: "Planting Date must be specified.",
+          path: ["cropPlantingDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropHarvestDate) return false;
+          return true;
+        },
+        {
+          message: "Harvest Date must be specified.",
+          path: ["cropHarvestDate"],
+        }
+      )
+  ),
+  geometry: FieldGeometrySchema,
+});
 
 type UseFieldManageFormProps = {
   field: Field;
@@ -81,14 +82,14 @@ const useFieldManageForm = ({
 }: UseFieldManageFormProps) => {
   const navigate = useNavigate();
 
-  const crop = field.crop;
   const fieldForForm = {
     name: field.name,
     id: field.id,
     seasonId: field.seasonId,
-    cropId: crop ? crop.id : null,
-    cropPlantingDate: crop ? new Date(crop.startDate) : null,
-    cropHarvestDate: crop ? new Date(crop.endDate) : null,
+    cropRotations: field.cropRotations.map((cropRotation) => ({
+      ...cropRotation,
+      _key: cropRotation.id || uuidv1(),
+    })),
     geometry: field.geometry,
   };
 
@@ -130,13 +131,16 @@ const useFieldManageForm = ({
           id: field.id,
           name: field.name,
           seasonId: field.seasonId,
-          crop: (field.cropId && {
-            id: field.cropId,
-            startDate: field.cropPlantingDate!.toISOString(),
-            endDate: field.cropHarvestDate!.toISOString(),
-          }) ||
-          null,
-          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry) 
+          cropRotations: field.cropRotations
+            .filter((cropRotation) => cropRotation.cropId !== null)
+            .map((cropRotation) => ({
+              // TODO: Add typeguard to previous .filter call to ensure TS that cropPlantingDate and cropHarvestDate are not null
+              id: cropRotation.id,
+              cropId: cropRotation.cropId!,
+              startDate: cropRotation.cropPlantingDate!.toISOString(),
+              endDate: cropRotation.cropHarvestDate!.toISOString(),
+            })),
+          geometry: await FieldGeometrySchema.parseAsync(editFieldGeometry),
         };
         updateFieldMutation.mutate({
           fieldId: preparedField.id,
