@@ -105,3 +105,105 @@ export const FieldSummaryApiSchema = z.object({
   area: z.number(),
   areaUnit: z.string(),
 });
+
+export const AddFormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Field name must be at least 1 characters.",
+  }),
+  cropRotations: z.array(
+    z
+      .object({
+        _key: z.string(),
+        cropId: z.string().nullable(),
+        cropPlantingDate: z.date().nullable(),
+        cropHarvestDate: z.date().nullable(),
+      })
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate || !data.cropHarvestDate) return true;
+          return data.cropPlantingDate < data.cropHarvestDate;
+        },
+        {
+          message: "Harvest Date must be after Planting Date.",
+          path: ["cropHarvestDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate) return false;
+          return true;
+        },
+        {
+          message: "Planting Date must be specified.",
+          path: ["cropPlantingDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropHarvestDate) return false;
+          return true;
+        },
+        {
+          message: "Harvest Date must be specified.",
+          path: ["cropHarvestDate"],
+        }
+      )
+  ),
+
+  geometry: FieldGeometrySchema,
+});
+// TODO: remove duplicated props from AddFormSchema and ManageFormSchema
+export const ManageFormSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, {
+    message: "Field name must be at least 1 characters.",
+  }),
+  seasonId: z.string(),
+  cropRotations: z.array(
+    z
+      .object({
+        _key: z.string(),
+        id: z.string().optional(),
+        cropId: z.string().nullable(),
+        cropPlantingDate: z.date().nullable(),
+        cropHarvestDate: z.date().nullable(),
+      })
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate || !data.cropHarvestDate) return true;
+          return data.cropPlantingDate < data.cropHarvestDate;
+        },
+        {
+          message: "Harvest Date must be after Planting Date.",
+          path: ["cropHarvestDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropPlantingDate) return false;
+          return true;
+        },
+        {
+          message: "Planting Date must be specified.",
+          path: ["cropPlantingDate"],
+        }
+      )
+      .refine(
+        (data) => {
+          if (!data.cropId) return true;
+          if (!data.cropHarvestDate) return false;
+          return true;
+        },
+        {
+          message: "Harvest Date must be specified.",
+          path: ["cropHarvestDate"],
+        }
+      )
+  ),
+  geometry: FieldGeometrySchema,
+});
