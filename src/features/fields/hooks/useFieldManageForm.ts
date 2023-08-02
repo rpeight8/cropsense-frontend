@@ -12,58 +12,7 @@ import {
 import { v1 as uuidv1 } from "uuid";
 import { useDeleteField, useUpdateField } from "../services";
 import { Field } from "../types";
-
-export const FormSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1, {
-    message: "Field name must be at least 1 characters.",
-  }),
-  seasonId: z.string(),
-  cropRotations: z.array(
-    z
-      .object({
-        _key: z.string(),
-        id: z.string().optional(),
-        cropId: z.string().nullable(),
-        cropPlantingDate: z.date().nullable(),
-        cropHarvestDate: z.date().nullable(),
-      })
-      .refine(
-        (data) => {
-          if (!data.cropId) return true;
-          if (!data.cropPlantingDate || !data.cropHarvestDate) return true;
-          return data.cropPlantingDate < data.cropHarvestDate;
-        },
-        {
-          message: "Harvest Date must be after Planting Date.",
-          path: ["cropHarvestDate"],
-        }
-      )
-      .refine(
-        (data) => {
-          if (!data.cropId) return true;
-          if (!data.cropPlantingDate) return false;
-          return true;
-        },
-        {
-          message: "Planting Date must be specified.",
-          path: ["cropPlantingDate"],
-        }
-      )
-      .refine(
-        (data) => {
-          if (!data.cropId) return true;
-          if (!data.cropHarvestDate) return false;
-          return true;
-        },
-        {
-          message: "Harvest Date must be specified.",
-          path: ["cropHarvestDate"],
-        }
-      )
-  ),
-  geometry: FieldGeometrySchema,
-});
+import { ManageFormSchema as FormSchema } from "../schemas";
 
 type UseFieldManageFormProps = {
   field: Field;

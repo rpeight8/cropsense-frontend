@@ -27,7 +27,17 @@ export const useSeasonFields = (seasonId: string | null) => {
           }
         );
         const fields = await FieldsApiSchema.parseAsync(resp.data);
-        return fields;
+        const preparedFields = fields.map((field) => ({
+          ...field,
+          cropRotations: field.cropRotations.map((cropRotation) => ({
+            cropId: cropRotation.crop.id,
+            cropPlantingDate: new Date(cropRotation.startDate),
+            cropHarvestDate: new Date(cropRotation.endDate),
+            id: cropRotation.id,
+            _key: cropRotation.id,
+          })),
+        }));
+        return preparedFields;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(

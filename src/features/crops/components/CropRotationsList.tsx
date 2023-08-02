@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/Form";
 import CropSelect from "./CropSelect";
 import CropDatePicker from "./CropDatePicker";
-import { Button } from "@/components/ui/Button";
-import { FieldValues, useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
+import { AddFormType, ManageFormType } from "@/features/fields/types";
 
 type CropRotationsListProps = {
   cropRotations: CropRotations;
-  form: ReturnType<typeof useForm<CropRotations>>;
+  form: UseFormReturn<ManageFormType, any, undefined>;
+  // | UseFormReturn<AddFormType, any, undefined>;
+  // | ReturnType<typeof useForm<ManageFormType>>;
 };
 
 const CropRotationsList = ({ form, cropRotations }: CropRotationsListProps) => {
@@ -27,12 +29,13 @@ const CropRotationsList = ({ form, cropRotations }: CropRotationsListProps) => {
           <li key={cropRotation._key}>
             <FormField
               control={form.control}
-              name={`${index}.cropId`}
+              name={`cropRotations.${index}.cropId`}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Crop {index + 1}</FormLabel>
                   <FormControl>
                     <CropSelect
+                      initialCropId={cropRotation.cropId || undefined}
                       displayNone={true}
                       onCropSelect={field.onChange}
                     />
@@ -48,7 +51,7 @@ const CropRotationsList = ({ form, cropRotations }: CropRotationsListProps) => {
             <div>
               <FormField
                 control={form.control}
-                name={`${index}.cropPlantingDate`}
+                name={`cropRotations.${index}.cropPlantingDate`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Plant Date</FormLabel>
@@ -71,7 +74,7 @@ const CropRotationsList = ({ form, cropRotations }: CropRotationsListProps) => {
 
               <FormField
                 control={form.control}
-                name={`${index}.cropHarvestDate`}
+                name={`cropRotations.${index}.cropHarvestDate`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Harvest Date</FormLabel>
