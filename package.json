@@ -41,11 +41,11 @@
     "react-leaflet-google-layer": "2.2.0",
     "react-redux": "8.1.0",
     "react-router-dom": "6.12.1",
-    "sort-by": "1.2.0",
+    "sort-by": "^0.0.2",
     "tailwind-merge": "^1.13.1",
     "tailwindcss-animate": "^1.0.6",
     "uuid": "9.0.0",
-    "zod": "3.21.4"
+    "zod": "^3.22.5"
   },
   "devDependencies": {
     "@types/leaflet": "1.9.3",
@@ -60,9 +60,9 @@
     "eslint": "8.38.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-refresh": "0.3.4",
-    "postcss": "8.4.24",
+    "postcss": "^8.4.38",
     "tailwindcss": "3.3.2",
     "typescript": "5.0.2",
-    "vite": "4.3.9"
+    "vite": "^4.5.3"
   }
 }
