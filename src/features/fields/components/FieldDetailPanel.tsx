@@ -74,7 +74,7 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
       {action && selectedFieldId && (
         <div
           className={cn(
-            "p-1 pt-3 overflow-hidden grid grid-rows-[40px_1fr] gap-3",
+            "p-1 pt-3 overflow-hidden grid grid-rows-[40px_280px] gap-3",
             className
           )}
           {...props}
@@ -87,11 +87,9 @@ const FieldDetailPanel = ({ className, ...props }: FieldDetailPanelProps) => {
                 onDeleteError={onDeleteError}
                 onUpdateSuccess={onUpdateSuccess}
                 onUpdateError={onUpdateError}
+                wrapperClassName="relative overflow-y-auto"
                 field={{
                   ...selectedField,
-                  crop: selectedField.crop && {
-                    ...selectedField.crop,
-                  },
                 }}
               />
             </>

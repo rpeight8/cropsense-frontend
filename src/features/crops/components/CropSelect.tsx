@@ -6,10 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { useAppSelector } from "@/store";
-import { selectCrops } from "@/features/crops/cropsSlice";
 import { SelectGroup } from "@radix-ui/react-select";
-import { Crop } from "../types";
 import { useCrops } from "../services";
 
 type CropSelectProps = ElementProps<typeof Select> & {

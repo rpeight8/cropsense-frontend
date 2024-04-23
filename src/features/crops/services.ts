@@ -1,7 +1,7 @@
 import { set } from "@/features/crops/cropsSlice";
 import { CropsSchema } from "./schemas";
 import { useAppDispatch } from "@/store";
-import { Crops } from "./types";
+import type { Crops } from "./types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

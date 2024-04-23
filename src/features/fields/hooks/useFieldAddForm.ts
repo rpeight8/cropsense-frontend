@@ -70,6 +70,7 @@ const useFieldAddForm = (
 
   const onFormSubmit = useCallback(
     async (field: z.infer<typeof FormSchema>) => {
+      debugger;
       const fieldForCreate = {
         name: field.name,
         cropRotations: field.cropRotations

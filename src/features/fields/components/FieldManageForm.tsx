@@ -56,11 +56,11 @@ const FieldManageForm = ({
   return (
     <>
       <h4 className="font-semibold">Manage Field '{field.name}'</h4>
-      <div className={cn("h-full w-full relative", wrapperClassName)}>
+      <div className={cn("h-full", wrapperClassName)}>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onErrors)}
-            className={cn("w-full h-full flex flex-col", className)}
+            className={cn("flex flex-col", className)}
             {...props}
           >
             <div className="mb-auto">
