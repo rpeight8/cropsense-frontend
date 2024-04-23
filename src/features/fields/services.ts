@@ -2,12 +2,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Field,
-  FieldForCreation,
+  FieldForCreate,
   FieldForUpdate,
   FieldId,
+  FieldSummary,
   Fields,
 } from "./types";
-import { FieldSchema, FieldsSchema } from "./schemas";
+import {
+  FieldApiSchema,
+  FieldSummaryApiSchema,
+  FieldsApiSchema,
+} from "./schemas";
 import axios from "axios";
 
 export const useSeasonFields = (seasonId: string | null) => {
@@ -21,18 +26,30 @@ export const useSeasonFields = (seasonId: string | null) => {
             withCredentials: true,
           }
         );
-        const fields = await FieldsSchema.parseAsync(resp.data);
-
-        return fields;
+        const fields = await FieldsApiSchema.parseAsync(resp.data);
+        const preparedFields = fields.map((field) => ({
+          ...field,
+          cropRotations: field.cropRotations.map((cropRotation) => ({
+            cropId: cropRotation.crop.id,
+            cropPlantingDate: new Date(cropRotation.startDate),
+            cropHarvestDate: new Date(cropRotation.endDate),
+            id: cropRotation.id,
+            _key: cropRotation.id,
+          })),
+        }));
+        return preparedFields;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
             error.response?.data?.message || "Error fetching fields."
           );
         } else if (error instanceof Error) {
-          throw new Error(error.message);
+          console.error(error.message);
+          throw new Error(
+            "Server responded with an unappropriated data format."
+          );
         } else {
-          throw new Error("Error fetching fields.");
+          throw new Error("Unexpected error occured while fetching fields.");
         }
       }
     },
@@ -41,27 +58,27 @@ export const useSeasonFields = (seasonId: string | null) => {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      staleTime: 60 * 1000 * 1,
+      staleTime: 60 * 1000 * 10,
       refetchIntervalInBackground: true,
     }
   );
 };
 
-export const useAddField = (
-  seasonId: string | null,
-  onSuccess?: (data: Field) => void,
-  onError?: (error: Error) => void
+export const useCreateField = (
+  seasonId: string,
+  onSuccess?: () => void,
+  onError?: () => void
 ) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation<Field, Error, FieldForCreation>({
-    onSuccess: (data) => {
+  const mutation = useMutation<Field, Error, FieldForCreate>({
+    onSuccess: () => {
       queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
-      onSuccess?.(data);
+      if (onSuccess) onSuccess();
     },
-    onError: (error) => {
-      onError?.(error);
+    onError: () => {
+      if (onError) onError();
     },
-    mutationFn: async (field: FieldForCreation) => {
+    mutationFn: async (field) => {
       try {
         const resp = await axios.post(
           `${import.meta.env.VITE_API_URL}/seasons/${seasonId}/fields`,
@@ -71,8 +88,8 @@ export const useAddField = (
           }
         );
 
-        const craeteField = await FieldSchema.parseAsync(resp.data);
-        return craeteField;
+        const createdField = await FieldApiSchema.parseAsync(resp.data);
+        return createdField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           throw new Error(
@@ -90,23 +107,29 @@ export const useAddField = (
   return mutation;
 };
 
-export const useEditField = (
-  fieldId: FieldId,
+export const useUpdateField = (
   seasonId: string | null,
-  onSuccess?: (data: Field) => void,
-  onError?: (error: Error) => void
+  onSuccess?: () => void,
+  onError?: () => void
 ) => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Field, Error, FieldForUpdate>({
-    onSuccess: (data) => {
+  const mutation = useMutation<
+    Field,
+    Error,
+    {
+      fieldId: FieldId;
+      field: FieldForUpdate;
+    }
+  >({
+    onSuccess: () => {
       queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
-      onSuccess?.(data);
+      if (onSuccess) onSuccess();
     },
-    onError: (error) => {
-      onError?.(error);
+    onError: () => {
+      if (onError) onError();
     },
-    mutationFn: async (field: FieldForUpdate) => {
+    mutationFn: async ({ fieldId, field }) => {
       try {
         const resp = await axios.put(
           `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
@@ -116,7 +139,7 @@ export const useEditField = (
           }
         );
 
-        const updatedField = await FieldSchema.parseAsync(resp.data);
+        const updatedField = await FieldApiSchema.parseAsync(resp.data);
         return updatedField;
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -133,4 +156,120 @@ export const useEditField = (
   });
 
   return mutation;
+};
+
+export const useDeleteField = (
+  seasonId: string | null,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<void, Error, FieldId>({
+    onSuccess: () => {
+      queryClient.invalidateQueries(["seasons", seasonId, "fields"]);
+      if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      if (onError) onError();
+    },
+    mutationFn: async (fieldId) => {
+      try {
+        await axios.delete(
+          `${import.meta.env.VITE_API_URL}/fields/${fieldId}`,
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error deleting field."
+          );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
+        } else {
+          throw new Error("Error deleting field.");
+        }
+      }
+    },
+  });
+
+  return mutation;
+};
+
+export const useFieldSummary = (fieldId: string | null) => {
+  return useQuery<FieldSummary, Error>(
+    ["fields", fieldId, "information"],
+    async (): Promise<FieldSummary> => {
+      return {
+        id: fieldId!,
+        name: "Field 1",
+        seasons: [
+          {
+            id: "1",
+            name: "Season 1",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "1",
+              name: "Crop 1",
+              color: "red",
+            },
+          },
+          {
+            id: "2",
+            name: "Season 2",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "2",
+              name: "Crop 2",
+              color: "yellow",
+            },
+          },
+          {
+            id: "3",
+            name: "Season 3",
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            crop: {
+              id: "3",
+              name: "Crop 3",
+              color: "green",
+            },
+          },
+        ],
+        area: 100,
+        areaUnit: "ha",
+      };
+      try {
+        const resp = await axios.get(
+          `${import.meta.env.VITE_API_URL}/fields/${fieldId}/summary`,
+          {
+            withCredentials: true,
+          }
+        );
+        const summary = await FieldSummaryApiSchema.parseAsync(resp.data);
+        return summary;
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "Error fetching field."
+          );
+        } else if (error instanceof Error) {
+          throw new Error(error.message);
+        } else {
+          throw new Error("Error fetching field.");
+        }
+      }
+    },
+    {
+      enabled: !!fieldId,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 60 * 1000 * 10,
+      refetchIntervalInBackground: true,
+    }
+  );
 };

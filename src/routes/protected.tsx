@@ -1,11 +1,11 @@
-import CoordinatesLayout from "@/components/CoordinatesPage";
+import CoordinatesPage from "@/components/CoordinatesPage";
 import FieldsLayout from "@/features/fields/components/FieldsPage";
 import SensorsLayout from "@/features/sensors/components/SensorsLayout";
 
 export const protectedRoutes = [
   {
     path: ":coordinates",
-    element: <CoordinatesLayout />,
+    element: <CoordinatesPage />,
     children: [
       {
         path: "fields",

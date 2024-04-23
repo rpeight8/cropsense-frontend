@@ -6,35 +6,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { useAppSelector } from "@/store";
-import { selectCrops } from "@/features/crops/cropsSlice";
 import { SelectGroup } from "@radix-ui/react-select";
-import { Crop } from "../types";
+import { useCrops } from "../services";
 
 type CropSelectProps = ElementProps<typeof Select> & {
-  isLoading?: boolean;
   initialCropId?: string;
   displayNone?: boolean;
-  onCropSelect?: (crop: Crop | null) => void;
+  onCropSelect?: (cropId: string) => void;
 };
 
 const CropSelect = ({
-  isLoading,
   initialCropId,
   displayNone,
   onValueChange,
   onCropSelect,
   ...props
 }: CropSelectProps) => {
-  const crops = useAppSelector(selectCrops);
+  const { data: crops, isLoading } = useCrops();
 
   return (
     <Select
       value={initialCropId}
       onValueChange={(e) => {
         if (onCropSelect) {
-          const selectedCrop = crops.find((crop) => crop.id === e);
-          onCropSelect(selectedCrop || null);
+          onCropSelect(e);
         }
 
         if (onValueChange) {
@@ -54,7 +49,7 @@ const CropSelect = ({
               None
             </SelectItem>
           )}
-          {crops.map((crop) => (
+          {crops?.map((crop) => (
             <SelectItem key={crop.id} value={crop.id}>
               {crop.name}
             </SelectItem>

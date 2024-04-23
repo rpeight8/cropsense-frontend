@@ -12,46 +12,44 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { useFieldAddForm } from "@/features/fields/hooks/useFieldAddForm";
-import { ComponentPropsWithoutRef, memo } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import CropSelect from "@/features/crops/components/CropSelect";
 import SpinnerLoader from "@/components/ui/SpinnerLoader";
-import { useCrops } from "@/features/crops/services";
-import { useAppSelector } from "@/store";
-import { selectSelectedSeasonId } from "@/features/seasons/seasonsSlice";
+import CropDatePicker from "../../crops/components/CropDatePicker";
+import { v1 as uuidv1 } from "uuid";
+import { List } from "@/components/ui/List";
+import CropRotationsList from "@/features/crops/components/CropRotationsList";
 
 type FieldsAddFormProps = ComponentPropsWithoutRef<"form"> & {
-  seasonId?: string;
+  addToSeasonsId: string;
+  onSuccess?: () => void;
+  onError?: () => void;
 };
 
-const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
-  const {
-    form,
-    isError,
-    // isLoading,
-    isSuccess,
-    isLoading,
-    error,
-    onSubmit,
-    onCancel,
-    onErrors,
-  } = useFieldAddForm();
-  const {
-    isLoading: isLoadingCrops,
-    isFetching: isFetchingCrops,
-    isError: isErrorCrops,
-    isSuccess: isSuccessCrops,
-    error: errorCrops,
-    data: crops,
-  } = useCrops();
-
+const FieldAddForm = ({
+  className,
+  addToSeasonsId,
+  onSuccess,
+  onError,
+}: FieldsAddFormProps) => {
+  const { form, isLoading, onSubmit, onCancel, onErrors } = useFieldAddForm(
+    addToSeasonsId,
+    onSuccess,
+    onError
+  );
+  const cropRotations = form.getValues("cropRotations");
   return (
-    <div className="h-full relative">
+    <>
       <Form {...form}>
         <form
-          className={cn("w-full h-full flex flex-col", className)}
+          className={cn(
+            "w-full h-full grid grid-cols-1 grid-rows-[min-content_min-content_1fr_min-content] gap-4",
+            className
+          )}
           onSubmit={form.handleSubmit(onSubmit, onErrors)}
         >
-          <div className="mb-auto">
+          <div>
+            <h3 className="text-lg font-medium">Field information</h3>
             <FormField
               control={form.control}
               name="name"
@@ -67,27 +65,11 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
                 </>
               )}
             />
-            <FormField
-              control={form.control}
-              name="crop"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Crop</FormLabel>
-                  <FormControl>
-                    <CropSelect
-                      displayNone={true}
-                      isLoading={isLoadingCrops || isFetchingCrops}
-                      onCropSelect={field.onChange}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Crop to be assigned to the field
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
+          <h3 className="text-lg font-medium">Crop Rotations</h3>
+
+          <CropRotationsList cropRotations={cropRotations} form={form} />
+
           <div className="flex">
             <Button
               className="mr-auto"
@@ -106,8 +88,7 @@ const FieldAddForm = memo(({ className }: FieldsAddFormProps) => {
         </form>
       </Form>
       {isLoading && <SpinnerLoader />}
-    </div>
+    </>
   );
-});
-
+};
 export default FieldAddForm;

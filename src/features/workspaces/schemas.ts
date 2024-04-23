@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { FieldsSchema } from "../fields/schemas";
-import { SeasonsSchema, SeasonsWithFieldsSchema } from "../seasons/schemas";
+import { SeasonsWithFieldsSchema } from "../seasons/schemas";
+
+export const WorkspaceIdURLSchema = z.string().min(1);
 
 export const WorkspaceSchema = z.object({
   id: z.string(),

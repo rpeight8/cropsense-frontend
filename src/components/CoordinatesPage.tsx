@@ -2,91 +2,48 @@ import { Navigate, Outlet } from "react-router-dom";
 import NavigationList from "@/components/NavigationList";
 import { cn } from "@/lib/utils";
 import { memo, useEffect } from "react";
-import UserMenu from "@/features/auth/components/UserMenu";
-import { Separator } from "@radix-ui/react-separator";
-import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
-import {
-  useWorkspaceSeasons,
-  useWorkspaces,
-} from "@/features/workspaces/services";
+import { useWorkspaces } from "@/features/workspaces/services";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
-  selectWorkspaces,
   setSelectedWorkspaceId,
-  setWorkspaces,
 } from "@/features/workspaces/workspacesSlice";
 import SeasonsMenu from "@/features/seasons/components/SeasonsMenu";
 import {
-  selectSeasons,
   selectSelectedSeasonId,
-  setSeasons,
   setSelectedSeasonId,
 } from "@/features/seasons/seasonsSlice";
 import useURLParametersParser from "@/hooks/useURLParametersParser";
+import { useWorkspaceSeasons } from "@/features/seasons/services";
+import WorkspacesMenu from "@/features/workspaces/components/WorkspacesMenu";
+import { Separator } from "@radix-ui/react-separator";
+import UserMenu from "@/features/auth/components/UserMenu";
 
-const CoordinatesLayout = memo(() => {
+const CoordinatesPage = memo(() => {
   const { isCoordinatesValid } = useURLParametersParser();
-  const { isLoading: isWorkspacesLoading, data: responseWorkspaces } =
-    useWorkspaces();
+  const { data: workspaces } = useWorkspaces();
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
-  const storedWorkspaces = useAppSelector(selectWorkspaces);
-  const {
-    isLoading: isSeasonsLoading,
-    data: responseSeasons,
-  } = useWorkspaceSeasons(selectedWorkspaceId);
-  const storedSeasons = useAppSelector(selectSeasons);
+  const { data: seasons } = useWorkspaceSeasons(selectedWorkspaceId);
   const selectedSeasonId = useAppSelector(selectSelectedSeasonId);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!responseWorkspaces || !responseWorkspaces.length) {
-      dispatch(setWorkspaces([]));
+    if (!workspaces || workspaces.length === 0) {
+      dispatch(setSelectedWorkspaceId(null));
       return;
     }
 
-    dispatch(setWorkspaces(responseWorkspaces));
-  }, [dispatch, responseWorkspaces]);
+    dispatch(setSelectedWorkspaceId(workspaces[0].id));
+  }, [dispatch, workspaces]);
 
   useEffect(() => {
-    if (!storedWorkspaces || !storedWorkspaces.length) {
-      if (selectedWorkspaceId) dispatch(setSelectedWorkspaceId(null));
+    if (!seasons || seasons.length === 0) {
+      dispatch(setSelectedSeasonId(null));
       return;
     }
 
-    if (
-      storedWorkspaces.some((workspace) => workspace.id === selectedWorkspaceId)
-    )
-      return;
-
-    dispatch(setSelectedWorkspaceId(storedWorkspaces[0].id));
-  }, [dispatch, storedWorkspaces, selectedWorkspaceId]);
-
-  useEffect(() => {
-    if (!responseSeasons || !responseSeasons.length) {
-      dispatch(setSeasons([]));
-      return;
-    }
-
-    dispatch(setSeasons(responseSeasons));
-  }, [dispatch, responseSeasons]);
-
-  useEffect(() => {
-    if (!responseSeasons || !responseSeasons.length) {
-      if (selectedSeasonId) setSelectedSeasonId(null);
-      return;
-    }
-
-    if (storedSeasons.some((season) => season.id === selectedSeasonId)) return;
-
-    dispatch(setSelectedSeasonId(responseSeasons[0].id));
-  }, [
-    dispatch,
-    responseSeasons,
-    selectedSeasonId,
-    selectedWorkspaceId,
-    storedSeasons,
-  ]);
+    dispatch(setSelectedSeasonId(seasons[0].id));
+  }, [dispatch, seasons]);
 
   if (!isCoordinatesValid) {
     return <Navigate to={`/52.4,31,10/fields`} replace />;
@@ -100,8 +57,8 @@ const CoordinatesLayout = memo(() => {
             "basis-[200px] font-medium text-lg flex flex-col p-1 gap-y-2"
           )}
         >
-          <WorkspacesMenu isLoading={isWorkspacesLoading} />
-          <SeasonsMenu isLoading={isWorkspacesLoading || isSeasonsLoading} />
+          <WorkspacesMenu />
+          <SeasonsMenu />
           <Separator className="h-0.5 bg-border" />
 
           <nav className="">
@@ -118,4 +75,4 @@ const CoordinatesLayout = memo(() => {
   );
 });
 
-export default CoordinatesLayout;
+export default CoordinatesPage;

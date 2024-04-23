@@ -22,7 +22,7 @@ const SeasonAddDialog = ({
   ...props
 }: SeasonAddDialogProps) => {
   const { toast } = useToast();
-  const handleAddSeasonSuccess = useCallback(() => {
+  const handleAddSuccess = useCallback(() => {
     setIsOpen(false);
     toast({
       variant: "default",
@@ -31,7 +31,7 @@ const SeasonAddDialog = ({
     });
   }, [setIsOpen, toast]);
 
-  const handleAddSeasonError = useCallback(() => {
+  const handleAddError = useCallback(() => {
     toast({
       variant: "destructive",
       title: "Error",
@@ -50,8 +50,8 @@ const SeasonAddDialog = ({
           </DialogDescription>
         </DialogHeader>
         <SeasonAddForm
-          onSuccess={handleAddSeasonSuccess}
-          onError={handleAddSeasonError}
+          onSuccess={handleAddSuccess}
+          onError={handleAddError}
           addToWorkspaceId={addToWorkspaceId}
         />
       </DialogContent>

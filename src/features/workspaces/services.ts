@@ -7,8 +7,6 @@ import {
   Workspaces,
 } from "./types";
 import { WorkspaceSchema, WorkspacesSchema } from "./schemas";
-import { Seasons } from "../seasons/types";
-import { SeasonsFromApiSchema } from "../seasons/schemas";
 
 export const useWorkspaces = () => {
   return useQuery<Workspaces, Error>(
@@ -37,43 +35,6 @@ export const useWorkspaces = () => {
       }
     },
     {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      staleTime: Infinity,
-      refetchIntervalInBackground: false,
-    }
-  );
-};
-
-export const useWorkspaceSeasons = (workspaceId: string | null) => {
-  return useQuery<Seasons, Error>(
-    ["workspaces", workspaceId, "seasons"],
-    async (): Promise<Seasons> => {
-      try {
-        const resp = await axios.get(
-          `${import.meta.env.VITE_API_URL}/workspaces/${workspaceId}/seasons`,
-          {
-            withCredentials: true,
-          }
-        );
-        const parsedSeasons = await SeasonsFromApiSchema.parseAsync(resp.data);
-
-        return parsedSeasons;
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          throw new Error(
-            error.response?.data?.message || "Error fetching seasons."
-          );
-        } else if (error instanceof Error) {
-          throw new Error(error.message);
-        } else {
-          throw new Error("Error fetching seasons.");
-        }
-      }
-    },
-    {
-      enabled: !!workspaceId,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
@@ -182,7 +143,7 @@ export const useCreateWorkspace = (
     onError: () => {
       if (onError) onError();
     },
-    mutationFn: async (workspace: WorkspaceForCreate) => {
+    mutationFn: async (workspace) => {
       try {
         const resp = await axios.post(
           `${import.meta.env.VITE_API_URL}/workspaces`,

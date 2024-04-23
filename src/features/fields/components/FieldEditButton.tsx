@@ -3,21 +3,22 @@ import useURLParametersParser from "@/hooks/useURLParametersParser";
 import { FieldId } from "../types";
 import { Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectSelectedFieldId } from "../fieldsSlice";
 
-type EditFieldButtonProps = ElementProps<typeof Button> & {
-  fieldId: FieldId;
-};
+type EditFieldButtonProps = ElementProps<typeof Button>;
 
-const FieldEditButton = ({ fieldId, className }: EditFieldButtonProps) => {
+const FieldEditButton = ({ className }: EditFieldButtonProps) => {
   const navigate = useNavigate();
+  const selectedFieldId = useSelector(selectSelectedFieldId);
 
   return (
     <Button
       variant="default"
       className={className}
       onClick={() => {
-        if (fieldId) {
-          navigate(`${fieldId}/edit`);
+        if (selectedFieldId) {
+          navigate(`${selectedFieldId}/edit`);
         }
       }}
     >

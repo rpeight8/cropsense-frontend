@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectSelectedWorkspaceId,
-  selectWorkspaces,
   setSelectedWorkspaceId,
 } from "../workspacesSlice";
 import {
@@ -20,13 +19,12 @@ import WorkspaceAddButton from "./WorkspaceAddButton";
 import { Workspace } from "../types";
 import WorkspaceAddDialog from "./WorkspaceAddDialog";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useWorkspaces } from "../services";
 
-type WorkspacesMenuProps = {
-  isLoading?: boolean;
-};
+// type WorkspacesMenuProps = ComponentPropsWithoutRef<"div">;
 
-const WorkspacesMenu = ({ isLoading }: WorkspacesMenuProps) => {
-  const workspaces = useAppSelector(selectWorkspaces);
+const WorkspacesMenu = () => {
+  const { data: workspaces, isLoading } = useWorkspaces();
   const selectedWorkspaceId = useAppSelector(selectSelectedWorkspaceId);
   const dispatch = useAppDispatch();
 
@@ -38,6 +36,10 @@ const WorkspacesMenu = ({ isLoading }: WorkspacesMenuProps) => {
 
   if (isLoading) {
     return <Skeleton className="w-full h-9" />;
+  }
+
+  if (!workspaces) {
+    return <WorkspaceAddButton className="w-full" disabled />;
   }
 
   const selectedWorkspace = workspaces.find(
